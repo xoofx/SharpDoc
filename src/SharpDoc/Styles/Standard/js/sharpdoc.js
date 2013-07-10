@@ -174,4 +174,22 @@ function SplitPane(splitPaneId, splitPaneToggleId, splitPaneResizerId) {
     if (topTitle.length > 0) {
         topTitle[0].addEvent('click', expandCollapseFunction);
     }
-}  
+}
+
+function expandToc(nodeId)
+{
+    var node = $(nodeId + "_toc");
+    var nodeClass = node.get('class');
+
+    if (nodeClass == "composed closed")
+    {
+        var subNodes = $(nodeId + "_SubTopics");
+        subNodes.set('class', 'visible');
+        node.set('class', 'composed opened');
+    }
+    else if (nodeClass == "composed opened") {
+        var subNodes = $(nodeId + "_SubTopics");
+        subNodes.set('class', 'hidden');
+        node.set('class', 'composed closed');
+    }
+}
