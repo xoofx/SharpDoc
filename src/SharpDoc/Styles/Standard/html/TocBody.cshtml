@@ -26,7 +26,7 @@
 @using SharpDoc.Model
 @using System.Text
 @functions {
-    public void DisplayTopic(StringBuilder toc, NTopic topic, string classLevel, bool isHighlight = false) {
+    public void DisplayTopic(StringBuilder toc, NTopic topic, int level, bool isHighlight = false) {
         // Don't list the search topic unless its selected
         if (topic.IsSearchResult && Model.Topic.Id != topic.Id)
             return;
@@ -37,42 +37,38 @@
         
         var topicLink = topic;
         var url = Model.ToUrl(topicLink, topic.Name, false, isHighlight ? " class='highlight'" : "");
+        string className = (topic.SubTopics.Count > 0) ?  "composed" : "terminal";
+        string isOpen = (level > 1) ? " closed" : " opened"; 
 
-        toc.AppendFormat("<div class='{0}'><div class='icon'></div>{1}<div style='clear: both'></div></div>", classLevel, url).AppendLine();
+        toc.AppendFormat("<div id='{0}_toc' class='{1}{2}' style='padding-left: {3}em'><div class='icon'></div>{4}<div style='clear: both'></div></div>", topic.Id, className, isOpen, level, url).AppendLine();
+    }
+
+     public void AddTopicToToc(StringBuilder toc, NTopic topic, int level) {
+        DisplayTopic(toc, topic, level);
+        int nbSubTopics = topic.SubTopics.Count;
+
+        if( nbSubTopics > 0)
+        {
+            string visibility = (level >1) ? "hidden" : "visible";
+            var subTopics = topic.SubTopics;
+
+            toc.AppendFormat("<div id='{0}_SubTopics' class='{1}'>", topic.Id, visibility).AppendLine();
+            for(var i = 0; i < topic.SubTopics.Count; i++)
+            {
+                AddTopicToToc(toc, subTopics[i], level +1);
+            }
+            toc.Append("</div>").AppendLine();
+        }
     }
 
     public string DumpToc() {
+        Model.FindTopicById("0");
+
         var toc = new StringBuilder();
-        var topicHasChildrens = Model.Topic.SubTopics.Count > 0;
-        var topics = Model.Topic.GetParents();
-        var i = 0;
-        for(; i < topics.Count; i++)  {
-            var topic = topics[i];
-            string divClass = (i>0)?"toc up":"toc top";
-            if ((i+1) == topics.Count && !topicHasChildrens) 
-            {            
-                divClass = "toc child level0";
-            }
-            DisplayTopic(toc, topic, divClass);
-        }
-        if (topicHasChildrens) {
-            string topicClassLevel = (i==0)?"toc top":"toc child level0";
-            string subTopicClassLevel = (i==0)?"toc child level0":"toc child level1";
-            
-            DisplayTopic(toc, Model.Topic, topicClassLevel, true);
-            foreach(var topic in Model.Topic.SubTopics) {
-                DisplayTopic(toc, topic, subTopicClassLevel);
-            }
-        }
-        else
-        {
-            if (i == 0 && Model.Topic.Parent == null) {
-                DisplayTopic(toc, Model.Topic, "toc top", true);                
-            } else {
-                foreach (var topic in Model.Topic.Parent.SubTopics)
-                    DisplayTopic(toc, topic, "toc child level1", topic.Id == Model.Topic.Id);
-            }
-        }
+        var rootTopic = Model.RootTopic;
+        Model.Topic = rootTopic;
+
+        AddTopicToToc(toc, rootTopic, 0);
         return toc.ToString();        
     }
 }

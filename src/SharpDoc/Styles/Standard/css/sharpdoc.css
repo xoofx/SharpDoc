@@ -456,64 +456,27 @@
 	height:100%;
 }
 
-.sharpdoc .toc .icon
+.sharpdoc .composed .icon
 {
 	background-repeat:no-repeat;
-	display:inline;
-}
-
-.sharpdoc .toc.child .icon
-{
-	background-image:url("../images/toc-child.gif");
-	background-repeat:no-repeat;
-	height:9px;
-	padding-right:15px;
+	height:15px;
 	width:13px;
 }
 
-.sharpdoc .toc.level0
+.sharpdoc .composed.opened .icon
 {
-	padding-left:2px;
+	background-image:url("../images/toc-opened.png");
 }
 
-.sharpdoc .toc.level1
+.sharpdoc .composed.closed .icon
 {
-	padding-left:12px;
+	background-image:url("../images/toc-closed.png");
+}
+.sharpdoc .hidden
+{
+	display: none;
 }
 
-.sharpdoc .toc.level2
-{
-	padding-left:22px;
-}
-
-.sharpdoc .toc.level3
-{
-	padding-left:32px;
-}
-
-.sharpdoc .toc.level4
-{
-	padding-left:42px;
-}
-
-.sharpdoc .toc.top .icon
-{
-	background-image:url("../images/toc-top.gif");
-	height:3px;
-	padding-right:10px;
-	top:6px;
-	width:3px;
-}
-
-.sharpdoc .toc.up .icon
-{
-	background-image:url("../images/toc-up.gif");
-	background-repeat:no-repeat;
-	height:9px;
-	padding-right:10px;
-	top:4px;
-	width:5px;
-}
 
 .sharpdoc div.top-title, .sharpdoc div.content-title {
     float: left;
