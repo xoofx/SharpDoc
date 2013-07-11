@@ -40,7 +40,7 @@
         string className = (topic.SubTopics.Count > 0) ?  "composed" : "terminal";
         string isOpen = (level > 1) ? " closed" : " opened"; 
 
-        toc.AppendFormat("<div id='{0}_toc' class='{1}{2}' style='padding-left: {3}em' onclick='expandToc(\"{0}\")'><div class='icon'></div>{4}<div style='clear: both'></div></div>", topic.Id, className, isOpen, level, url).AppendLine();
+        toc.AppendFormat("<div id='{0}_toc' class='{1}{2}' style='padding-left: {3}em' onclick='toggleToc(\"{0}\")'><div class='icon'></div>{4}<div style='clear: both'></div></div>", topic.Id, className, isOpen, level, url).AppendLine();
     }
 
      public void AddTopicToToc(StringBuilder toc, NTopic topic, int level) {

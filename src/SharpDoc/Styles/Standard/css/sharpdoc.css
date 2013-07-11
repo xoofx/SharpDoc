@@ -503,7 +503,7 @@
 	cursor:pointer;
 }
 
-.sharpdoc a.highlight
+.sharpdoc .highlight
 {
 	color:#E66A38;
 	font-weight:bold;

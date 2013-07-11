@@ -46,7 +46,8 @@
         }
         if (url == null)
             return Escape(link.Name);
-        return string.Format("<a target='mainFrame' href=\"{0}\" {1}>{2}</a>", url, link.Attributes ?? "", Escape(link.Name));
+
+        return string.Format("<a target='mainFrame' onclick='hightLightTopic(\"{3}\");' href=\"{0}\" {1}>{2}</a>", url, link.Attributes ?? "", Escape(link.Name), link.Id);
     }
 }
 

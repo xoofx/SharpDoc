@@ -176,23 +176,40 @@ function SplitPane(splitPaneId, splitPaneToggleId, splitPaneResizerId) {
     }
 }
 
-function expandToc(nodeId)
+function openToc(nodeId)
 {
     var node = $(nodeId + "_toc");
     var nodeClass = node.get('class');
 
-    if (nodeClass == "composed closed")
+    var subNodes = $(nodeId + "_SubTopics");
+    subNodes.set('class', 'visible');
+    node.set('class', nodeClass.replace('closed', 'opened'));
+}
+
+function closeToc(nodeId) {
+    var node = $(nodeId + "_toc");
+    var nodeClass = node.get('class');
+
+    // The highlighten topic could not be closed
+    if (nodeClass.indexOf('highlight') == -1)
     {
         var subNodes = $(nodeId + "_SubTopics");
-        subNodes.set('class', 'visible');
-        node.set('class', 'composed opened');
-    }
-    else if (nodeClass == "composed opened") {
-        var subNodes = $(nodeId + "_SubTopics");
         subNodes.set('class', 'hidden');
-        node.set('class', 'composed closed');
+        node.set('class', nodeClass.replace('opened', 'closed'));
     }
-}    
+}
+
+function toggleToc(nodeId)
+{
+    var node = $(nodeId + "_toc");
+    var nodeClass = node.get('class');
+    
+    if (nodeClass.indexOf('closed') != -1)
+        openToc(nodeId);
+    else
+        closeToc(nodeId);
+   
+}
 
 function resizeMainFrame()
 {
@@ -203,4 +220,18 @@ function resizeMainFrame()
         var h = windowSize - headerSize - contentHeaderSize -50;
         $('mainFrame').setStyle("height", h);
     });
+}
+
+function hightLightTopic(topicId)
+{
+    var oldHighlight = $$('.highlight');
+    oldHighlight.each(function (old, oldId)
+    {
+        var oldClass = old.get('class');
+        old.set('class', oldClass.replace(' highlight', ''));
+    });
+
+    var newHightlight = $(topicId + '_toc');
+    var newClass = newHightlight.get('class');
+    newHightlight.set('class', newClass + ' highlight');
 }

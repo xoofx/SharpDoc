@@ -33,7 +33,7 @@
     <head>
         @Helpers.PageHead.Dump(Model.RootTopic.PageTitle)
     </head>
-	<body onresize="resizeMainFrame(), 2000)">
+	<body onresize="setTimeout(resizeMainFrame(), 2000)">
         @* Initialize splitpane *@
         <script type="text/javascript" language="javascript">
              document.addEvent('domready', function () {
