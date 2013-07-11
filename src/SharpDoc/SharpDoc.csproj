@@ -248,6 +248,8 @@
     <None Include="Styles\Mshc\Param.cshtml" />
     <None Include="Styles\Standard\html\ClassLibraryBuilder.cshtml" />
     <None Include="Styles\Standard\html\ContentFooter.cshtml" />
+    <None Include="Styles\Standard\html\PageIndexBody.cshtml" />
+    <None Include="Styles\Standard\html\MainFrame.cshtml" />
     <None Include="Styles\Standard\html\Version.cshtml" />
     <None Include="Styles\Standard\html\PageHeader.cshtml" />
     <None Include="Styles\Standard\html\WriteToFunction.cshtml" />

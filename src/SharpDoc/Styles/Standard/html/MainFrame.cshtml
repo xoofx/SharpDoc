@@ -1,5 +1,5 @@
 ﻿@*
-// Copyright (c) 2010-2013 SharpDoc - Alexandre Mutel
+// Copyright (c) 2010-2013 SharpDX - Alexandre Mutel
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -19,37 +19,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.       
 // -------------------------------------------------------------------------------
-// Override this template to modify the global behavior for each Dump functions
+// Override this template to modify the generated html footer for all body
 // -------------------------------------------------------------------------------
 *@
 @model SharpDoc.TemplateContext
-@using SharpDoc;
 @using SharpDoc.Model
-@using System.Text.RegularExpressions
-@functions {
-    public string LinkToUrl(LinkDescriptor link)
-    {
-        string url = null;
-        switch (link.Type) {
-            case LinkType.None:
-                return Escape(link.Name);
-                break;
-            case LinkType.Self:
-                return string.Format("<strong>{0}</strong>", Escape(link.Name));
-                break;
-            case LinkType.Local:
-                url = string.Format("{0}{1}{2}", Param.RootLink, link.LocalReference.PageId, Param.FileExt);
-                break;
-            case LinkType.Msdn:
-                url = link.Location;
-                break;
-        }
-        if (url == null)
-            return Escape(link.Name);
-        return string.Format("<a target='mainFrame' href=\"{0}\" {1}>{2}</a>", url, link.Attributes ?? "", Escape(link.Name));
-    }
-}
-
-@{    
-    Model.LinkResolver = LinkToUrl;
-}
+<iframe id='mainFrame' name = 'mainFrame' src='@Model.RootTopic.PageId@Param.FileExt' frameborder='0' scrolling='auto' width='100%' onLoad="resizeMainFrame();"></div>
