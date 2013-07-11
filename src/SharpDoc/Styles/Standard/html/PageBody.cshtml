@@ -25,7 +25,12 @@
 @model SharpDoc.TemplateContext
 @using SharpDoc.Model
 @helper Dump(string bodyTemplateName)
-    {    
+{
+    <script type="text/javascript" language="javascript">
+            document.addEvent('domready', function () {
+                InstallCodeTabs();
+            });
+    </script>
      <div class="sharpdoc">
         <table class="table_content">
             <tbody>
