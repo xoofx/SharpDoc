@@ -24,45 +24,17 @@
 *@
 @model SharpDoc.TemplateContext
 @using SharpDoc.Model
-@Import("TocBody")
 @helper Dump(string bodyTemplateName)
-    {
-@* Initialize splitpane *@
-    <script type="text/javascript" language="javascript">
-         document.addEvent('domready', function () {
-             InstallCodeTabs();
-             SplitPane('toc_content', 'pane_toggle', 'pane_resizer');
-         });
-    </script>   
+    {    
      <div class="sharpdoc">
         <table class="table_content">
             <tbody>
-                <tr class="sharpdoc-header">
-                    <td colspan="3" class="cell">
-                        @Include("PageHeader")
-                    </td>                
-                </tr>
                 <tr>
-                <td id="pane_toc">
-                    <div id="toc_content" class="toc_content">
-                    @Helpers.TocBody.Dump()
-                    </div>
-                </td>
-                <td id="pane_resizer" class="pane_resizer">
-                    <div id="pane_toggle" class="collapse" ></div>
-                </td>
-                <td id="pane_content" class="pane_content">
-                    <div class="content">
-				        @Include("ContentHeader")
-                        @Include(bodyTemplateName)
-		                @Include("ContentFooter")
-                    </div>
-                </td>
-                </tr>
-                <tr class="sharpdoc-footer">
-                    <td colspan="3" class="cell">
-                        @Include("PageFooter")
-                    </td>                
+                    <td id="pane_content" class="pane_content">
+                        <div class="content">
+                            @Include(bodyTemplateName)
+                        </div>
+                    </td>
                 </tr>
             </tbody>
         </table>

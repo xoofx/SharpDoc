@@ -24,14 +24,20 @@
 *@
 @model SharpDoc.TemplateContext
 @using SharpDoc.Model
+@Import("PageIndexBody")
 <html>
     <head>
         <title>@Param.DocumentationTitle</title>
         @if (Model.RootTopic != null)
         {
-        <script type="text/javascript" language="JavaScript">
-            window.location = "html/@Model.RootTopic.PageId@Param.FileExt";
-        </script>
+            Model.FindTopicById(" ");
+            NTopic indexTopic = new NTopic {PageId = "index"};
+            Model.Topic = indexTopic;
+            Model.WriteTo(indexTopic, @Helpers.PageIndexBody.Dump());
+            
+            <script type="text/javascript" language="JavaScript">
+                window.location = "html/@indexTopic.PageId@Param.FileExt";
+            </script>
         }
     </head>
     <body>
