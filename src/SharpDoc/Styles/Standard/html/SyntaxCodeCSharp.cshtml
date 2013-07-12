@@ -79,41 +79,7 @@
             }
         }
         
-        // TODO add generic constraints here
-
-        if(type.GenericParameters.Count > 0)
-        {
-            List<NGenericParameter> constraintsParameters = new List<NGenericParameter>();
-            for(int i = 0; i < type.GenericParameters.Count; i++)
-            {
-                var param = type.GenericParameters[i];
-                if(param.HasConstraints || param.HasDefaultConstructorConstraint)
-                    constraintsParameters.Add(param);
-            }
-            bool needNewLine = (constraintsParameters.Count > 1);
-                
-            for(int i = 0; i < constraintsParameters.Count; i++)
-            {
-                var param = constraintsParameters[i];
-                if(needNewLine)
-                    text.AppendLine().Append("\t");
-                text.Append(" where ");
-                text.Append(EscapeForSyntaxBox(param.Name));
-                text.Append(" : ");
-                for(int j = 0; j < param.Constraints.Count; j++)
-                {
-                    if(j > 0) 
-                        text.Append(", ");
-                    text.Append(EscapeForSyntaxBox(param.Constraints[j].Name));
-                }
-                if(param.HasDefaultConstructorConstraint)
-                {
-                    if(param.HasConstraints)
-                        text.Append(", ");
-                    text.Append("new()");
-                }
-            }
-        }
+        DumpGenericParametersConstraints(text, type);
             
         return text.ToString();
     }
@@ -227,7 +193,7 @@
 
         DumpParameters(text, method.Parameters);
 
-        // TODO add generic constraints here
+        DumpGenericParametersConstraints(text, method);
 
         return text.ToString();
     }    
@@ -254,7 +220,48 @@
             text.AppendLine();
         }
         text.Append(")");
-    }   
+    }
+
+    /// <summary>
+    /// Dump the C# syntax of generic parameters constraints
+    /// </summary>
+    /// <returns></returns>
+    protected void DumpGenericParametersConstraints(StringBuilder text, INMemberReference member)
+    {
+        if(member.GenericParameters.Count > 0)
+        {
+            List<NGenericParameter> constraintsParameters = new List<NGenericParameter>();
+            for(int i = 0; i < member.GenericParameters.Count; i++)
+            {
+                var param = member.GenericParameters[i];
+                if(param.HasConstraints || param.HasDefaultConstructorConstraint)
+                    constraintsParameters.Add(param);
+            }
+            bool needNewLine = (constraintsParameters.Count > 1);
+                
+            for(int i = 0; i < constraintsParameters.Count; i++)
+            {
+                var param = constraintsParameters[i];
+                if(needNewLine)
+                    text.AppendLine().Append("\t");
+                text.Append(" where ");
+                text.Append(EscapeForSyntaxBox(param.Name));
+                text.Append(" : ");
+                for(int j = 0; j < param.Constraints.Count; j++)
+                {
+                    if(j > 0) 
+                        text.Append(", ");
+                    text.Append(EscapeForSyntaxBox(param.Constraints[j].Name));
+                }
+                if(param.HasDefaultConstructorConstraint)
+                {
+                    if(param.HasConstraints)
+                        text.Append(", ");
+                    text.Append("new()");
+                }
+            }
+        }
+    }
 }
 
 @helper Dump(NMember member)
