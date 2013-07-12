@@ -225,8 +225,7 @@ function resizeMainFrame()
 function hightLightTopic(topicId)
 {
     var oldHighlight = $$('.highlight');
-    oldHighlight.each(function (old, oldId)
-    {
+    oldHighlight.each(function (old, oldId) {
         var oldClass = old.get('class');
         old.set('class', oldClass.replace(' highlight', ''));
     });
@@ -234,4 +233,33 @@ function hightLightTopic(topicId)
     var newHightlight = $(topicId + '_toc');
     var newClass = newHightlight.get('class');
     newHightlight.set('class', newClass + ' highlight');
+ 
 }
+
+//function get_content(url, callback) {
+//    alert('fct start');
+//    var str = '';
+//    var f = new IFrame({
+//        src: url, styles: { display: 'none' },
+//        events: {
+//            load: function () {
+//                alert('0');
+//                var d = new Element('div');
+//                alert('1 ' + d);
+//                d.adopt(this.contentWindow.document.body);
+//                alert('2');
+//                var ds = new Elements([d]);
+//                alert('3 ' + ds);
+//                ds.each(function (el) {
+//                    alert('4');
+//                    str += (el.getElement('body').get('html'));
+//                });
+//                alert('5');
+//                f.dispose();
+//                alert('6');
+//                callback(str);
+//            }
+//        }
+//    }).inject(document.body);
+//    alert('fct done');
+//}

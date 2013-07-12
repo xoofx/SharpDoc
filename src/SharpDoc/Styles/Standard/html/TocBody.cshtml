@@ -40,7 +40,7 @@
         string className = (topic.SubTopics.Count > 0) ?  "composed" : "terminal";
         string isOpen = (level > 1) ? " closed" : " opened"; 
 
-        toc.AppendFormat("<div id='{0}_toc' class='{1}{2}' style='padding-left: {3}em' onclick='toggleToc(\"{0}\")'><div class='icon'></div>{4}<div style='clear: both'></div></div>", topic.Id, className, isOpen, level, url).AppendLine();
+        toc.AppendFormat("<div id='{0}_toc' class='{1}{2}' style='padding-left: {3}em' onclick='toggleToc(\"{0}\")'><div class='icon'></div>{4}<div style='clear: both'></div></div>", topic.Name, className, isOpen, level, url).AppendLine();
     }
 
      public void AddTopicToToc(StringBuilder toc, NTopic topic, int level) {
@@ -52,7 +52,7 @@
             string visibility = (level >1) ? "hidden" : "visible";
             var subTopics = topic.SubTopics;
 
-            toc.AppendFormat("<div id='{0}_SubTopics' class='{1}'>", topic.Id, visibility).AppendLine();
+            toc.AppendFormat("<div id='{0}_SubTopics' class='{1}'>", topic.Name, visibility).AppendLine();
             for(var i = 0; i < topic.SubTopics.Count; i++)
             {
                 AddTopicToToc(toc, subTopics[i], level +1);
@@ -62,7 +62,6 @@
     }
 
     public string DumpToc() {
-        Model.FindTopicById("0");
 
         var toc = new StringBuilder();
         var rootTopic = Model.RootTopic;
