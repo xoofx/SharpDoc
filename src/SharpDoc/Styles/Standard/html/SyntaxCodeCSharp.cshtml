@@ -53,12 +53,12 @@
 
 		if (deleg != null)
         {
-            text.Append(Escape(deleg.Invoke.ReturnType.Name));
+            text.Append(EscapeForSyntaxBox(deleg.Invoke.ReturnType.Name));
             text.Append(" ");
         }
 
         // Append the name
-        text.Append(Escape(type.Name));
+        text.Append(type.Name);
 
 		if (deleg != null)
         {
@@ -67,7 +67,7 @@
 
         bool hasBase = type is NClass && type.Bases.Count > 1;
         if (hasBase)
-            text.Append(" : ").Append(Escape(type.Bases[0].Name));
+            text.Append(" : ").Append(EscapeForSyntaxBox(type.Bases[0].Name));
         
         if (type.Interfaces.Count > 0) {
             if (!hasBase)
@@ -75,12 +75,46 @@
             for(int i = 0; i < type.Interfaces.Count; i++) {
                 if (i > 0 || hasBase)
                     text.Append(", ");
-                text.Append(Escape(type.Interfaces[i].Name));                
+                text.Append(EscapeForSyntaxBox(type.Interfaces[i].Name));                
             }
         }
         
         // TODO add generic constraints here
-        
+
+        if(type.GenericParameters.Count > 0)
+        {
+            List<NGenericParameter> constraintsParameters = new List<NGenericParameter>();
+            for(int i = 0; i < type.GenericParameters.Count; i++)
+            {
+                var param = type.GenericParameters[i];
+                if(param.HasConstraints || param.HasDefaultConstructorConstraint)
+                    constraintsParameters.Add(param);
+            }
+            bool needNewLine = (constraintsParameters.Count > 1);
+                
+            for(int i = 0; i < constraintsParameters.Count; i++)
+            {
+                var param = constraintsParameters[i];
+                if(needNewLine)
+                    text.AppendLine().Append("\t");
+                text.Append(" where ");
+                text.Append(EscapeForSyntaxBox(param.Name));
+                text.Append(" : ");
+                for(int j = 0; j < param.Constraints.Count; j++)
+                {
+                    if(j > 0) 
+                        text.Append(", ");
+                    text.Append(EscapeForSyntaxBox(param.Constraints[j].Name));
+                }
+                if(param.HasDefaultConstructorConstraint)
+                {
+                    if(param.HasConstraints)
+                        text.Append(", ");
+                    text.Append("new()");
+                }
+            }
+        }
+            
         return text.ToString();
     }
 
@@ -137,10 +171,10 @@
         text.Append(nEvent.VisibilityFullName).Append(" ");
 
         // Append Type
-        text.Append(Escape(nEvent.EventType.Name)).Append(" ");
+        text.Append(EscapeForSyntaxBox(nEvent.EventType.Name)).Append(" ");
 
         // Append Name
-        text.Append(Escape(nEvent.Name));
+        text.Append(EscapeForSyntaxBox(nEvent.Name));
 
         return text.ToString();
     }        
@@ -158,10 +192,10 @@
         text.Append(field.VisibilityFullName).Append(" ");
 
         // Append the return type
-	    text.Append(Escape(field.FieldType.Name)).Append(" ");
+	    text.Append(EscapeForSyntaxBox(field.FieldType.Name)).Append(" ");
         
         // Append the name
-        text.Append(Escape(field.Name));
+        text.Append(EscapeForSyntaxBox(field.Name));
 		
         // TODO add generic constraints here
 
@@ -186,10 +220,10 @@
 
         // Append the return type
 		if (!(method is NConstructor))
-	        text.Append(Escape(method.ReturnType.Name)).Append(" ");
+	        text.Append(EscapeForSyntaxBox(method.ReturnType.Name)).Append(" ");
         
         // Append the name
-        text.Append(Escape(method.Name));
+        text.Append(EscapeForSyntaxBox(method.Name));
 
         DumpParameters(text, method.Parameters);
 
@@ -215,7 +249,7 @@
                     text.Append(", ").AppendLine();
                 var parameter = parameters[i];
                 text.Append("\t");
-                text.Append(Escape(parameter.ParameterTypeName)).Append(" ").Append(Escape(parameter.Name));
+                text.Append(EscapeForSyntaxBox(parameter.ParameterTypeName)).Append(" ").Append(EscapeForSyntaxBox(parameter.Name));
             }
             text.AppendLine();
         }

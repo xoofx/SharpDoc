@@ -241,5 +241,17 @@ namespace SharpDoc
                 return "NULLERROR";
             return Utility.EscapeHtml(content);
         }
+
+        /// <summary>
+        /// Escapes the specified content for the Syntax Box (bracket are echaped in &lt; and &gt;) .
+        /// </summary>
+        /// <param name="content">The content.</param>
+        /// <returns></returns>
+        public string EscapeForSyntaxBox(string content)
+        {
+            if (content == null)
+                return "NULLERROR";
+            return Utility.EscapeHtml(content).Replace("&lt;", "<").Replace("&gt;", ">");
+        }
     }
 }
