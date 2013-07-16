@@ -900,6 +900,10 @@ namespace SharpDoc
             {
                 member.IsObsolete = true;
             }
+            else if (customAttribute.AttributeType.Name == "ExtensionAttribute")
+            {
+                member.IsExtensionAttribute = true;
+            }
 
             if (customAttribute.HasConstructorArguments || customAttribute.HasProperties)
             {

@@ -80,6 +80,14 @@ namespace SharpDoc.Model
         public bool IsGenericParameter { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this instance is an extension attribute.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance is an extension attribute; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsExtensionAttribute { get; set; }
+
+        /// <summary>
         /// Gets or sets the type of the element.
         /// </summary>
         /// <value>The type of the element.</value>
