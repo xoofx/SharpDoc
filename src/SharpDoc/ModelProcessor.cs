@@ -93,6 +93,9 @@ namespace SharpDoc
                 ModelBuilder.LoadFrom(assemblySource, Registry);
             }
 
+            // Link extension method to the corresponding classes
+            ModelBuilder.ProcessExtensionMethods();
+
             Namespaces.AddRange(Registry.Namespaces);
 
             Namespaces.Sort((from, to) => string.CompareOrdinal(@from.Name, to.Name));

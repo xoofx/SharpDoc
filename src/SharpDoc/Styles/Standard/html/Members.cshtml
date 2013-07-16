@@ -56,7 +56,10 @@
 
             if (context != null && memberRef != null && memberRef.DeclaringType.Id != context.Id)
             {
-                postDesc = string.Format("(Inherited from {0}.)", ToUrl(memberRef.DeclaringType, memberRef.DeclaringType.Name, true));
+                if(memberRef.IsExtensionMethod)
+                    postDesc = string.Format("(Defined by {0}.)", ToUrl(memberRef.DeclaringType, memberRef.DeclaringType.Name, true));
+                else
+                    postDesc = string.Format("(Inherited from {0}.)", ToUrl(memberRef.DeclaringType, memberRef.DeclaringType.Name, true));
             }
             
             var method = member as NMethod;

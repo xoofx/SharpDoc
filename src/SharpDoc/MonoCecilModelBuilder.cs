@@ -43,6 +43,7 @@ namespace SharpDoc
         private const string MethodOperatorPrefix = "op_";
         private Dictionary<string, NDocumentApi> mapModuleToDoc = new Dictionary<string, NDocumentApi>();
         private Dictionary<string, IModelReference>  membersCache = new Dictionary<string, IModelReference>();
+        private List<NExtensionMethod> extensionMethodList = new List<NExtensionMethod>();
 
         public Func<IModelReference, string> PageIdFunction { get; set; }
 
@@ -452,6 +453,8 @@ namespace SharpDoc
 
             var method = CreateMethodFromDefinition(parent.Namespace, methodDef);
 
+            method.SetApiGroup(CurrentMergeGroup, true);
+
             // If not a get/set then handle it
             if (!isSpecialMethod)
             {
@@ -479,6 +482,13 @@ namespace SharpDoc
                         {
                             parentType.HasMethods = true;
                         }
+
+                        if (method.IsExtensionDefinition)
+                        {
+                            // get the first parameter (the special this parameter)
+                            var extendedType = GetTypeReference(methodDef.Parameters[0].ParameterType);
+                            extensionMethodList.Add(new NExtensionMethod(extendedType, parent, method));
+                        }
                     }
 
                     // Add SeeAlso
@@ -488,8 +498,6 @@ namespace SharpDoc
                     UpdatePageTitle(method);
                 }
             }
-
-            method.SetApiGroup(CurrentMergeGroup, true);
 
             return method;
         }
@@ -665,7 +673,7 @@ namespace SharpDoc
         /// </summary>
         /// <param name="self">The self.</param>
         /// <param name="builder">The builder.</param>
-        private static void BuildMethodSignatureParameters(NMethod self, StringBuilder builder)
+        public static void BuildMethodSignatureParameters(NMethod self, StringBuilder builder)
         {
             // BuildMethodSignatureGenericParameters(self, builder);
 
@@ -902,7 +910,7 @@ namespace SharpDoc
             }
             else if (customAttribute.AttributeType.Name == "ExtensionAttribute")
             {
-                member.IsExtensionAttribute = true;
+                member.IsExtensionDefinition = true;
             }
 
             if (customAttribute.HasConstructorArguments || customAttribute.HasProperties)
@@ -982,6 +990,21 @@ namespace SharpDoc
                     genericParameter.Constraints.Add( GetTypeReference(constraint));
 
                 member.GenericParameters.Add(genericParameter);
+            }
+        }
+
+        public void ProcessExtensionMethods()
+        {
+            foreach (var extensionMethod in extensionMethodList)
+            {
+                var extendedTypeId = "T:" + extensionMethod.ExtendedType.FullName;
+                var extendedTypeReference = _registry.FindById(extendedTypeId);
+                var extendedType = extendedTypeReference as NType;
+                if (extendedType != null)
+                {
+                    extensionMethod.Method.Parent = extendedType;
+                    extendedType.ExtensionMethods.Add(extensionMethod.Method);
+                }
             }
         }
    }

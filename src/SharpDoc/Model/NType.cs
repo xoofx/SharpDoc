@@ -38,6 +38,7 @@ namespace SharpDoc.Model
             FlattenedHierarchy = new List<Tuple<int, INMemberReference>>();
             Interfaces = new List<NMemberReference>();
             AllMembers = new List<INMemberReference>();
+            ExtensionMethods = new List<NMethod>();
         }
 
         /// <summary>
@@ -117,6 +118,26 @@ namespace SharpDoc.Model
         {
             get { return AllMembers.Where(member => member.GetType() == typeof(NMethod)).Cast<NMethod>().ToList(); }
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance has extension methods.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance has extension methods; otherwise, <c>false</c>.
+        /// </value>
+        public bool HasExtensionMethods
+        { 
+            get
+            {
+                return ExtensionMethods.Count > 0;
+            }
+        }
+
+        /// <summary>
+        /// Gets the extension methods.
+        /// </summary>
+        /// <value>The extension methods.</value>
+        public List<NMethod> ExtensionMethods { get; set; }
 
         /// <summary>
         /// Gets the methods.

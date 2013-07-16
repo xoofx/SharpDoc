@@ -51,6 +51,10 @@ namespace SharpDoc.Model
         /// </summary>
         Method,
         /// <summary>
+        /// An Extension Method member.
+        /// </summary>
+        Extension,
+        /// <summary>
         /// An operator member.
         /// </summary>
         Operator,

@@ -81,7 +81,7 @@ namespace SharpDoc.Model
         /// Gets or sets the parameters.
         /// </summary>
         /// <value>The parameters.</value>
-        public List<NParameter> Parameters { get; private set; }
+        public List<NParameter> Parameters { get; set; }
 
         /// <summary>
         /// Gets or sets the text of the signature of this method.
@@ -94,6 +94,12 @@ namespace SharpDoc.Model
         /// </summary>
         /// <value>The return description.</value>
         public string ReturnDescription { get; set; }
+
+        /// <summary>
+        /// Gets or sets the member in which the extension method has been defined.
+        /// </summary>
+        /// <value>The member in which the extension method has been defined</value>
+        public NMember ExtensionSource { get; set; }
 
         protected internal override void OnDocNodeUpdate()
         {

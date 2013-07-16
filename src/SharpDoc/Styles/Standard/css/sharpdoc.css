@@ -163,6 +163,11 @@
 	background-image:url("../images/privmethod.gif");
 }
 
+.sharpdoc div.icon.privextension
+{
+	background-image:url("../images/privextension.gif");
+}
+
 .sharpdoc div.icon.privoperator
 {
 	background-image:url("../images/privoperator.gif");
@@ -213,6 +218,11 @@
 	background-image:url("../images/protmethod.gif");
 }
 
+.sharpdoc div.icon.protextension
+{
+	background-image:url("../images/protextension.gif");
+}
+
 .sharpdoc div.icon.protoperator
 {
 	background-image:url("../images/protoperator.gif");
@@ -261,6 +271,11 @@
 .sharpdoc div.icon.pubmethod
 {
 	background-image:url("../images/pubmethod.gif");
+}
+
+.sharpdoc div.icon.pubextension
+{
+	background-image:url("../images/pubextension.gif");
 }
 
 .sharpdoc div.icon.puboperator

@@ -110,6 +110,9 @@
 
 	@if (self.HasMethods)
         @Helpers.Section.Dump("Methods", self.AllMethods, true, self);
+
+    @if (self.HasExtensionMethods)
+        @Helpers.Section.Dump("Extension Methods", self.ExtensionMethods, true, self);
         
 	@if (self.HasEvents)
         @Helpers.Section.Dump("Events", self.AllEvents, true, self);

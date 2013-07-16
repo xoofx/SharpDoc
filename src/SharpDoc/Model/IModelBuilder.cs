@@ -41,5 +41,7 @@ namespace SharpDoc.Model
         /// <param name="assemblySource">The assembly source definition.</param>
         /// <param name="memberRegistry">The member registry to populate with types.</param>
         void LoadFrom(NAssemblySource assemblySource, MemberRegistry memberRegistry);
+
+        void ProcessExtensionMethods();
     }
 }

@@ -191,7 +191,7 @@
         // Append the name
         text.Append(EscapeForSyntaxBox(method.Name));
 
-        DumpParameters(text, method.Parameters, method.IsExtensionAttribute);
+        DumpParameters(text, method.Parameters, method.IsExtensionDefinition);
 
         DumpGenericParametersConstraints(text, method);
 
@@ -203,7 +203,7 @@
     /// </summary>
     /// <param name="method"></param>
     /// <returns></returns>
-    protected void DumpParameters(StringBuilder text, List<NParameter> parameters, bool isExtensionAttribute)
+    protected void DumpParameters(StringBuilder text, List<NParameter> parameters, bool IsExtensionDefinition)
     {
         text.Append("(");
         if (parameters.Count > 0)
@@ -215,7 +215,7 @@
                     text.Append(", ").AppendLine();
                 var parameter = parameters[i];
                 text.Append("\t");
-                if(i == 0 && isExtensionAttribute)
+                if(i == 0 && IsExtensionDefinition)
                     text.Append("this ");
                 text.Append(EscapeForSyntaxBox(parameter.ParameterTypeName)).Append(" ").Append(EscapeForSyntaxBox(parameter.Name));
             }

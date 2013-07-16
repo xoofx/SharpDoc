@@ -103,6 +103,7 @@
     <Compile Include="Logging\LoggerBase.cs" />
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="Logging\LogLocation.cs" />
+    <Compile Include="Model\NExtensionMethod.cs" />
     <Compile Include="Model\NDocumentApi.cs" />
     <Compile Include="Model\NSeeAlso.cs" />
     <Compile Include="MonoCecilAssemblyManager.cs" />
