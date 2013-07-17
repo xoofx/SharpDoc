@@ -30,7 +30,6 @@
         <title>@Param.DocumentationTitle</title>
         @if (Model.RootTopic != null)
         {
-            Model.FindTopicById(" ");
             NTopic indexTopic = new NTopic {PageId = "index"};
             Model.Topic = indexTopic;
             Model.WriteTo(indexTopic, @Helpers.PageIndexBody.Dump());
