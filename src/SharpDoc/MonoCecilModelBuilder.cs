@@ -487,7 +487,7 @@ namespace SharpDoc
                         {
                             // get the first parameter (the special this parameter)
                             var extendedType = GetTypeReference(methodDef.Parameters[0].ParameterType);
-                            extensionMethodList.Add(new NExtensionMethod(extendedType, parent, method));
+                            extensionMethodList.Add(new NExtensionMethod(extendedType, method));
                         }
                     }
 
@@ -1003,8 +1003,19 @@ namespace SharpDoc
                 if (extendedType != null)
                 {
                     extensionMethod.Method.Parent = extendedType;
-                    extendedType.ExtensionMethods.Add(extensionMethod.Method);
+                    AddExtensionMethod(extendedType, extensionMethod.Method);
                 }
+            }
+        }
+
+        public void AddExtensionMethod(NType type, NMethod extensionMethod)
+        {
+            type.ExtensionMethods.Add(extensionMethod);
+            foreach (var descendant in type.Descendants)
+            {
+                var subType = descendant as NType;
+                if (subType != null)
+                    AddExtensionMethod(subType, extensionMethod);
             }
         }
    }

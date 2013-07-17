@@ -236,30 +236,28 @@ function hightLightTopic(topicId)
  
 }
 
-//function get_content(url, callback) {
-//    alert('fct start');
-//    var str = '';
-//    var f = new IFrame({
-//        src: url, styles: { display: 'none' },
-//        events: {
-//            load: function () {
-//                alert('0');
-//                var d = new Element('div');
-//                alert('1 ' + d);
-//                d.adopt(this.contentWindow.document.body);
-//                alert('2');
-//                var ds = new Elements([d]);
-//                alert('3 ' + ds);
-//                ds.each(function (el) {
-//                    alert('4');
-//                    str += (el.getElement('body').get('html'));
-//                });
-//                alert('5');
-//                f.dispose();
-//                alert('6');
-//                callback(str);
-//            }
-//        }
-//    }).inject(document.body);
-//    alert('fct done');
-//}
+//onSuccess: function (txt, xml) { alert("success"); alert("txt : " + txt); alert("xml : " + xml); },
+//onFailure: function (xhr) { alert("failure : " + xhr.responseTxt); },
+//onException: function (head, value) { alert("exception"); alert("head : " + head); alert("value : " + value); },
+//onError: function (txt, err) { alert("error"); alert("txt : " + txt); alert("err : " + err); },
+
+function loadPage()
+{
+    alert("0");
+    var request = new XMLHttpRequest()
+    request.onreadystatechange = function()
+    {
+        if (this.status == 200 && this.responseXML != null) {
+            alert("done, xml : " + this.responseXML);
+            alert("txt : " + this.responseText);
+            alert("type : " + this.responseType);
+            alert("body : " + this.responseBody);
+        }
+        else { alert("status : " + this.status + this.statusText);}
+    };
+    alert("1");
+    request.open("GET", "http://www.w3.org/TR/cors/");
+    alert("2");
+    request.send();
+    alert("3");
+}

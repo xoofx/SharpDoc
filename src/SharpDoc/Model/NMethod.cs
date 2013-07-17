@@ -99,7 +99,7 @@ namespace SharpDoc.Model
         /// Gets or sets the member in which the extension method has been defined.
         /// </summary>
         /// <value>The member in which the extension method has been defined</value>
-        public NMember ExtensionSource { get; set; }
+        public NTypeReference ExtensionSource { get; set; }
 
         protected internal override void OnDocNodeUpdate()
         {

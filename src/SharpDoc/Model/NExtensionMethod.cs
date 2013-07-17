@@ -31,13 +31,12 @@ namespace SharpDoc.Model
         /// <summary>
         /// Initializes a new instance of the <see cref="NExtensionMethod"/> class.
         /// </summary>
-        public NExtensionMethod(NTypeReference extendedType, NMember sourceMember, NMethod extensionMethod)
+        public NExtensionMethod(NTypeReference extendedType, NMethod extensionMethod)
         {
             ExtendedType = extendedType;
 
             Method = new NMethod();
             Method.Assembly = extensionMethod.Assembly;
-            Method.DeclaringType = extensionMethod.DeclaringType;
             Method.Description = extensionMethod.Description;
             Method.DocNode = extensionMethod.DocNode;
             Method.ElementType = extensionMethod.ElementType;
@@ -62,7 +61,6 @@ namespace SharpDoc.Model
             Method.UnManagedApi = extensionMethod.UnManagedApi;
             Method.UnManagedShortApi = extensionMethod.UnManagedShortApi;
             Method.Namespace = extensionMethod.Namespace;
-            Method.ExtensionSource = sourceMember;
             Method.Visibility = extensionMethod.Visibility;
             Method.ReturnDescription = extensionMethod.ReturnDescription;
             Method.ReturnType = extensionMethod.ReturnType;
@@ -72,14 +70,19 @@ namespace SharpDoc.Model
 
             // The extension method as member method is not static
             Method.IsStatic = false;
+
+
             Method.MemberType = NMemberType.Extension;
             Method.IsExtensionMethod = true;
+            Method.DeclaringType = extendedType;
+            Method.ExtensionSource = extensionMethod.DeclaringType;
 
+            
             // Remove the "this parameter"
             Method.Parameters = new List<NParameter>(extensionMethod.Parameters);
             Method.Parameters.RemoveAt(0);
 
-            // Build the signature without the "this parameter"
+            // Rebuild the signature without the "this parameter"
             var signature = new StringBuilder();
             signature.Append(Method.Name);
             MonoCecilModelBuilder.BuildMethodSignatureParameters(Method, signature);

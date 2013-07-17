@@ -93,9 +93,6 @@ namespace SharpDoc
                 ModelBuilder.LoadFrom(assemblySource, Registry);
             }
 
-            // Link extension method to the corresponding classes
-            ModelBuilder.ProcessExtensionMethods();
-
             Namespaces.AddRange(Registry.Namespaces);
 
             Namespaces.Sort((from, to) => string.CompareOrdinal(@from.Name, to.Name));
@@ -111,6 +108,9 @@ namespace SharpDoc
 
                 FlattenHierarchy(@namespace.Types);
             }
+
+            // Link extension method to the corresponding classes
+            ModelBuilder.ProcessExtensionMethods();
         }
 
         private NClass ProcessInheritance(NType type)

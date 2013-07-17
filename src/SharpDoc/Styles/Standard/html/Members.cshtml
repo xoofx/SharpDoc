@@ -26,6 +26,7 @@
 @using System.Collections.Generic
 @using System.Linq
 @using System.Dynamic
+@using System.Text
 @using SharpDoc.Model
 @Import("MembersRow")
 
@@ -51,15 +52,24 @@
         @foreach (var member in members)
         {
             string displayName = member.Name;
-            string postDesc = null;
+            StringBuilder postDesc = new StringBuilder("(");
             var memberRef = member as INMemberReference;
 
-            if (context != null && memberRef != null && memberRef.DeclaringType.Id != context.Id)
+            if (context != null && memberRef != null)
             {
+                if(memberRef.DeclaringType.Id != context.Id)
+                    postDesc.AppendFormat("Inherited from {0}", ToUrl(memberRef.DeclaringType, memberRef.DeclaringType.Name, true));
+
                 if(memberRef.IsExtensionMethod)
-                    postDesc = string.Format("(Defined by {0}.)", ToUrl(memberRef.DeclaringType, memberRef.DeclaringType.Name, true));
-                else
-                    postDesc = string.Format("(Inherited from {0}.)", ToUrl(memberRef.DeclaringType, memberRef.DeclaringType.Name, true));
+                {
+                    var extensionMethod = memberRef as NMethod;
+                    if(extensionMethod != null && extensionMethod.ExtensionSource.Id != context.Id)
+                    {
+                        if(postDesc.Length > 1)
+                            postDesc.Append(", ");
+                        postDesc.AppendFormat("Defined by {0}", ToUrl(extensionMethod.ExtensionSource, extensionMethod.ExtensionSource.Name, true));
+                    }
+                }
             }
             
             var method = member as NMethod;
@@ -68,24 +78,24 @@
                 if (method.HasOverrides)
                     displayName = method.Signature;
 
-                if (postDesc == null)
+                if (postDesc.Length == 1)
                 {
                     if (method.Overrides != null)
                     {
                         var baseMethodName = string.Format("{0}.{1}()", method.Overrides.DeclaringType.Name, method.Overrides.Name);
-                        postDesc = string.Format("(Overrides {0})", ToUrl(method.Overrides, baseMethodName, true));
+                        postDesc.AppendFormat("Overrides {0}", ToUrl(method.Overrides, baseMethodName, true));
                     } 
 					else if (method.Implements != null)
                     {
                         var baseMethodName = string.Format("{0}.{1}()", method.Implements.DeclaringType.Name, method.Implements.Name);
-                        postDesc = string.Format("(Implements {0})", ToUrl(method.Implements, baseMethodName, true));
+                        postDesc.AppendFormat("Implements {0}", ToUrl(method.Implements, baseMethodName, true));
                     }
                 }
             }
-            
-            postDesc = postDesc ?? string.Empty;
-            
-            <tr>@Helpers.MembersRow.DumpRow(member, showIcons, displayName, postDesc, rowContext)</tr>
+
+            string finalPostDesc = postDesc.Length > 1 ? postDesc.Append(".)").ToString() : string.Empty;
+                        
+            <tr>@Helpers.MembersRow.DumpRow(member, showIcons, displayName, finalPostDesc, rowContext)</tr>
         }            
         </table>
         <a href="#top">Top</a>
