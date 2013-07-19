@@ -20,6 +20,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 using SharpDoc.Model;
@@ -47,6 +49,10 @@ namespace SharpDoc
             StyleParameters = new List<ConfigParam>();
             StyleDirectories = new List<string>();
             OutputType = OutputType.Default;
+
+            WebDocumentationUrl = null;
+            WebDocumentationLogin = null;
+            WebDocumentation = null;
         }
 
         /// <summary>
@@ -99,6 +105,28 @@ namespace SharpDoc
         /// <value>The references.</value>
         [XmlElement("reference")]
         public List<string> References { get; set; }
+
+        /// <summary>
+        /// Gets or sets the extern documentation webSite connection.
+        /// </summary>
+        /// <value>The the extern documentation webSite connection.</value>
+        [XmlElement("webDocumentation")]
+        public AuthentifiedWebClient WebDocumentation { get; set; }
+
+        /// <summary>
+        /// Gets or sets the extern documentation webSite url.
+        /// </summary>
+        /// <value>The extern documentation webSite url.</value>
+        [XmlElement("webDocumentationUrl")]
+        public string WebDocumentationUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets the extern documentation webSite login.
+        /// </summary>
+        /// <value>The the extern documentation webSite login.</value>
+        [XmlElement("webDocumentationLogin")]
+        public NetworkCredential WebDocumentationLogin { get; set; }
+
 
         /// <summary>
         /// Gets or sets parameters.
@@ -201,6 +229,32 @@ namespace SharpDoc
             var deserializer = new XmlSerializer(typeof(Config));
             var output = new FileStream(file, FileMode.Create);
             deserializer.Serialize(output, this, ns);
+        }
+
+        public void InitializeWebDocumentation()
+        {
+            if (WebDocumentationUrl != null)
+            {
+                WebDocumentation = new AuthentifiedWebClient(WebDocumentationUrl, WebDocumentationLogin);
+            }
+        }
+
+        public void AddWebDocumentationUrl(string protocol, string domain)
+        {
+            StringBuilder urlBuilder = new StringBuilder(protocol);
+            urlBuilder.Append(":");
+            urlBuilder.Append(domain);
+            string url = urlBuilder.ToString();
+
+            if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                WebDocumentationUrl = url;
+            else
+                throw new Mono.Options.OptionException("Given url is invalid option -w.", "-w");
+        }
+
+        public void AddWebDocumentationLogin(string userName, string passWord)
+        {
+            WebDocumentationLogin = new NetworkCredential(userName, passWord); 
         }
     }
 }
