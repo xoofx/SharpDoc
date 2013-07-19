@@ -33,7 +33,7 @@ namespace SharpDoc.Model
         /// </summary>
         public NExtensionMethod(NTypeReference extendedType, NMethod extensionMethod)
         {
-            ExtendedType = extendedType;
+            ExtendedType = extendedType.ElementType;
 
             Method = new NMethod();
             Method.Assembly = extensionMethod.Assembly;
@@ -74,7 +74,7 @@ namespace SharpDoc.Model
 
             Method.MemberType = NMemberType.Extension;
             Method.IsExtensionMethod = true;
-            Method.DeclaringType = extendedType;
+            Method.DeclaringType = extendedType.ElementType;
             Method.ExtensionSource = extensionMethod.DeclaringType;
 
             

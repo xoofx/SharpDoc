@@ -997,8 +997,7 @@ namespace SharpDoc
         {
             foreach (var extensionMethod in extensionMethodList)
             {
-                var extendedTypeId = "T:" + extensionMethod.ExtendedType.FullName;
-                var extendedTypeReference = _registry.FindById(extendedTypeId);
+                var extendedTypeReference = _registry.FindById(extensionMethod.ExtendedType.Id);
                 var extendedType = extendedTypeReference as NType;
                 if (extendedType != null)
                 {
