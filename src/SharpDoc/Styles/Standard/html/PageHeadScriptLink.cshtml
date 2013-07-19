@@ -26,10 +26,12 @@
 *@
 @model SharpDoc.TemplateContext
 @using SharpDoc.Model
+@Import("WebDocCSS")
 @helper Dump()
     {
+    @Helpers.WebDocCSS.Dump()
     <link href="@(Param.LinkToCss)sharpdoc.css" rel="stylesheet" type="text/css" />
-    <link href="@(Param.LinkToSyntaxHighlighterCss)shCoreDefault.css" rel="stylesheet" type="text/css" />         
+    <link href="@(Param.LinkToSyntaxHighlighterCss)shCoreDefault.css" rel="stylesheet" type="text/css" />
     <script src="@(Param.LinkToJs)mootools.js" language="javascript"></script>
     <script src="@(Param.LinkToJs)mootools-more.js" language="javascript"></script>
     <script src="@(Param.LinkToJs)sharpdoc.js" language="javascript"></script>            
@@ -62,6 +64,7 @@
         <meta name="Microsoft.Help.TocParent" content="-1" />
         <meta name="Microsoft.Help.TocOrder" content="-1" />  
     }
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 }
 
 
