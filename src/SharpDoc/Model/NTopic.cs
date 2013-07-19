@@ -222,6 +222,10 @@ namespace SharpDoc.Model
         [XmlIgnore]
         public string Remarks { get; set; }
 
+        /// <inheritdoc/>
+        [XmlIgnore]
+        public string WebDocPage { get; set; }
+
         [XmlIgnore]
         public Config Config { get; set; }
 

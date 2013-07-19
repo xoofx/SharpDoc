@@ -80,5 +80,10 @@ namespace SharpDoc.Model
         /// &lt;permission&gt; tag.
         /// </summary>
         public const string Permission = "permission";
+
+        /// <summary>
+        /// &lt;webdoc&gt; tag.
+        /// </summary>
+        public const string WebDoc = "webdoc";
     }
 }

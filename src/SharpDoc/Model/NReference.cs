@@ -101,6 +101,11 @@ namespace SharpDoc.Model
         /// <value>The remarks.</value>
         public string Remarks { get; set; }
 
+        /// <summary>
+        /// Gets or sets the web documentation page extracted from the &lt;webdoc&gt; tag of the <see cref="IComment.DocNode"/>.
+        /// </summary>
+        /// <value>The corresponding webDocumentation page.</value>
+        public string WebDocPage { get; set; }
 
         /// <summary>
         /// Called when <see cref="DocNode"/> is updated.
