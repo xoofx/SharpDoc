@@ -184,6 +184,14 @@ namespace SharpDoc
         public Action<IModelReference, string> WriteTo { get; set; }
 
         /// <summary>
+        /// Gets or sets the function that get the content of a page of the extern documentation site.
+        /// </summary>
+        /// <value>
+        /// the function that get the content of a page of the extern documentation site.
+        /// </value>
+        public Func<string, string> GetWebDocContent { get; set; }
+
+        /// <summary>
         /// Gets or sets the name of the current style.
         /// </summary>
         /// <value>
