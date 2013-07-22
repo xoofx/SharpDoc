@@ -85,5 +85,10 @@ namespace SharpDoc.Model
         /// &lt;webdoc&gt; tag.
         /// </summary>
         public const string WebDoc = "webdoc";
+
+        /// <summary>
+        /// &lt;inheritdoc&gt; tag.
+        /// </summary>
+        public const string InheritDoc = "inheritdoc";
     }
 }

@@ -51,5 +51,11 @@ namespace SharpDoc.Model
         /// </summary>
         /// <value>The corresponding webDocumentation page.</value>
         string WebDocPage { get; set; }
+
+        /// <summary>
+        /// Gets or sets the &lt;inheritdoc&gt; tag of the <see cref="IComment.DocNode"/>.
+        /// </summary>
+        /// <value>The inheritdoc xml node.</value>
+        XmlNode InheritDoc { get; set; }
     }
 }

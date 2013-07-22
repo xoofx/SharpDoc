@@ -139,6 +139,11 @@ namespace SharpDoc.Model
         /// <value>The corresponding webDocumentation page.</value>
         public string WebDocPage { get; set; }
 
+        /// <summary>
+        /// Gets or sets the &lt;inheritdoc&gt; tag of the <see cref="IComment.DocNode"/>.
+        /// </summary>
+        /// <value>The inheritdoc xml node.</value>
+        public XmlNode InheritDoc { get; set; }
 
         /// <summary>
         /// Gets or sets the topic link.
@@ -208,6 +213,7 @@ namespace SharpDoc.Model
                 Description = NDocumentApi.GetTag(DocNode, DocTag.Summary);
                 Remarks = NDocumentApi.GetTag(DocNode, DocTag.Remarks);
                 WebDocPage = NDocumentApi.GetTag(DocNode, DocTag.WebDoc);
+                InheritDoc = NDocumentApi.GetXmlNode(DocNode, DocTag.InheritDoc);
                 UnManagedApi = NDocumentApi.GetTag(DocNode, "unmanaged");
                 UnManagedShortApi = NDocumentApi.GetTag(DocNode, "unmanaged-short");
                 MsdnId = NDocumentApi.GetTag(DocNode, "msdn-id");

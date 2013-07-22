@@ -108,6 +108,12 @@ namespace SharpDoc.Model
         public string WebDocPage { get; set; }
 
         /// <summary>
+        /// Gets or sets the &lt;inheritdoc&gt; tag of the <see cref="IComment.DocNode"/>.
+        /// </summary>
+        /// <value>The inheritdoc xml node.</value>
+        public XmlNode InheritDoc { get; set; }
+
+        /// <summary>
         /// Called when <see cref="DocNode"/> is updated.
         /// </summary>
         protected internal virtual void OnDocNodeUpdate()

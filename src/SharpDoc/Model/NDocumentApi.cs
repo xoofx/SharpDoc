@@ -96,6 +96,27 @@ namespace SharpDoc.Model
             return null;
         }
 
+        /// <summary>
+        /// Extract the xml tag inside the <see cref="NModelBase.DocNode"/> associated
+        /// to this element.
+        /// </summary>
+        /// <param name="docNode">The doc node.</param>
+        /// <param name="tagName">Name of the tag.</param>
+        /// <returns>
+        /// The tag or null if not found
+        /// </returns>
+        public static XmlNode GetXmlNode(XmlNode docNode, string tagName)
+        {
+            if (docNode != null)
+            {
+                var selectedNode = docNode.SelectSingleNode(tagName);
+                if (selectedNode != null)
+                    return selectedNode;
+            }
+
+            return null;
+        }
+
         private void Initialize()
         {
             var items = this.Document.SelectNodes("/doc/members/member");
