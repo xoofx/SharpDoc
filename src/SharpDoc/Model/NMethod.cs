@@ -133,5 +133,25 @@ namespace SharpDoc.Model
         {
             return string.Format(System.Globalization.CultureInfo.InvariantCulture, "method {0}", FullName);
         }
+
+        public override void CopyDocumentation(INMemberReference other)
+        {
+            base.CopyDocumentation(other);
+            var otherMethod = other as NMethod;
+            if (otherMethod != null)
+            {
+                if(string.IsNullOrEmpty(ObsoleteMessage) && !string.IsNullOrEmpty(otherMethod.ObsoleteMessage))
+                    ObsoleteMessage = otherMethod.ObsoleteMessage;
+
+                if(string.IsNullOrEmpty(ReturnDescription) && !string.IsNullOrEmpty(otherMethod.ReturnDescription))
+                    ReturnDescription = otherMethod.ReturnDescription;
+
+                for (int i = 0; i < Parameters.Count; i++)
+                {
+                    if (string.IsNullOrEmpty(Parameters[i].Description) && !string.IsNullOrEmpty(otherMethod.Parameters[i].Description))
+                        Parameters[i].Description = otherMethod.Parameters[i].Description;
+                }
+            }
+        }
     }
 }

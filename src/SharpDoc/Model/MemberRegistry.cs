@@ -31,6 +31,8 @@ namespace SharpDoc.Model
         private const string TopicContainer = "__topics__";
 
         private readonly List<NNamespace> namespaces = new List<NNamespace>();
+        public List<INMemberReference> InheritedDocMembers { get; private set; }
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MemberRegistry"/> class.
@@ -38,6 +40,7 @@ namespace SharpDoc.Model
         public MemberRegistry()
         {
             _mapIdToModelElement = new Dictionary<string, IModelReference>();
+            InheritedDocMembers = new List<INMemberReference>();
         }
 
         public List<NNamespace> Namespaces
@@ -99,6 +102,9 @@ namespace SharpDoc.Model
                 return false;
             }
             _mapIdToModelElement.Add(modelReference.Id, modelReference);
+
+            if (modelReference.InheritDoc != null && modelReference is INMemberReference)
+                InheritedDocMembers.Add(modelReference as INMemberReference);
 
             if (modelReference is NNamespace)
             {

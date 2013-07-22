@@ -112,5 +112,15 @@ namespace SharpDoc.Model
         /// </summary>
         /// <value>The generic arguments.</value>
         List<NTypeReference> GenericArguments { get; set; }
+
+        /// <summary>
+        /// Use class inheritance and/or interfaces to find corresponding documentation.
+        /// </summary>
+        void InheritDocumentation();
+
+        /// <summary>
+        /// Use the given member to find corresponding documentation.
+        /// </summary>
+        void CopyDocumentation(INMemberReference crefMember);
     }
 }

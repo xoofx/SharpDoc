@@ -17,6 +17,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+using System.Collections.Generic;
 
 namespace SharpDoc.Model
 {
@@ -92,6 +93,19 @@ namespace SharpDoc.Model
                 if (selectedNode != null)
                     Description = selectedNode.InnerXml.Trim();
             }
+        }
+    }
+
+    public class NParameterComparator : IEqualityComparer<NParameter>
+    {
+        public bool Equals(NParameter p1, NParameter p2)
+        {
+            return p1.ParameterType.FullName == p2.ParameterType.FullName;
+        }
+
+        public int GetHashCode(NParameter param)
+        {
+            return param.ParameterType.FullName.GetHashCode();
         }
     }
 }

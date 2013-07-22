@@ -42,7 +42,7 @@ namespace SharpDoc
         private const string NamespaceDocClass = "NamespaceDoc";
         private const string MethodOperatorPrefix = "op_";
         private Dictionary<string, NDocumentApi> mapModuleToDoc = new Dictionary<string, NDocumentApi>();
-        private Dictionary<string, IModelReference>  membersCache = new Dictionary<string, IModelReference>();
+        private Dictionary<string, IModelReference> membersCache = new Dictionary<string, IModelReference>();
         private List<NExtensionMethod> extensionMethodList = new List<NExtensionMethod>();
 
         public Func<IModelReference, string> PageIdFunction { get; set; }
@@ -413,8 +413,8 @@ namespace SharpDoc
                 // implements
                 method.Implements = GetMethodReference(@namespace, MonoCecilHelper.GetBaseMethodInInterfaceHierarchy(methodDef));
 
-                // If this method doesn't have any documentation, use inherited documentation
-                if (string.IsNullOrEmpty(method.Description))
+                // If this method doesn't have any documentation, use inherited documentation even if inheriteddoc tag is not present
+                if (method.InheritDoc == null && string.IsNullOrEmpty(method.Description))
                 {
                     method.DocNode = method.Overrides != null ? method.Overrides.DocNode : method.Implements != null ? method.Implements.DocNode : method.DocNode;
                 }
@@ -1017,5 +1017,160 @@ namespace SharpDoc
                     AddExtensionMethod(subType, extensionMethod);
             }
         }
-   }
+
+        public void ProcessInheritedDoc()
+        {
+            foreach (var member in _registry.InheritedDocMembers)
+                InheritDocumentation(member);
+        }
+
+        public void InheritDocumentation(INMemberReference member)
+        {
+            if (member.InheritDoc == null)
+                return;
+
+            var cref = member.InheritDoc.Attributes["cref"];
+            var select = member.InheritDoc.Attributes["select"];
+
+            if (cref != null)
+            {
+                var crefName = cref.Value;
+
+                // As the <inheritdoc> is an unknown documentation tag for visual studio, its attributes are qualified by "!"
+                // So to retrive the real cref name, we throw away the "!:"
+                if (crefName.StartsWith("!:"))
+                    crefName = crefName.Substring(2);
+
+                var crefMember = _registry.FindById(crefName) as INMemberReference;
+                if (crefMember == null)
+                {
+                    member.InheritDoc = null;
+                    return;
+                }
+
+                member.CopyDocumentation(crefMember);
+            }
+            else
+            {
+                // For types, copy the base class documentation
+                if (member is NType)
+                {
+                    var type = member as NType;
+                    if (type.Bases.Count > 1)
+                    {
+                        var baseType = _registry.FindById(type.Bases[0].Id) as NType;
+                        if (baseType.InheritDoc != null)
+                            InheritDocumentation(baseType);
+
+                        member.CopyDocumentation(baseType);
+                        member.InheritDoc = null;
+                        return;
+                    }
+                    else
+                    {
+                        member.InheritDoc = null;
+                        return;
+                    }
+                }
+
+                // For constructor, copy the documentation of the constructor of the base class that match the parameters
+                else if (member is NConstructor)
+                {
+                    var constructor = member as NConstructor;
+                    var declaringType = _registry.FindById(constructor.DeclaringType.Id) as NType;
+                    if (declaringType.Bases.Count > 1)
+                    {
+                        var baseType = _registry.FindById(declaringType.Bases[0].Id) as NType;
+                        
+                        NConstructor baseConstructor = null;
+                        NParameterComparator comp = new NParameterComparator();
+                        foreach(var constr in baseType.Constructors)
+                        {
+                            if(constr.Parameters.Count() == constructor.Parameters.Count 
+                                && (constructor.Parameters.Count == 0 || constr.Parameters.SequenceEqual(constructor.Parameters, comp)))
+                            {
+                                baseConstructor = constr;
+                                break;
+                            }
+                        }
+
+                        if (baseConstructor != null)
+                        {
+                            if (baseConstructor.InheritDoc != null)
+                                InheritDocumentation(baseConstructor);
+                            constructor.CopyDocumentation(baseConstructor);
+                        }
+
+                        constructor.InheritDoc = null;
+                        return;
+                    }
+                    else
+                    {
+                        constructor.InheritDoc = null;
+                        return;
+                    }
+                }
+
+                // For methods, copy the documentation of the method of the base or the interface that match the signature
+                else if (member is NMethod)
+                {
+                    var method = member as NMethod;
+                    var declaringType = _registry.FindById(method.DeclaringType.Id) as NType;
+                    if (declaringType.Bases.Count > 1)
+                    {
+                        var baseType = _registry.FindById(declaringType.Bases[0].Id) as NType;
+
+                        NMethod parentMethod = null;
+
+                        // Search a corresponding method in the base only if the method is overrided
+                        if (method.Overrides != null)
+                        {
+                            foreach (NMethod m in baseType.AllMethods)
+                            {
+                                if (m.Signature == method.Signature)
+                                {
+                                    parentMethod = m;
+                                    break;
+                                }
+                            }
+                        }
+
+                        // Search a corresponding method in the interfaces only if the method is not overrided in the base class
+                        if (parentMethod == null)
+                        {
+                            foreach (var inter in baseType.Interfaces)
+                            {
+                                var interfaceModel = _registry.FindById(inter.Id) as NInterface;
+                                foreach(var interfaceMethod in  interfaceModel.AllMethods)
+                                {
+                                    if (interfaceMethod.Signature == method.Signature)
+                                    {
+                                        parentMethod = interfaceMethod;
+                                        break;
+                                    }
+                                }
+                                if (parentMethod != null)
+                                    break;
+                            }
+                        }
+
+                        if (parentMethod != null)
+                        {
+                            if (parentMethod.InheritDoc != null)
+                                InheritDocumentation(parentMethod);
+                            method.CopyDocumentation(parentMethod);
+                        }
+
+                        method.InheritDoc = null;
+                        return;
+                    }
+                    else
+                    {
+                        method.InheritDoc = null;
+                        return;
+                    }
+                }
+            }
+        }
+    }
 }

@@ -173,5 +173,11 @@ namespace SharpDoc.Model
         {
             return string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", FullName);
         }
+
+        /// <summary>
+        /// Use class inheritance and/or interfaces to find corresponding documentation.
+        /// </summary>
+        public virtual void InheritDocumentation() { }
+        public virtual void CopyDocumentation(INMemberReference crefMember) { }
     }
 }

@@ -251,5 +251,25 @@ namespace SharpDoc.Model
         {
             return string.Format("{0}", FullName);
         }
+
+        /// <summary>
+        /// Use class inheritance and/or interfaces to find corresponding documentation.
+        /// </summary>
+        public virtual void InheritDocumentation() { }
+
+        /// <summary>
+        /// The basical documentation inheritence copy &lt;summary&gt;, &lt;remarks&gt; and &lt;webdoc&gt; tags
+        /// </summary>
+        public virtual void CopyDocumentation(INMemberReference crefMember)
+        {
+            if (string.IsNullOrEmpty(Description) && !string.IsNullOrEmpty(crefMember.Description))
+                Description = crefMember.Description;
+
+            if (string.IsNullOrEmpty(Remarks) && !string.IsNullOrEmpty(crefMember.Remarks))
+                Remarks = crefMember.Remarks;
+
+            if (string.IsNullOrEmpty(WebDocPage) && !string.IsNullOrEmpty(crefMember.WebDocPage))
+                WebDocPage = crefMember.WebDocPage;
+        }
     }
 }

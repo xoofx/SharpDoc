@@ -111,6 +111,9 @@ namespace SharpDoc
 
             // Link extension method to the corresponding classes
             ModelBuilder.ProcessExtensionMethods();
+
+            // inherit documentation
+            ModelBuilder.ProcessInheritedDoc();
         }
 
         private NClass ProcessInheritance(NType type)

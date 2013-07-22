@@ -43,5 +43,6 @@ namespace SharpDoc.Model
         void LoadFrom(NAssemblySource assemblySource, MemberRegistry memberRegistry);
 
         void ProcessExtensionMethods();
+        void ProcessInheritedDoc();
     }
 }
