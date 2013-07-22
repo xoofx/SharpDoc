@@ -10,7 +10,7 @@ using HtmlAgilityPack;
 
 namespace SharpDoc
 {
-    public class AuthentifiedWebClient : WebClient
+    public class WebDocumentation : WebClient
     {
         private byte[] loginBytes;
         private Uri siteHome;
@@ -19,7 +19,7 @@ namespace SharpDoc
         public HtmlDocument currentDocument { get; set; }
         public int numberCss { get; private set; }
 
-        public AuthentifiedWebClient(string home, NetworkCredential loginData = null)
+        public WebDocumentation(string home, NetworkCredential loginData = null)
         {
             siteHome = new Uri(home);
             currentDocument = new HtmlDocument();

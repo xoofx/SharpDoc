@@ -111,7 +111,7 @@ namespace SharpDoc
         /// </summary>
         /// <value>The the extern documentation webSite connection.</value>
         [XmlElement("webDocumentation")]
-        public AuthentifiedWebClient WebDocumentation { get; set; }
+        public WebDocumentation WebDocumentation { get; set; }
 
         /// <summary>
         /// Gets or sets the extern documentation webSite url.
@@ -235,7 +235,7 @@ namespace SharpDoc
         {
             if (WebDocumentationUrl != null)
             {
-                WebDocumentation = new AuthentifiedWebClient(WebDocumentationUrl, WebDocumentationLogin);
+                WebDocumentation = new WebDocumentation(WebDocumentationUrl, WebDocumentationLogin);
             }
         }
 

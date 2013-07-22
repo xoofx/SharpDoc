@@ -115,7 +115,7 @@ namespace SharpDoc
                                   {"s|style=", "Specify the style to use [default: Standard]", opt => Config.StyleNames.Add(opt)},
                                   {"o|output=", "Specify the output directory [default: Output]", opt => Config.OutputDirectory = opt},
                                   {"r|references=", "Add reference assemblies in order to load source assemblies", opt => Config.References.Add(opt)},
-                                  {"w|web=", "Url of the extern documentation site", 
+                                  {"w|webdoc=", "Url of the extern documentation site [with the protocol to use, ex: http(s)://...]", 
                                       (protocol, domain) =>
                                         {
                                             if (protocol == null || domain == null)
@@ -123,7 +123,7 @@ namespace SharpDoc
                                             Config.AddWebDocumentationUrl(protocol, domain);
                                         }
                                       },
-                                  {"wL|webLogin=", "(optional) Authntification data for the extern documentation site [userName:password]", 
+                                  {"wL|webdocLogin=", "(optional) Authentification data for the extern documentation site [userName:password]", 
                                       (userName, passWord) =>
                                         {
                                             if (userName == null || passWord == null)
@@ -156,10 +156,6 @@ namespace SharpDoc
                 StyleManager.WriteAvailaibleStyles(Console.Out);
                 Environment.Exit(0);
             }
-
-            //AuthentifiedWebClient confluence = new AuthentifiedWebClient("https://pj.siliconstudio.co.jp/confluence/display/PDX/", new NetworkCredential("florian.besnard", "Aazteflyne5949"));
-            //confluence.Load("Feature+-+UI");
-            //var pageTxt = confluence.getContentByClass("wiki-content");
 
             // Add files from command line
             if (files.Count > 0)

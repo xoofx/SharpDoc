@@ -26,7 +26,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -170,6 +169,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="WebDocumentation.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -249,6 +251,8 @@
     <None Include="Styles\Mshc\Param.cshtml" />
     <None Include="Styles\Standard\html\ClassLibraryBuilder.cshtml" />
     <None Include="Styles\Standard\html\ContentFooter.cshtml" />
+    <None Include="Styles\Standard\html\GetWebDocContentFunction.cshtml" />
+    <None Include="Styles\Standard\html\WebDocCSS.cshtml" />
     <None Include="Styles\Standard\html\PageIndexBody.cshtml" />
     <None Include="Styles\Standard\html\MainFrame.cshtml" />
     <None Include="Styles\Standard\html\Version.cshtml" />
@@ -452,7 +456,6 @@
       <Name>SharpDocPak</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir  "$(SolutionDir)Build\Tools\Bin\"
