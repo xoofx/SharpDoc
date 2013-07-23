@@ -538,6 +538,14 @@
 	margin-left:4px;
 }
 
+.sharpdoc .error.webNotFound .icon
+{
+	background-repeat:no-repeat;
+	height:17px;
+	width:17px;
+	background-image:url("../images/error-webNotFound.png");
+}
+
 .sharpdoc-footer
 {
 	background-image:url("../images/copyright-bg.png");

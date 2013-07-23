@@ -58,7 +58,7 @@
         else
         {
             string notFoundUri = Model.Config.WebDocumentation.GetAbsoluteUri(page);
-            return string.Format("<div class='webNotFound'>The page <a href='{0}'>{1}</a> could not be found in the extern web documentation.</div>", notFoundUri, page);
+            return string.Format("<div class='error webNotFound'><div class='icon'></div>The page <a href='{0}'>{1}</a> could not be found in the extern web documentation.</div>", notFoundUri, page);
         }
     }
 }
