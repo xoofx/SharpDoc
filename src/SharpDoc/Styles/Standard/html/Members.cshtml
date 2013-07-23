@@ -98,11 +98,16 @@
             {
                 if (postDesc.Length == 1)
                 {
-                    if (property.Override != null)
+                    if (property.Overrides != null)
                     {
-                        var basePropertyName = string.Format("{0}.{1}", property.Override.DeclaringType.Name, property.Override.Name);
-                        postDesc.AppendFormat("Overrides {0}", ToUrl(property.Override, basePropertyName, true));
+                        var basePropertyName = string.Format("{0}.{1}", property.Overrides.DeclaringType.Name, property.Overrides.Name);
+                        postDesc.AppendFormat("Overrides {0}", ToUrl(property.Overrides, basePropertyName, true));
                     } 
+					else if (property.Implements != null)
+                    {
+                        var basePropertyName = string.Format("{0}.{1}", property.Implements.DeclaringType.Name, property.Implements.Name);
+                        postDesc.AppendFormat("Implements {0}", ToUrl(property.Implements, basePropertyName, true));
+                    }
                 }
             }
 

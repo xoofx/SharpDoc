@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml;
 
 using Mono.Cecil;
 
@@ -415,9 +416,7 @@ namespace SharpDoc
 
                 // If this method doesn't have any documentation, use inherited documentation even if inheriteddoc tag is not present
                 if (method.InheritDoc == null && string.IsNullOrEmpty(method.Description))
-                {
-                    method.DocNode = method.Overrides != null ? method.Overrides.DocNode : method.Implements != null ? method.Implements.DocNode : method.DocNode;
-                }
+                    method.InheritDoc = new XmlDocument().CreateAttribute("inheritdoc");
             }
 
             method.ReturnType = GetTypeReference(methodDef.ReturnType);
@@ -639,6 +638,14 @@ namespace SharpDoc
             return typeReference;
         }
 
+        private INMemberReference GetPropertyReference(NNamespace @namespace, PropertyReference propertyDef)
+        {
+            if (propertyDef == null)
+                return null;
+
+            return NewInstance<NProperty>(@namespace, propertyDef);
+        }
+
         private INMemberReference GetMethodReference(NNamespace @namespace, MethodDefinition methodDef)
         {
             if (methodDef == null)
@@ -835,6 +842,16 @@ namespace SharpDoc
 
                 property.SeeAlsos.Add(new NSeeAlso(parent));
                 property.SeeAlsos.Add(new NSeeAlso(parent.Namespace));
+
+                // overrides
+                property.Overrides = GetPropertyReference(parent.Namespace, MonoCecilHelper.GetBasePropertyInTypeHierarchy(propertyDef));
+
+                // implements
+                property.Implements = GetPropertyReference(parent.Namespace, MonoCecilHelper.GetBasePropertyInInterfaceHierarchy(propertyDef));
+
+                // If this method doesn't have any documentation, use inherited documentation even if inheriteddoc tag is not present
+                if (property.InheritDoc == null && string.IsNullOrEmpty(property.Description))
+                    property.InheritDoc = new XmlDocument().CreateAttribute("inheritdoc");
 
                 UpdatePageTitle(property);
             }
@@ -1114,61 +1131,51 @@ namespace SharpDoc
                 // For methods, copy the documentation of the method of the base or the interface that match the signature
                 else if (member is NMethod)
                 {
-                    var method = member as NMethod;
-                    var declaringType = _registry.FindById(method.DeclaringType.Id) as NType;
-                    if (declaringType.Bases.Count > 1)
+                    var method = member as NMethod;                    
+                    NMethod parentMethod = null;
+
+                    // Search a corresponding method in the base only if the method is overrided
+                    if (method.Overrides != null)
+                        parentMethod = method.Overrides as NMethod;
+
+                    // Search a corresponding method in the interfaces only if the method is not overrided in the declaring class
+                    if (parentMethod == null && method.Implements != null)
+                        parentMethod = method.Implements as NMethod;
+
+                    if (parentMethod != null)
                     {
-                        var baseType = _registry.FindById(declaringType.Bases[0].Id) as NType;
-
-                        NMethod parentMethod = null;
-
-                        // Search a corresponding method in the base only if the method is overrided
-                        if (method.Overrides != null)
-                        {
-                            foreach (NMethod m in baseType.AllMethods)
-                            {
-                                if (m.Signature == method.Signature)
-                                {
-                                    parentMethod = m;
-                                    break;
-                                }
-                            }
-                        }
-
-                        // Search a corresponding method in the interfaces only if the method is not overrided in the base class
-                        if (parentMethod == null)
-                        {
-                            foreach (var inter in baseType.Interfaces)
-                            {
-                                var interfaceModel = _registry.FindById(inter.Id) as NInterface;
-                                foreach(var interfaceMethod in  interfaceModel.AllMethods)
-                                {
-                                    if (interfaceMethod.Signature == method.Signature)
-                                    {
-                                        parentMethod = interfaceMethod;
-                                        break;
-                                    }
-                                }
-                                if (parentMethod != null)
-                                    break;
-                            }
-                        }
-
-                        if (parentMethod != null)
-                        {
-                            if (parentMethod.InheritDoc != null)
-                                InheritDocumentation(parentMethod);
-                            method.CopyDocumentation(parentMethod);
-                        }
-
-                        method.InheritDoc = null;
-                        return;
+                        if (parentMethod.InheritDoc != null)
+                            InheritDocumentation(parentMethod);
+                        method.CopyDocumentation(parentMethod);
                     }
-                    else
+
+                    method.InheritDoc = null;
+                    return;
+                }
+
+                // For properties, copy the documentation of the property of the base or the interface that have the same name and type
+                else if (member is NProperty)
+                {
+                    var property = member as NProperty;
+                    NProperty parentProperty = null;
+
+                    // Search a corresponding property in the base only if the method is overrided
+                    if (property.HasOverrides)
+                        parentProperty = property.Overrides as NProperty;
+
+                    // Search a corresponding property in the interfaces only if the property is not overrided in the declaring class
+                    if (parentProperty == null && property.HasImplements)
+                        parentProperty = property.Implements as NProperty;
+
+                    if (parentProperty != null)
                     {
-                        method.InheritDoc = null;
-                        return;
+                        if (parentProperty.InheritDoc != null)
+                            InheritDocumentation(parentProperty);
+                        property.CopyDocumentation(parentProperty);
                     }
+
+                    property.InheritDoc = null;
+                    return;
                 }
             }
         }

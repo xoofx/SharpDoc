@@ -85,18 +85,44 @@ namespace SharpDoc.Model
         public NMethod SetMethod { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this instance has override.
+        /// Gets a value indicating whether this instance has overrides.
         /// </summary>
         /// <value>
-        /// 	<c>true</c> if this instance has override; otherwise, <c>false</c>.
+        /// 	<c>true</c> if this instance has overrides; otherwise, <c>false</c>.
         /// </value>
-        public bool HasOverride { get; set; }
+        public bool HasOverrides 
+        {
+            get
+            {
+                return Overrides != null;
+            }
+        }
 
         /// <summary>
-        /// Gets or sets the override.
+        /// Gets or sets the overrides.
         /// </summary>
-        /// <value>The override.</value>
-        public INMemberReference Override { get; set; }
+        /// <value>The overrides.</value>
+        public INMemberReference Overrides { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance has implements.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance has implements; otherwise, <c>false</c>.
+        /// </value>
+        public bool HasImplements
+        {
+            get
+            {
+                return Implements != null;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the implements.
+        /// </summary>
+        /// <value>The implements.</value>
+        public INMemberReference Implements { get; set; }
 
         /// <summary>
         /// Gets or sets the value description.
@@ -110,6 +136,20 @@ namespace SharpDoc.Model
         {
             base.OnDocNodeUpdate();
             ValueDescription = NDocumentApi.GetTag(DocNode, "value");
+        }
+
+        public override void CopyDocumentation(INMemberReference other)
+        {
+            base.CopyDocumentation(other);
+            var otherProperty = other as NProperty;
+            if (otherProperty != null)
+            {               
+                if (string.IsNullOrEmpty(ObsoleteMessage) && !string.IsNullOrEmpty(otherProperty.ObsoleteMessage))
+                    ObsoleteMessage = otherProperty.ObsoleteMessage;
+
+                if (string.IsNullOrEmpty(ValueDescription) && !string.IsNullOrEmpty(otherProperty.ValueDescription))
+                    ValueDescription = otherProperty.ValueDescription;
+            }
         }
     }
 }

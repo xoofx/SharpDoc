@@ -254,6 +254,90 @@ namespace SharpDoc
             return true;
         }
 
+        public static PropertyDefinition GetBasePropertyInTypeHierarchy(PropertyDefinition property)
+        {
+            return GetBasePropertyInTypeHierarchy(property.DeclaringType, property);
+        }
+
+        public static PropertyDefinition GetBasePropertyInTypeHierarchy(TypeDefinition type, PropertyDefinition property)
+        {
+            TypeDefinition @base = GetBaseType(type);
+            while (@base != null)
+            {
+                PropertyDefinition base_property = TryMatchProperty(@base, property);
+                if (base_property != null)
+                    return base_property;
+
+                @base = GetBaseType(@base);
+            }
+
+            return null;
+        }
+
+        public static PropertyDefinition GetBasePropertyInInterfaceHierarchy(PropertyDefinition method)
+        {
+            return GetBasePropertyInInterfaceHierarchy(method.DeclaringType, method);
+        }
+
+        public static PropertyDefinition GetBasePropertyInInterfaceHierarchy(TypeDefinition type, PropertyDefinition property)
+        {
+            if (!type.HasInterfaces)
+                return null;
+
+            foreach (TypeReference interface_ref in type.Interfaces)
+            {
+                TypeDefinition @interface = interface_ref.Resolve();
+                if (@interface == null)
+                    continue;
+
+                PropertyDefinition base_property = TryMatchProperty(@interface, property);
+                if (base_property != null)
+                    return base_property;
+
+                base_property = GetBasePropertyInInterfaceHierarchy(@interface, property);
+                if (base_property != null)
+                    return base_property;
+            }
+
+            return null;
+        }
+
+        static PropertyDefinition TryMatchProperty(TypeDefinition type, PropertyDefinition property)
+        {
+            if (!type.HasProperties)
+                return null;
+
+            foreach (PropertyDefinition candidate in type.Properties)
+                if (PropertyMatch(candidate, property))
+                    return candidate;
+
+            return null;
+        }
+
+        static bool PropertyMatch(PropertyDefinition candidate, PropertyDefinition method)
+        {
+            if (candidate.Name != method.Name)
+                return false;
+
+            if (!TypeMatch(candidate.PropertyType, method.PropertyType))
+                return false;
+
+            return true;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         static bool TypeMatch(IModifierType a, IModifierType b)
         {
             if (!TypeMatch(a.ModifierType, b.ModifierType))

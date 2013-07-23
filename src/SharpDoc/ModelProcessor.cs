@@ -165,8 +165,6 @@ namespace SharpDoc
                             if (property.Name == nMemberReference.Name)
                             {
                                 addInheritedMember = false;
-                                property.Override = nMemberReference;
-                                property.HasOverride = true;
                                 break;
                             }
                         }

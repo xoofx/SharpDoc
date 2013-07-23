@@ -30,9 +30,7 @@
 @functions
 {
     public string GetWikiContent(string page)
-    {
-        Model.FindTopicById("");
-        
+    {       
         if(Model.Config.WebDocumentation.Load(page))
         {
             Model.Config.WebDocumentation.InternalizeImages(Model.OutputDirectory, Model.Param.LinkToImg);
