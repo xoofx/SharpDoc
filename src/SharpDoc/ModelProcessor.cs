@@ -156,6 +156,20 @@ namespace SharpDoc
                                 break;
                             }
                         }
+
+                        var property = currentMember as NProperty;
+
+                        // Don't add properties that are overridden
+                        if (property != null && nMemberReference is NProperty)
+                        {
+                            if (property.Name == nMemberReference.Name)
+                            {
+                                addInheritedMember = false;
+                                property.Override = nMemberReference;
+                                property.HasOverride = true;
+                                break;
+                            }
+                        }
                     }
 
                     if (addInheritedMember)
@@ -205,6 +219,8 @@ namespace SharpDoc
 
                 member.PageId = id;
             }
+
+
 
             // Tag methods that are overridden
             foreach (var method in type.AllMembers.OfType<NMethod>())

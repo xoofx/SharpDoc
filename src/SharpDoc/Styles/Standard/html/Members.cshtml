@@ -93,6 +93,19 @@
                 }
             }
 
+            var property = member as NProperty;
+            if (property != null)
+            {
+                if (postDesc.Length == 1)
+                {
+                    if (property.Override != null)
+                    {
+                        var basePropertyName = string.Format("{0}.{1}", property.Override.DeclaringType.Name, property.Override.Name);
+                        postDesc.AppendFormat("Overrides {0}", ToUrl(property.Override, basePropertyName, true));
+                    } 
+                }
+            }
+
             string finalPostDesc = postDesc.Length > 1 ? postDesc.Append(".)").ToString() : string.Empty;
                         
             <tr>@Helpers.MembersRow.DumpRow(member, showIcons, displayName, finalPostDesc, rowContext)</tr>

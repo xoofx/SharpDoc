@@ -85,6 +85,20 @@ namespace SharpDoc.Model
         public NMethod SetMethod { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this instance has override.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance has override; otherwise, <c>false</c>.
+        /// </value>
+        public bool HasOverride { get; set; }
+
+        /// <summary>
+        /// Gets or sets the override.
+        /// </summary>
+        /// <value>The override.</value>
+        public INMemberReference Override { get; set; }
+
+        /// <summary>
         /// Gets or sets the value description.
         /// </summary>
         /// <value>
