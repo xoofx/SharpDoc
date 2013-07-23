@@ -416,7 +416,7 @@ namespace SharpDoc
 
                 // If this method doesn't have any documentation, use inherited documentation even if inheriteddoc tag is not present
                 if (method.InheritDoc == null && string.IsNullOrEmpty(method.Description))
-                    method.InheritDoc = new XmlDocument().CreateAttribute("inheritdoc");
+                    method.InheritDoc = new XmlDocument().CreateElement("inheritDoc");
             }
 
             method.ReturnType = GetTypeReference(methodDef.ReturnType);
@@ -851,7 +851,7 @@ namespace SharpDoc
 
                 // If this method doesn't have any documentation, use inherited documentation even if inheriteddoc tag is not present
                 if (property.InheritDoc == null && string.IsNullOrEmpty(property.Description))
-                    property.InheritDoc = new XmlDocument().CreateAttribute("inheritdoc");
+                    property.InheritDoc = new XmlDocument().CreateElement("inheritdoc");
 
                 UpdatePageTitle(property);
             }

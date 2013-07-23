@@ -53,7 +53,7 @@
 @if (!string.IsNullOrEmpty(self.Remarks)) 
     @Helpers.Section.Dump("Remarks",TagExpand(self.Remarks))
 
-@if (!string.IsNullOrEmpty(self.WebDocPage))
+@if (Model.Config.WebDocumentation != null && !string.IsNullOrEmpty(self.WebDocPage))
     @Helpers.Section.Dump("section_extern_documentation", "Extern Documentation", Model.GetWebDocContent(self.WebDocPage))
 
 
