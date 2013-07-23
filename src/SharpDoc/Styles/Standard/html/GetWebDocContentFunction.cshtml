@@ -32,27 +32,34 @@
     public string GetWikiContent(string page)
     {
         Model.FindTopicById("");
-        Model.Config.WebDocumentation.Load(page);
+        
+        if(Model.Config.WebDocumentation.Load(page))
+        {
+            Model.Config.WebDocumentation.InternalizeImages(Model.OutputDirectory, Model.Param.LinkToImg);
 
-        Model.Config.WebDocumentation.InternalizeImages(Model.OutputDirectory, Model.Param.LinkToImg);
+            StringBuilder content = new StringBuilder();
+            content.Append("<div id='com-atlassian-confluence' class='theme-documentation  aui-theme-default aui-layout splitter-invoked'>").AppendLine();
+                content.Append("<div id='full-height-container'>").AppendLine();
+                    content.Append("<div id='splitter'>").AppendLine();
+                        content.Append("<div id='splitter-content'>").AppendLine();
+                            content.Append("<div id='main' class='aui-page-panel'>").AppendLine();
+                                content.Append("<div id='content' class='page view'>").AppendLine();
 
+                                    content.Append(Model.Config.WebDocumentation.GetContentByClass("wiki-content")).AppendLine();
 
-
-        StringBuilder content = new StringBuilder();
-        content.Append("<div id='com-atlassian-confluence' class='theme-documentation  aui-theme-default aui-layout splitter-invoked'>").AppendLine();
-        content.Append("<div id='full-height-container'>").AppendLine();
-        content.Append("<div id='splitter'>").AppendLine();
-        content.Append("<div id='splitter-content'>").AppendLine();
-        content.Append("<div id='main' class='aui-page-panel'>").AppendLine();
-        content.Append("<div id='content' class='page view'>").AppendLine();
-        content.Append(Model.Config.WebDocumentation.GetContentByClass("wiki-content")).AppendLine();
-        content.Append("</div>").AppendLine();
-        content.Append("</div>").AppendLine();
-        content.Append("</div>").AppendLine();
-        content.Append("</div>").AppendLine();
-        content.Append("</div>").AppendLine();
-        content.Append("</div>").AppendLine();
-        return content.ToString();
+                                content.Append("</div>").AppendLine();
+                            content.Append("</div>").AppendLine();
+                        content.Append("</div>").AppendLine();
+                    content.Append("</div>").AppendLine();
+                content.Append("</div>").AppendLine();
+            content.Append("</div>").AppendLine();
+            return content.ToString();
+        }
+        else
+        {
+            string notFoundUri = Model.Config.WebDocumentation.GetAbsoluteUri(page);
+            return string.Format("<div class='webNotFound'>The page <a href='{0}'>{1}</a> could not be found in the extern web documentation.</div>", notFoundUri, page);
+        }
     }
 }
 

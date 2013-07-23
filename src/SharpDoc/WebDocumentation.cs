@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 using HtmlAgilityPack;
+using Mono.Options;
 
 namespace SharpDoc
 {
@@ -34,7 +35,8 @@ namespace SharpDoc
             }
 
             // load the home page
-            Load("");
+            if (!Load(""))
+                throw new OptionException("The given web site url for option -wL could not be found.", "-wL");
         }
 
 
@@ -46,9 +48,16 @@ namespace SharpDoc
             loginBytes = Encoding.ASCII.GetBytes(login);
         }
 
-        public void Load(string page)
+        public bool Load(string page)
         {
-            currentDocument.Load(WebDocPage(page), Encoding.UTF8);
+            Stream webPage = WebDocPage(page);
+            if (webPage != null)
+            {
+                currentDocument.Load(webPage, Encoding.UTF8);
+                return true;
+            }
+            else
+                return false;
         }
 
         public Stream WebDocPage(string page, bool authentification = true)
@@ -75,9 +84,28 @@ namespace SharpDoc
                 }
                 catch (WebException e)
                 {
-                    // if the authentification failed, try without it
-                    if (authentification == true)
-                        return WebDocPage(page, false);
+                    if (e.Status == WebExceptionStatus.ProtocolError)
+                    {
+                        var statusCode = ((HttpWebResponse)e.Response).StatusCode;
+                        switch (statusCode)
+                        {
+                            case HttpStatusCode.MethodNotAllowed:
+                                {
+                                    // if the authentification failed, try without it
+                                    if (authentification == true)
+                                        return WebDocPage(page, false);
+                                    else
+                                        throw e;
+                                }
+                            case HttpStatusCode.NotFound:
+                                {
+                                    Console.WriteLine("The web documentation page {0} ({1}) could not be found", page, pageUri);
+                                    return null;
+                                }
+                            default:
+                                throw e;
+                        }
+                    }
                     else
                         throw e;
                 }
@@ -86,6 +114,10 @@ namespace SharpDoc
                 throw new UriFormatException();
         }
 
+        public string GetAbsoluteUri(string page)
+        {
+            return new Uri(siteHome, page).ToString();
+        }
 
         public string GetContentById(string id)
         {
@@ -118,8 +150,12 @@ namespace SharpDoc
             foreach (var node in nodes)
             {
                 string cssUrl =  node.GetAttributeValue("href", string.Empty);
-                StreamReader cssDoc = new StreamReader(WebDocPage(cssUrl));
-                webDocCss.Add(cssDoc.ReadToEnd());
+                Stream cssStream = WebDocPage(cssUrl);
+                if (cssStream != null)
+                {
+                    StreamReader cssDoc = new StreamReader(cssStream);
+                    webDocCss.Add(cssDoc.ReadToEnd());
+                }
             }
 
             numberCss = nodes.Count;
@@ -158,6 +194,5 @@ namespace SharpDoc
                 node.SetAttributeValue("src", newImageRelativePath);
             }
         }
-
     }
 }
