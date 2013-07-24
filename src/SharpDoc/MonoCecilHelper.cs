@@ -108,10 +108,10 @@ namespace SharpDoc
 
                 foreach (MethodDefinition method in iface.Methods)
                 {
-                    if (TryMatchMethod(type, method) != null)
+                    if (TryMatchDef(type, method) != null)
                         continue;
 
-                    var @base = GetBaseMethodInTypeHierarchy(type, method);
+                    var @base = GetBaseOverrideInTypeHierarchy(type, method);
                     if (@base == null)
                         continue;
 
@@ -145,7 +145,7 @@ namespace SharpDoc
 
         void MapVirtualBaseMethod(MethodDefinition method)
         {
-            MethodDefinition @base = GetBaseMethodInTypeHierarchy(method);
+            MethodDefinition @base = GetBaseOverrideInTypeHierarchy(method) as MethodDefinition;
             if (@base == null)
                 return;
 
@@ -154,7 +154,7 @@ namespace SharpDoc
 
         void MapVirtualInterfaceMethod(MethodDefinition method)
         {
-            MethodDefinition @base = GetBaseMethodInInterfaceHierarchy(method);
+            MethodDefinition @base = GetBaseImplementInInterfaceHierarchy(method) as MethodDefinition;
             if (@base == null)
                 return;
 
@@ -173,19 +173,29 @@ namespace SharpDoc
             }
         }
 
-        public static MethodDefinition GetBaseMethodInTypeHierarchy(MethodDefinition method)
+
+
+
+        public static IMemberDefinition GetBaseOverrideInTypeHierarchy(IMemberDefinition memberDef)
         {
-            return GetBaseMethodInTypeHierarchy(method.DeclaringType, method);
+            return GetBaseOverrideInTypeHierarchy(memberDef.DeclaringType, memberDef);
         }
 
-        public static MethodDefinition GetBaseMethodInTypeHierarchy(TypeDefinition type, MethodDefinition method)
+        public static IMemberDefinition GetBaseImplementInInterfaceHierarchy(IMemberDefinition memberDef)
+        {
+            return GetBaseImplementInInterfaceHierarchy(memberDef.DeclaringType, memberDef);
+        }
+
+
+
+        public static IMemberDefinition GetBaseOverrideInTypeHierarchy(TypeDefinition type, IMemberDefinition memberDef)
         {
             TypeDefinition @base = GetBaseType(type);
             while (@base != null)
             {
-                MethodDefinition base_method = TryMatchMethod(@base, method);
-                if (base_method != null)
-                    return base_method;
+                IMemberDefinition base_memberDef = TryMatchDef(@base, memberDef);
+                if (base_memberDef != null)
+                    return base_memberDef;
 
                 @base = GetBaseType(@base);
             }
@@ -193,12 +203,7 @@ namespace SharpDoc
             return null;
         }
 
-        public static MethodDefinition GetBaseMethodInInterfaceHierarchy(MethodDefinition method)
-        {
-            return GetBaseMethodInInterfaceHierarchy(method.DeclaringType, method);
-        }
-
-        public static MethodDefinition GetBaseMethodInInterfaceHierarchy(TypeDefinition type, MethodDefinition method)
+        public static IMemberDefinition GetBaseImplementInInterfaceHierarchy(TypeDefinition type, IMemberDefinition memberDef)
         {
             if (!type.HasInterfaces)
                 return null;
@@ -209,19 +214,30 @@ namespace SharpDoc
                 if (@interface == null)
                     continue;
 
-                MethodDefinition base_method = TryMatchMethod(@interface, method);
-                if (base_method != null)
-                    return base_method;
+                IMemberDefinition base_memberDef = TryMatchDef(@interface, memberDef);
+                if (base_memberDef != null)
+                    return base_memberDef;
 
-                base_method = GetBaseMethodInInterfaceHierarchy(@interface, method);
-                if (base_method != null)
-                    return base_method;
+                base_memberDef = GetBaseImplementInInterfaceHierarchy(@interface, memberDef);
+                if (base_memberDef != null)
+                    return base_memberDef;
             }
 
             return null;
         }
 
-        static MethodDefinition TryMatchMethod(TypeDefinition type, MethodDefinition method)
+        static IMemberDefinition TryMatchDef(TypeDefinition type, IMemberDefinition memberDef)
+        {
+            if (memberDef is MethodDefinition)
+                return TryMatchDef(type, memberDef as MethodDefinition);
+            if (memberDef is PropertyDefinition)
+                return TryMatchDef(type, memberDef as PropertyDefinition);
+            else
+                return null;
+        }
+
+
+        static IMemberDefinition TryMatchDef(TypeDefinition type, MethodDefinition method)
         {
             if (!type.HasMethods)
                 return null;
@@ -232,7 +248,19 @@ namespace SharpDoc
 
             return null;
         }
+        
+        static PropertyDefinition TryMatchDef(TypeDefinition type, PropertyDefinition property)
+        {
+            if (!type.HasProperties)
+                return null;
 
+            foreach (PropertyDefinition candidate in type.Properties)
+                if (PropertyMatch(candidate, property))
+                    return candidate;
+
+            return null;
+        }
+    
         static bool MethodMatch(MethodDefinition candidate, MethodDefinition method)
         {
             if (!candidate.IsVirtual)
@@ -254,66 +282,6 @@ namespace SharpDoc
             return true;
         }
 
-        public static PropertyDefinition GetBasePropertyInTypeHierarchy(PropertyDefinition property)
-        {
-            return GetBasePropertyInTypeHierarchy(property.DeclaringType, property);
-        }
-
-        public static PropertyDefinition GetBasePropertyInTypeHierarchy(TypeDefinition type, PropertyDefinition property)
-        {
-            TypeDefinition @base = GetBaseType(type);
-            while (@base != null)
-            {
-                PropertyDefinition base_property = TryMatchProperty(@base, property);
-                if (base_property != null)
-                    return base_property;
-
-                @base = GetBaseType(@base);
-            }
-
-            return null;
-        }
-
-        public static PropertyDefinition GetBasePropertyInInterfaceHierarchy(PropertyDefinition method)
-        {
-            return GetBasePropertyInInterfaceHierarchy(method.DeclaringType, method);
-        }
-
-        public static PropertyDefinition GetBasePropertyInInterfaceHierarchy(TypeDefinition type, PropertyDefinition property)
-        {
-            if (!type.HasInterfaces)
-                return null;
-
-            foreach (TypeReference interface_ref in type.Interfaces)
-            {
-                TypeDefinition @interface = interface_ref.Resolve();
-                if (@interface == null)
-                    continue;
-
-                PropertyDefinition base_property = TryMatchProperty(@interface, property);
-                if (base_property != null)
-                    return base_property;
-
-                base_property = GetBasePropertyInInterfaceHierarchy(@interface, property);
-                if (base_property != null)
-                    return base_property;
-            }
-
-            return null;
-        }
-
-        static PropertyDefinition TryMatchProperty(TypeDefinition type, PropertyDefinition property)
-        {
-            if (!type.HasProperties)
-                return null;
-
-            foreach (PropertyDefinition candidate in type.Properties)
-                if (PropertyMatch(candidate, property))
-                    return candidate;
-
-            return null;
-        }
-
         static bool PropertyMatch(PropertyDefinition candidate, PropertyDefinition method)
         {
             if (candidate.Name != method.Name)
@@ -324,6 +292,13 @@ namespace SharpDoc
 
             return true;
         }
+
+
+
+
+
+
+
 
 
 

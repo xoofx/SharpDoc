@@ -102,6 +102,7 @@
     <Compile Include="Logging\LoggerBase.cs" />
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="Logging\LogLocation.cs" />
+    <Compile Include="Model\IOverridable.cs" />
     <Compile Include="Model\NPropertyReference.cs" />
     <Compile Include="Model\NExtensionMethod.cs" />
     <Compile Include="Model\NDocumentApi.cs" />

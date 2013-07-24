@@ -409,10 +409,10 @@ namespace SharpDoc
             if (method.IsVirtual)
             {
                 // overrides
-                method.Overrides = GetMethodReference(@namespace, MonoCecilHelper.GetBaseMethodInTypeHierarchy(methodDef));
+                method.Overrides = GetReference<NMethod>(@namespace, MonoCecilHelper.GetBaseOverrideInTypeHierarchy(methodDef));
 
                 // implements
-                method.Implements = GetMethodReference(@namespace, MonoCecilHelper.GetBaseMethodInInterfaceHierarchy(methodDef));
+                method.Implements = GetReference<NMethod>(@namespace, MonoCecilHelper.GetBaseImplementInInterfaceHierarchy(methodDef));
 
                 // If this method doesn't have any documentation, use inherited documentation even if inheriteddoc tag is not present
                 if (method.InheritDoc == null && string.IsNullOrEmpty(method.Description))
@@ -638,21 +638,16 @@ namespace SharpDoc
             return typeReference;
         }
 
-        private INMemberReference GetPropertyReference(NNamespace @namespace, PropertyReference propertyDef)
+        private INMemberReference GetReference<T>(NNamespace @namespace, IMemberDefinition memberDef) where T : NMember, new()
         {
-            if (propertyDef == null)
+            if (memberDef == null)
                 return null;
 
-            return NewInstance<NProperty>(@namespace, propertyDef);
+            if (memberDef is MethodDefinition)
+                return CreateMethodFromDefinition(@namespace, memberDef as MethodDefinition);
+            else 
+                return NewInstance<T>(@namespace, memberDef as MemberReference);
         }
-
-        private INMemberReference GetMethodReference(NNamespace @namespace, MethodDefinition methodDef)
-        {
-            if (methodDef == null)
-                return null;
-            return CreateMethodFromDefinition(@namespace, methodDef);
-        }
-
 
         /// <summary>
         /// Builds the method signature parameters.
@@ -844,10 +839,10 @@ namespace SharpDoc
                 property.SeeAlsos.Add(new NSeeAlso(parent.Namespace));
 
                 // overrides
-                property.Overrides = GetPropertyReference(parent.Namespace, MonoCecilHelper.GetBasePropertyInTypeHierarchy(propertyDef));
+                property.Overrides = GetReference<NProperty>(parent.Namespace, MonoCecilHelper.GetBaseOverrideInTypeHierarchy(propertyDef));
 
                 // implements
-                property.Implements = GetPropertyReference(parent.Namespace, MonoCecilHelper.GetBasePropertyInInterfaceHierarchy(propertyDef));
+                property.Implements = GetReference<NProperty>(parent.Namespace, MonoCecilHelper.GetBaseImplementInInterfaceHierarchy(propertyDef));
 
                 // If this method doesn't have any documentation, use inherited documentation even if inheriteddoc tag is not present
                 if (property.InheritDoc == null && string.IsNullOrEmpty(property.Description))
