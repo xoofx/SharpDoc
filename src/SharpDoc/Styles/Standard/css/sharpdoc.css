@@ -471,6 +471,11 @@
 	height:100%;
 }
 
+.sharpdoc .toc_content div
+{
+    padding-top:1px;
+}
+
 .sharpdoc .composed .icon
 {
 	background-repeat:no-repeat;
