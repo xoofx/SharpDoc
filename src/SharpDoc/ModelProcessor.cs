@@ -178,6 +178,8 @@ namespace SharpDoc
                             type.HasProperties = true;
                         else if (nMemberReference is NEvent)
                             type.HasEvents = true;
+                        else if (nMemberReference is NField)
+                            type.HasFields = true;
 
                         newMembers.Add(nMemberReference);
                     }

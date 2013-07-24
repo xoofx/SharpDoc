@@ -127,10 +127,7 @@ namespace SharpDoc.Model
         /// </value>
         public bool HasExtensionMethods
         { 
-            get
-            {
-                return ExtensionMethods.Count > 0;
-            }
+            get { return ExtensionMethods.Count > 0; }
         }
 
         /// <summary>
@@ -180,6 +177,15 @@ namespace SharpDoc.Model
         public IEnumerable<NField> Fields
         {
             get { return MembersAs<NField>(); }
+        }
+
+        /// <summary>
+        /// Gets all the fields (with the inherited ones).
+        /// </summary>
+        /// <value>The all the fields.</value>
+        public IEnumerable<NField> AllFields
+        {
+            get { return AllMembers.Where(member => member.GetType() == typeof(NField)).Cast<NField>().ToList(); }
         }
 
         /// <summary>

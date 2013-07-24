@@ -103,7 +103,7 @@
         @Helpers.Section.Dump("Constructors", self.Constructors, true);
 
 	@if (self.HasFields)
-        @Helpers.Section.Dump("Fields", self.Fields, true, self);
+        @Helpers.Section.Dump("Fields", self.AllFields, true, self);
 
 	@if (self.HasProperties)
         @Helpers.Section.Dump("Properties", self.AllProperties, true, self);
