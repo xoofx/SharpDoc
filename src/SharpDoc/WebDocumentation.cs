@@ -48,9 +48,9 @@ namespace SharpDoc
             loginBytes = Encoding.ASCII.GetBytes(login);
         }
 
-        public bool Load(string page)
+        public bool Load(string page, string siteURL = null)
         {
-            Stream webPage = WebDocPage(page);
+            Stream webPage = WebDocPage(page, true, siteURL);
             if (webPage != null)
             {
                 currentDocument.Load(webPage, Encoding.UTF8);
@@ -60,9 +60,10 @@ namespace SharpDoc
                 return false;
         }
 
-        public Stream WebDocPage(string page, bool authentification = true)
+        public Stream WebDocPage(string page, bool authentification = true, string siteURL = null)
         {
-            Uri pageUri = new Uri(siteHome, page);
+            Uri pageUri = (siteURL != null) ? new Uri( new Uri(siteURL), page) : new Uri( siteHome, page);
+
             if (pageUri.IsWellFormedOriginalString())
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(pageUri);
@@ -114,9 +115,9 @@ namespace SharpDoc
                 throw new UriFormatException();
         }
 
-        public string GetAbsoluteUri(string page)
+        public Uri GetAbsoluteUri(string page)
         {
-            return new Uri(siteHome, page).ToString();
+            return new Uri(siteHome, page);
         }
 
         public string GetContentById(string id)
@@ -132,7 +133,7 @@ namespace SharpDoc
         {
             string classRegEx = string.Format("//{1}[@class='{0}']", id, tagType);
             var nodes = currentDocument.DocumentNode.SelectNodes(classRegEx);
-            var node = nodes.Count > instanceNumber ? nodes[instanceNumber] : null;
+            var node = (nodes != null && nodes.Count > instanceNumber) ? nodes[instanceNumber] : null;
 
             if (node != null)
                 return node.InnerHtml;

@@ -22,6 +22,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
+
 using RazorEngine;
 using RazorEngine.Compilation;
 using RazorEngine.Templating;
@@ -189,7 +191,7 @@ namespace SharpDoc
         /// <value>
         /// the function that get the content of a page of the extern documentation site.
         /// </value>
-        public Func<string, string> GetWebDocContent { get; set; }
+        public Func<XmlNode, string> GetWebDocContent { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the current style.
@@ -458,7 +460,8 @@ namespace SharpDoc
 
             bool isNotComplete = true;
 
-            // Compute directories to look, by following inheritance
+            // Compute directories to look, by following 
+
             // In the same order they are declared
             while (isNotComplete)
             {
@@ -711,5 +714,11 @@ namespace SharpDoc
             }
             return "";
         }
+
+        public void debug() 
+        {var i = 1;}
+
+        public void debug2()
+        {var i = 2;}
     }
 }

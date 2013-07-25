@@ -268,7 +268,7 @@ namespace SharpDoc.Model
             if (string.IsNullOrEmpty(Remarks) && !string.IsNullOrEmpty(crefMember.Remarks))
                 Remarks = crefMember.Remarks;
 
-            if (string.IsNullOrEmpty(WebDocPage) && !string.IsNullOrEmpty(crefMember.WebDocPage))
+            if (WebDocPage == null  && crefMember.WebDocPage != null)
                 WebDocPage = crefMember.WebDocPage;
         }
     }

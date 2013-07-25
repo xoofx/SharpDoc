@@ -224,7 +224,7 @@ namespace SharpDoc.Model
 
         /// <inheritdoc/>
         [XmlIgnore]
-        public string WebDocPage { get; set; }
+        public XmlNode WebDocPage { get; set; }
 
         /// <inheritdoc/>
         [XmlIgnore]

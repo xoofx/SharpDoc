@@ -105,7 +105,7 @@ namespace SharpDoc.Model
         /// Gets or sets the web documentation page extracted from the &lt;webdoc&gt; tag of the <see cref="IComment.DocNode"/>.
         /// </summary>
         /// <value>The corresponding webDocumentation page.</value>
-        public string WebDocPage { get; set; }
+        public XmlNode WebDocPage { get; set; }
 
         /// <summary>
         /// Gets or sets the &lt;inheritdoc&gt; tag of the <see cref="IComment.DocNode"/>.
