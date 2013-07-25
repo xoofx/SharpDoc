@@ -25,6 +25,7 @@
 @using SharpDoc.Model
 @model SharpDoc.TemplateContext
 @Import("Section")
+@Import("WebDocSection")
 @Import("SeeAlso")
 @Import("Version")
 @{
@@ -53,9 +54,7 @@
 @if (!string.IsNullOrEmpty(self.Remarks)) 
     @Helpers.Section.Dump("Remarks",TagExpand(self.Remarks))
 
-@if (Model.Config.WebDocumentation != null && self.WebDocPage != null)
-    @Helpers.Section.Dump("section_extern_documentation", "Extern Documentation", Model.GetWebDocContent(self.WebDocPage))
-
+@Helpers.WebDocSection.Dump(self)
 
 @Helpers.Version.Dump(self)
 

@@ -191,7 +191,7 @@ namespace SharpDoc
         /// <value>
         /// the function that get the content of a page of the extern documentation site.
         /// </value>
-        public Func<XmlNode, string> GetWebDocContent { get; set; }
+        public Func<XmlNode, bool, string> GetWebDocContent { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the current style.

@@ -31,7 +31,7 @@
 
 @functions
 {
-    public string GetWikiContent(XmlNode webDocNode)
+    public string GetWikiContent(XmlNode webDocNode, bool useIdTitle)
     {   
         Model.debug();
         string page = webDocNode.InnerText;
@@ -46,8 +46,20 @@
             if(!string.IsNullOrEmpty(content))
             {
                 Model.Config.WebDocumentation.InternalizeImages(Model.OutputDirectory, Model.Param.LinkToImg);
+
+                var idAttr = webDocNode.Attributes["id"];
+                var titleAttr = webDocNode.Attributes["title"];
             
                 StringBuilder externContent = new StringBuilder();
+
+                if(useIdTitle)
+                {
+                    if(idAttr != null)
+                        externContent.AppendFormat("<div id='{0}'>", idAttr.Value).AppendLine();
+                    if(titleAttr != null)
+                        externContent.AppendFormat("<div class='section'>{0}</div>", titleAttr.Value).AppendLine();
+                }         
+
                 externContent.Append("<div id='com-atlassian-confluence' class='theme-documentation  aui-theme-default aui-layout splitter-invoked'>").AppendLine();
                     externContent.Append("<div id='full-height-container'>").AppendLine();
                         externContent.Append("<div id='splitter'>").AppendLine();
@@ -63,7 +75,11 @@
                         externContent.Append("</div>").AppendLine();
                     externContent.Append("</div>").AppendLine();
                 externContent.Append("</div>").AppendLine();
-                return content.ToString();
+
+                if(useIdTitle && idAttr != null)
+                    externContent.Append("</div>").AppendLine();
+
+                return externContent.ToString();
             }
             else
             {
