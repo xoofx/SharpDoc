@@ -97,7 +97,7 @@ namespace SharpDoc
         /// 	<c>true</c> if this style is overridden; otherwise, <c>false</c>.
         /// </value>
         [XmlIgnore]
-        public bool IsOverriden { get; set; }
+        public bool Isoverridden { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this particular style instance is runnable.

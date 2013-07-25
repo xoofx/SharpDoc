@@ -421,7 +421,7 @@ namespace SharpDoc
                 // implements
                 method.Implements = GetReference(@namespace, MonoCecilHelper.GetBaseImplementInInterfaceHierarchy(methodDef));
 
-                // If an overriden method doesn't have any documentation, use inherited documentation even if <inheritdoc/> tag is not present
+                // If an overridden method doesn't have any documentation, use inherited documentation even if <inheritdoc/> tag is not present
                 if (method.InheritDoc == null)
                 {
                     method.InheritDoc = new XmlDocument().CreateElement("inheritDoc");

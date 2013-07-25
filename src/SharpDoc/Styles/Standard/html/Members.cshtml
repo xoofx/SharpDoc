@@ -85,8 +85,8 @@
                 {
                     if (overridable.Overrides != null)
                     {
-                        var overrideName = string.Format("{0}.{1}()", overridable.Overrides.DeclaringType.Name, overridable.Overrides.Name);
-                        postDesc.AppendFormat("Overrides {0}", ToUrl(overridable.Overrides, overrideName, true));
+                        var overriddename = string.Format("{0}.{1}()", overridable.Overrides.DeclaringType.Name, overridable.Overrides.Name);
+                        postDesc.AppendFormat("Overrides {0}", ToUrl(overridable.Overrides, overriddename, true));
                     } 
 					else if (overridable.Implements != null)
                     {
