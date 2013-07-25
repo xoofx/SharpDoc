@@ -24,7 +24,7 @@ namespace SharpDoc.Model
     /// <summary>
     /// A property document.
     /// </summary>
-    public class NProperty : NMember
+    public class NProperty : NMember, IOverridable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NProperty"/> class.
@@ -83,6 +83,15 @@ namespace SharpDoc.Model
         /// The set method.
         /// </value>
         public NMethod SetMethod { get; set; }
+
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is virtual.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance is virtual; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsVirtual { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this instance has overrides.

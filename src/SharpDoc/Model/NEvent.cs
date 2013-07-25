@@ -23,7 +23,7 @@ namespace SharpDoc.Model
     /// <summary>
     /// An event documentation.
     /// </summary>
-    public class NEvent : NMember
+    public class NEvent : NMember, IOverridable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NEvent"/> class.
@@ -40,5 +40,53 @@ namespace SharpDoc.Model
         /// The type of the event.
         /// </value>
         public NTypeReference EventType { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is virtual.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance is virtual; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsVirtual { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance has overrides.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance has overrides; otherwise, <c>false</c>.
+        /// </value>
+        public bool HasOverrides
+        {
+            get
+            {
+                return Overrides != null;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the overrides.
+        /// </summary>
+        /// <value>The overrides.</value>
+        public INMemberReference Overrides { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance has implements.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance has implements; otherwise, <c>false</c>.
+        /// </value>
+        public bool HasImplements
+        {
+            get
+            {
+                return Implements != null;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the implements.
+        /// </summary>
+        /// <value>The implements.</value>
+        public INMemberReference Implements { get; set; }
     }
 }

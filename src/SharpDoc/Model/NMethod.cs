@@ -24,7 +24,7 @@ namespace SharpDoc.Model
     /// <summary>
     /// A method member.
     /// </summary>
-    public class NMethod : NMember
+    public class NMethod : NMember, IOverridable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NMethod"/> class.
@@ -56,6 +56,19 @@ namespace SharpDoc.Model
         /// 	<c>true</c> if this instance is virtual; otherwise, <c>false</c>.
         /// </value>
         public bool IsVirtual { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance has implements.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance has implements; otherwise, <c>false</c>.
+        /// </value>
+        public bool HasImplements { 
+            get 
+            {
+                return Implements != null;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the implements method.
