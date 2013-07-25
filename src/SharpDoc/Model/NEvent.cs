@@ -88,5 +88,16 @@ namespace SharpDoc.Model
         /// </summary>
         /// <value>The implements.</value>
         public INMemberReference Implements { get; set; }
+
+        public override void CopyDocumentation(INMemberReference other)
+        {
+            base.CopyDocumentation(other);
+            var otherEvent = other as NEvent;
+            if (otherEvent != null)
+            {
+                if (string.IsNullOrEmpty(ObsoleteMessage) && !string.IsNullOrEmpty(otherEvent.ObsoleteMessage))
+                    ObsoleteMessage = otherEvent.ObsoleteMessage;
+            }
+        }
     }
 }

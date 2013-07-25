@@ -232,12 +232,14 @@ namespace SharpDoc
                 return TryMatchDef(type, memberDef as MethodDefinition);
             if (memberDef is PropertyDefinition)
                 return TryMatchDef(type, memberDef as PropertyDefinition);
+            if (memberDef is EventDefinition)
+                return TryMatchDef(type, memberDef as EventDefinition);
             else
                 return null;
         }
 
 
-        static IMemberDefinition TryMatchDef(TypeDefinition type, MethodDefinition method)
+        static MethodDefinition TryMatchDef(TypeDefinition type, MethodDefinition method)
         {
             if (!type.HasMethods)
                 return null;
@@ -260,6 +262,21 @@ namespace SharpDoc
 
             return null;
         }
+
+        static EventDefinition TryMatchDef(TypeDefinition type, EventDefinition property)
+        {
+            if (!type.HasEvents)
+                return null;
+
+            foreach (EventDefinition candidate in type.Events)
+                if (EventMatch(candidate, property))
+                    return candidate;
+
+            return null;
+        }
+
+
+
     
         static bool MethodMatch(MethodDefinition candidate, MethodDefinition method)
         {
@@ -288,6 +305,17 @@ namespace SharpDoc
                 return false;
 
             if (!TypeMatch(candidate.PropertyType, method.PropertyType))
+                return false;
+
+            return true;
+        }
+
+        static bool EventMatch(EventDefinition candidate, EventDefinition method)
+        {
+            if (candidate.Name != method.Name)
+                return false;
+
+            if (!TypeMatch(candidate.EventType, method.EventType))
                 return false;
 
             return true;
