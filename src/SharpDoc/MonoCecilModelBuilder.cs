@@ -377,6 +377,13 @@ namespace SharpDoc
 
                 // Constructors must have type name instead of .ctor
                 method.Name = method.DeclaringType.Name;
+
+                // If a constructor doesn't have any documentation, use inherited documentation even if <inheritdoc/> tag is not present
+                if (method.InheritDoc == null)
+                {
+                    method.InheritDoc = new XmlDocument().CreateElement("inheritDoc");
+                    _registry.InheritedDocMembers.Add(method);
+                }
             }
             else if (methodDef.IsSpecialName && methodDef.Name.StartsWith(MethodOperatorPrefix))
             {
@@ -414,9 +421,12 @@ namespace SharpDoc
                 // implements
                 method.Implements = GetReference(@namespace, MonoCecilHelper.GetBaseImplementInInterfaceHierarchy(methodDef));
 
-                // If this method doesn't have any documentation, use inherited documentation even if inheriteddoc tag is not present
-                if (method.InheritDoc == null && string.IsNullOrEmpty(method.Description))
+                // If an overriden method doesn't have any documentation, use inherited documentation even if <inheritdoc/> tag is not present
+                if (method.InheritDoc == null)
+                {
                     method.InheritDoc = new XmlDocument().CreateElement("inheritDoc");
+                    _registry.InheritedDocMembers.Add(method);
+                }
             }
 
             method.ReturnType = GetTypeReference(methodDef.ReturnType);
@@ -762,9 +772,12 @@ namespace SharpDoc
                     // implements
                     @event.Implements = GetReference(parent.Namespace, MonoCecilHelper.GetBaseImplementInInterfaceHierarchy(eventDef));
 
-                    // If this method doesn't have any documentation, use inherited documentation even if inheriteddoc tag is not present
-                    if (@event.InheritDoc == null && string.IsNullOrEmpty(@event.Description))
+                    // If this method doesn't have any documentation, use inherited documentation even if <inheritdoc/> tag is not present
+                    if (@event.InheritDoc == null)
+                    {
                         @event.InheritDoc = new XmlDocument().CreateElement("inheritdoc");
+                        _registry.InheritedDocMembers.Add(@event);
+                    }
                 }
 
                 UpdatePageTitle(@event);
@@ -865,9 +878,12 @@ namespace SharpDoc
                     // implements
                     property.Implements = GetReference(parent.Namespace, MonoCecilHelper.GetBaseImplementInInterfaceHierarchy(propertyDef));
 
-                    // If this method doesn't have any documentation, use inherited documentation even if inheriteddoc tag is not present
-                    if (property.InheritDoc == null && string.IsNullOrEmpty(property.Description))
+                    // If this method doesn't have any documentation, use inherited documentation even if <inheritdoc/> tag is not present
+                    if (property.InheritDoc == null)
+                    {
                         property.InheritDoc = new XmlDocument().CreateElement("inheritdoc");
+                        _registry.InheritedDocMembers.Add(property);
+                    }
                 }
 
                 UpdatePageTitle(property);
@@ -1093,10 +1109,13 @@ namespace SharpDoc
                     if (type.Bases.Count > 1)
                     {
                         var baseType = _registry.FindById(type.Bases[0].Id) as NType;
-                        if (baseType.InheritDoc != null)
-                            InheritDocumentation(baseType);
+                        if (baseType != null)
+                        {
+                            if (baseType.InheritDoc != null)
+                                InheritDocumentation(baseType);
 
-                        member.CopyDocumentation(baseType);
+                            member.CopyDocumentation(baseType);
+                        }
                         member.InheritDoc = null;
                         return;
                     }
@@ -1115,26 +1134,28 @@ namespace SharpDoc
                     if (declaringType.Bases.Count > 1)
                     {
                         var baseType = _registry.FindById(declaringType.Bases[0].Id) as NType;
-                        
-                        NConstructor baseConstructor = null;
-                        NParameterComparator comp = new NParameterComparator();
-                        foreach(var constr in baseType.Constructors)
+
+                        if (baseType != null)
                         {
-                            if(constr.Parameters.Count() == constructor.Parameters.Count 
-                                && (constructor.Parameters.Count == 0 || constr.Parameters.SequenceEqual(constructor.Parameters, comp)))
+                            NConstructor baseConstructor = null;
+                            NParameterComparator comp = new NParameterComparator();
+                            foreach (var constr in baseType.Constructors)
                             {
-                                baseConstructor = constr;
-                                break;
+                                if (constr.Parameters.Count() == constructor.Parameters.Count
+                                    && (constructor.Parameters.Count == 0 || constr.Parameters.SequenceEqual(constructor.Parameters, comp)))
+                                {
+                                    baseConstructor = constr;
+                                    break;
+                                }
+                            }
+
+                            if (baseConstructor != null)
+                            {
+                                if (baseConstructor.InheritDoc != null)
+                                    InheritDocumentation(baseConstructor);
+                                constructor.CopyDocumentation(baseConstructor);
                             }
                         }
-
-                        if (baseConstructor != null)
-                        {
-                            if (baseConstructor.InheritDoc != null)
-                                InheritDocumentation(baseConstructor);
-                            constructor.CopyDocumentation(baseConstructor);
-                        }
-
                         constructor.InheritDoc = null;
                         return;
                     }
@@ -1188,14 +1209,17 @@ namespace SharpDoc
                     {
                         var parentMember = _registry.FindById(reference.Id) as INMemberReference;
 
-                        if (overridableMember.HasOverrides)
-                            overridableMember.Overrides = parentMember;
-                        else
-                            overridableMember.Implements = parentMember;
+                        if (parentMember != null)
+                        {
+                            if (overridableMember.HasOverrides)
+                                overridableMember.Overrides = parentMember;
+                            else
+                                overridableMember.Implements = parentMember;
 
-                        if (parentMember.InheritDoc != null)
-                            InheritDocumentation(parentMember);
-                        member.CopyDocumentation(parentMember);
+                            if (parentMember.InheritDoc != null)
+                                InheritDocumentation(parentMember);
+                            member.CopyDocumentation(parentMember);
+                        }
                     }
 
                     member.InheritDoc = null;
