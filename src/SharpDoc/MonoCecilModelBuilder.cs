@@ -409,10 +409,10 @@ namespace SharpDoc
             if (method.IsVirtual)
             {
                 // overrides
-                method.Overrides = GetReference<NMethod>(@namespace, MonoCecilHelper.GetBaseOverrideInTypeHierarchy(methodDef));
+                method.Overrides = GetReference(@namespace, MonoCecilHelper.GetBaseOverrideInTypeHierarchy(methodDef));
 
                 // implements
-                method.Implements = GetReference<NMethod>(@namespace, MonoCecilHelper.GetBaseImplementInInterfaceHierarchy(methodDef));
+                method.Implements = GetReference(@namespace, MonoCecilHelper.GetBaseImplementInInterfaceHierarchy(methodDef));
 
                 // If this method doesn't have any documentation, use inherited documentation even if inheriteddoc tag is not present
                 if (method.InheritDoc == null && string.IsNullOrEmpty(method.Description))
@@ -638,15 +638,19 @@ namespace SharpDoc
             return typeReference;
         }
 
-        private INMemberReference GetReference<T>(NNamespace @namespace, IMemberDefinition memberDef) where T : NMember, new()
+        private INMemberReference GetReference(NNamespace @namespace, IMemberDefinition memberDef)
         {
             if (memberDef == null)
                 return null;
 
             if (memberDef is MethodDefinition)
                 return CreateMethodFromDefinition(@namespace, memberDef as MethodDefinition);
-            else 
-                return NewInstance<T>(@namespace, memberDef as MemberReference);
+            else
+            {
+                var reference = new NMemberReference();
+                this.FillMemberReference(reference, memberDef as MemberReference);
+                return reference;
+            }
         }
 
         /// <summary>
@@ -741,6 +745,7 @@ namespace SharpDoc
                 // Setup visibility based on event add/remove methods
                 var refMethod = addMethod ?? removeMethod;
                 @event.Visibility = refMethod.Visibility;
+                @event.IsVirtual = refMethod.IsVirtual;
                 @event.IsStatic = refMethod.IsStatic;
                 @event.IsFinal = refMethod.IsFinal;
                 @event.IsAbstract = refMethod.IsAbstract;
@@ -748,6 +753,19 @@ namespace SharpDoc
                 // Add SeeAlso
                 @event.SeeAlsos.Add(new NSeeAlso(parent));
                 @event.SeeAlsos.Add(new NSeeAlso(parent.Namespace));
+
+                if (@event.IsVirtual)
+                {
+                    // overrides
+                    @event.Overrides = GetReference(parent.Namespace, MonoCecilHelper.GetBaseOverrideInTypeHierarchy(eventDef));
+
+                    // implements
+                    @event.Implements = GetReference(parent.Namespace, MonoCecilHelper.GetBaseImplementInInterfaceHierarchy(eventDef));
+
+                    // If this method doesn't have any documentation, use inherited documentation even if inheriteddoc tag is not present
+                    if (@event.InheritDoc == null && string.IsNullOrEmpty(@event.Description))
+                        @event.InheritDoc = new XmlDocument().CreateElement("inheritdoc");
+                }
 
                 UpdatePageTitle(@event);
             }
@@ -831,6 +849,7 @@ namespace SharpDoc
                 // Setup visibility based on method
                 var refMethod = property.GetMethod ?? property.SetMethod;
                 property.Visibility = refMethod.Visibility;
+                property.IsVirtual = refMethod.IsVirtual;
                 property.IsStatic = refMethod.IsStatic;
                 property.IsFinal = refMethod.IsFinal;
                 property.IsAbstract = refMethod.IsAbstract;
@@ -838,15 +857,18 @@ namespace SharpDoc
                 property.SeeAlsos.Add(new NSeeAlso(parent));
                 property.SeeAlsos.Add(new NSeeAlso(parent.Namespace));
 
-                // overrides
-                property.Overrides = GetReference<NProperty>(parent.Namespace, MonoCecilHelper.GetBaseOverrideInTypeHierarchy(propertyDef));
+                if (property.IsVirtual)
+                {
+                    // overrides
+                    property.Overrides = GetReference(parent.Namespace, MonoCecilHelper.GetBaseOverrideInTypeHierarchy(propertyDef));
 
-                // implements
-                property.Implements = GetReference<NProperty>(parent.Namespace, MonoCecilHelper.GetBaseImplementInInterfaceHierarchy(propertyDef));
+                    // implements
+                    property.Implements = GetReference(parent.Namespace, MonoCecilHelper.GetBaseImplementInInterfaceHierarchy(propertyDef));
 
-                // If this method doesn't have any documentation, use inherited documentation even if inheriteddoc tag is not present
-                if (property.InheritDoc == null && string.IsNullOrEmpty(property.Description))
-                    property.InheritDoc = new XmlDocument().CreateElement("inheritdoc");
+                    // If this method doesn't have any documentation, use inherited documentation even if inheriteddoc tag is not present
+                    if (property.InheritDoc == null && string.IsNullOrEmpty(property.Description))
+                        property.InheritDoc = new XmlDocument().CreateElement("inheritdoc");
+                }
 
                 UpdatePageTitle(property);
             }
@@ -1148,28 +1170,35 @@ namespace SharpDoc
                     return;
                 }
 
-                // For properties, copy the documentation of the property of the base or the interface that have the same name and type
-                else if (member is NProperty)
+                // For overrided members, copy the documentation of the override or implement
+                else if (member is IOverridable)
                 {
-                    var property = member as NProperty;
-                    NProperty parentProperty = null;
+                    var overridableMember = member as IOverridable;
+                    INMemberReference reference = null;
 
                     // Search a corresponding property in the base only if the method is overrided
-                    if (property.HasOverrides)
-                        parentProperty = property.Overrides as NProperty;
+                    if (overridableMember.HasOverrides)
+                        reference = overridableMember.Overrides;
 
                     // Search a corresponding property in the interfaces only if the property is not overrided in the declaring class
-                    if (parentProperty == null && property.HasImplements)
-                        parentProperty = property.Implements as NProperty;
+                    if (reference == null && overridableMember.HasImplements)
+                        reference = overridableMember.Implements;
 
-                    if (parentProperty != null)
+                    if (reference != null)
                     {
-                        if (parentProperty.InheritDoc != null)
-                            InheritDocumentation(parentProperty);
-                        property.CopyDocumentation(parentProperty);
+                        var parentMember = _registry.FindById(reference.Id) as INMemberReference;
+
+                        if (overridableMember.HasOverrides)
+                            overridableMember.Overrides = parentMember;
+                        else
+                            overridableMember.Implements = parentMember;
+
+                        if (parentMember.InheritDoc != null)
+                            InheritDocumentation(parentMember);
+                        member.CopyDocumentation(parentMember);
                     }
 
-                    property.InheritDoc = null;
+                    member.InheritDoc = null;
                     return;
                 }
             }

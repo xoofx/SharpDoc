@@ -72,41 +72,26 @@
                 }
             }
             
-            var method = member as NMethod;
-            if (method != null)
+            var overridable = member as IOverridable;
+            if (overridable != null)
             {
-                if (method.HasOverrides)
-                    displayName = method.Signature;
-
-                if (postDesc.Length == 1)
-                {
-                    if (method.Overrides != null)
-                    {
-                        var baseMethodName = string.Format("{0}.{1}()", method.Overrides.DeclaringType.Name, method.Overrides.Name);
-                        postDesc.AppendFormat("Overrides {0}", ToUrl(method.Overrides, baseMethodName, true));
-                    } 
-					else if (method.Implements != null)
-                    {
-                        var baseMethodName = string.Format("{0}.{1}()", method.Implements.DeclaringType.Name, method.Implements.Name);
-                        postDesc.AppendFormat("Implements {0}", ToUrl(method.Implements, baseMethodName, true));
-                    }
+                if (overridable.HasOverrides && overridable is NMethod)
+                {                    
+                    var overridedMethod = overridable as NMethod;         
+                    displayName = overridedMethod.Signature;
                 }
-            }
 
-            var property = member as NProperty;
-            if (property != null)
-            {
                 if (postDesc.Length == 1)
                 {
-                    if (property.Overrides != null)
+                    if (overridable.Overrides != null)
                     {
-                        var basePropertyName = string.Format("{0}.{1}", property.Overrides.DeclaringType.Name, property.Overrides.Name);
-                        postDesc.AppendFormat("Overrides {0}", ToUrl(property.Overrides, basePropertyName, true));
+                        var overrideName = string.Format("{0}.{1}()", overridable.Overrides.DeclaringType.Name, overridable.Overrides.Name);
+                        postDesc.AppendFormat("Overrides {0}", ToUrl(overridable.Overrides, overrideName, true));
                     } 
-					else if (property.Implements != null)
+					else if (overridable.Implements != null)
                     {
-                        var basePropertyName = string.Format("{0}.{1}", property.Implements.DeclaringType.Name, property.Implements.Name);
-                        postDesc.AppendFormat("Implements {0}", ToUrl(property.Implements, basePropertyName, true));
+                        var implementName = string.Format("{0}.{1}()", overridable.Implements.DeclaringType.Name, overridable.Implements.Name);
+                        postDesc.AppendFormat("Implements {0}", ToUrl(overridable.Implements, implementName, true));
                     }
                 }
             }
