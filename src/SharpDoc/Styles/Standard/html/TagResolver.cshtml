@@ -32,7 +32,9 @@
 @model SharpDoc.TemplateContext
 @using SharpDoc.Model
 @using SharpDoc;
-@using System.Text.RegularExpressions
+@using System.Text.RegularExpressions;
+@using System.Xml;
+
 @functions {
     public string ReplaceSee(Match match) {        
         string id = match.Groups[1].Value;
@@ -41,9 +43,29 @@
         }
         return ToUrl(id);
     }
+
+    public string ReplaceWebdoc(Match match) {
+Model.debug();
+        string xmlCode = match.ToString();
+        
+        var document = new XmlDocument();
+        try
+        {
+            document.LoadXml(xmlCode);
+            var correspondingNode = document.DocumentElement;
+            return Model.GetWebDocContent(correspondingNode);
+        }
+        catch(XmlException)
+        {
+            return string.Empty;
+        }
+    }
+    
+
 }
 
 @{    
     Model.RegisterTagResolver(@"<see\s+cref=""(.*?)""\s*/>", ReplaceSee);
     Model.RegisterTagResolver(@"<see\s+cref=""(.*?)""\s*>(.*?)</see>", ReplaceSee);
+    Model.RegisterTagResolver(@"<webdoc(.*?)>(.*?)</webdoc>", ReplaceWebdoc);   
 }
