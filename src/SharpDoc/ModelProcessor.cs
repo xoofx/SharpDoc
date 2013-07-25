@@ -145,24 +145,12 @@ namespace SharpDoc
 
                     foreach (var currentMember in type.AllMembers)
                     {
-                        var method = currentMember as NMethod;
+                        var overridedMember = currentMember as IOverridable;
 
-                        // Don't add methods that are overridden
-                        if (method != null && method.Overrides != null && nMemberReference is NMethod)
+                        // Don't add overrided members
+                        if (overridedMember != null && overridedMember.Overrides != null)
                         {
-                            if (method.Overrides.Id == nMemberReference.Id)
-                            {
-                                addInheritedMember = false;
-                                break;
-                            }
-                        }
-
-                        var property = currentMember as NProperty;
-
-                        // Don't add properties that are overridden
-                        if (property != null && nMemberReference is NProperty)
-                        {
-                            if (property.Name == nMemberReference.Name)
+                            if (overridedMember.Overrides.Id == nMemberReference.Id)
                             {
                                 addInheritedMember = false;
                                 break;
