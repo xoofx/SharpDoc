@@ -198,5 +198,25 @@ namespace SharpDoc
                 node.SetAttributeValue("src", newImageRelativePath);
             }
         }
+
+        private string cssIsolationPrefix;
+        private string cssIsolationPrefix2;
+
+        private string IsolateCss(Match match)
+        {
+            var pattern = match.Groups["pattern"].Value;
+            var rules = match.Groups["rules"].Value;
+            pattern = pattern.Replace(",", cssIsolationPrefix2);
+            return cssIsolationPrefix + pattern + rules;
+        }
+
+        public string IsolateCss(string cssContent, string prefix)
+        {
+            cssIsolationPrefix = prefix + " ";
+            cssIsolationPrefix2 = "," + cssIsolationPrefix;
+
+            Regex selectCssRules = new Regex("(?<pattern>[^{]*)(?<rules>{[^}]*})");
+            return selectCssRules.Replace(cssContent, IsolateCss);
+        }
     }
 }

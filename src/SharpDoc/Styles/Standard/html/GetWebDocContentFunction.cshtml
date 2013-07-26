@@ -59,15 +59,17 @@
                         externContent.AppendFormat("<div class='sub_section title'>{0}</div>", titleAttr.Value).AppendLine();
                 }         
 
-                externContent.Append("<div id='com-atlassian-confluence' class='theme-documentation  aui-theme-default aui-layout splitter-invoked'>").AppendLine();
-                    externContent.Append("<div id='full-height-container'>").AppendLine();
-                        externContent.Append("<div id='splitter'>").AppendLine();
-                            externContent.Append("<div id='splitter-content'>").AppendLine();
-                                externContent.Append("<div id='main' class='aui-page-panel'>").AppendLine();
-                                    externContent.Append("<div id='content' class='page view'>").AppendLine();
+                externContent.Append("<div class='externDoc'>").AppendLine();
+                    externContent.Append("<div id='com-atlassian-confluence' class='theme-documentation  aui-theme-default aui-layout splitter-invoked'>").AppendLine();
+                        externContent.Append("<div id='full-height-container'>").AppendLine();
+                            externContent.Append("<div id='splitter'>").AppendLine();
+                                externContent.Append("<div id='splitter-content'>").AppendLine();
+                                    externContent.Append("<div id='main' class='aui-page-panel'>").AppendLine();
+                                        externContent.Append("<div id='content' class='page view'>").AppendLine();
 
-                                        externContent.Append(content).AppendLine();
+                                            externContent.Append(content).AppendLine();
 
+                                        externContent.Append("</div>").AppendLine();
                                     externContent.Append("</div>").AppendLine();
                                 externContent.Append("</div>").AppendLine();
                             externContent.Append("</div>").AppendLine();

@@ -29,14 +29,9 @@
 
 @helper Dump()
 {
-    @if (Model.Config.WebDocumentation != null 
-        && (   
-               (Model.Member != null && Model.Member.WebDocPage != null)
-            || (Model.Member == null && Model.Type != null && Model.Type.WebDocPage != null) 
-            || (Model.Type == null && Model.Namespace != null  && Model.Namespace.WebDocPage != null)
-           ) 
-        )
+    @if (Model.Config.WebDocumentation != null)
     {
+        Model.debug();
         var nbCss = Model.Config.WebDocumentation.numberCss;
         
         // First call : copy css content in local files
@@ -54,7 +49,11 @@
             {
                 var cssFileName = string.Format("WebDocCss_{0}.css", i);
                 var cssPath = Path.Combine(cssDirectory, cssFileName);
-		        File.WriteAllText(cssPath, cssFiles[i]);
+                var cssContent = cssFiles[i];
+                
+                cssContent = Model.Config.WebDocumentation.IsolateCss(cssContent, ".externDoc");
+		        
+                File.WriteAllText(cssPath, cssContent);
             }        
         }
 
