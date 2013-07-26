@@ -112,7 +112,10 @@ namespace SharpDoc
                 }
             }
             else
-                throw new UriFormatException();
+            {
+                Console.WriteLine("The web documentation page {0} is not a valid Uri", page, pageUri);
+                return null;
+            }
         }
 
         public Uri GetAbsoluteUri(string page)

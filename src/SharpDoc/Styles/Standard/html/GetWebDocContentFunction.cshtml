@@ -33,7 +33,6 @@
 {
     public string GetWikiContent(XmlNode webDocNode, bool useIdTitle)
     {   
-        Model.debug();
         string page = webDocNode.InnerText;
 
         var otherUrlAttribute = webDocNode.Attributes["url"];
@@ -57,7 +56,7 @@
                     if(idAttr != null)
                         externContent.AppendFormat("<div id='{0}'>", idAttr.Value).AppendLine();
                     if(titleAttr != null)
-                        externContent.AppendFormat("<div class='section'>{0}</div>", titleAttr.Value).AppendLine();
+                        externContent.AppendFormat("<div class='sub_section title'>{0}</div>", titleAttr.Value).AppendLine();
                 }         
 
                 externContent.Append("<div id='com-atlassian-confluence' class='theme-documentation  aui-theme-default aui-layout splitter-invoked'>").AppendLine();
