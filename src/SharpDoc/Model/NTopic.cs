@@ -230,6 +230,10 @@ namespace SharpDoc.Model
         [XmlIgnore]
         public XmlNode InheritDoc { get; set; }
 
+        /// <inheritdoc/>
+        [XmlIgnore]
+        public string Example { get; set; }
+
         [XmlIgnore]
         public Config Config { get; set; }
 

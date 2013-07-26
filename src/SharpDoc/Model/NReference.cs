@@ -114,6 +114,12 @@ namespace SharpDoc.Model
         public XmlNode InheritDoc { get; set; }
 
         /// <summary>
+        /// Gets or sets the &lt;example&gt; tag of the <see cref="IComment.DocNode"/>.
+        /// </summary>
+        /// <value>The example xml node.</value>
+        public string Example { get; set; }
+
+        /// <summary>
         /// Called when <see cref="DocNode"/> is updated.
         /// </summary>
         protected internal virtual void OnDocNodeUpdate()

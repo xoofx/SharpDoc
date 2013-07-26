@@ -19,47 +19,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.       
 // -------------------------------------------------------------------------------
-// Override this template to modify the generated html body for a Namespace
+// Override this template to modify the generated html body for a Type
 // -------------------------------------------------------------------------------
 *@
 @using SharpDoc.Model
-@model SharpDoc.TemplateContext
 @Import("Section")
-@Import("WebDocSection")
-@Import("SeeAlso")
-@Import("Version")
-@{
-    var self = Model.Namespace;
+
+@helper Dump(IComment member) {
+	@if (!string.IsNullOrEmpty(member.Example))
+    {
+        @Helpers.Section.Dump("section_example", "Example", @TagExpand(member.Example))
+    }
 }
-<div class="content-title">
-    <h1 id="#top" class="content-title">@self.Name Namespace</h1>
-</div>
-<div style="clear: both;"></div>
-        
-<div class="summary"><p>@TagExpand(self.Description)</p></div>
-
-<div class="members">
-    @if (self.HasClasses)
-        @Helpers.Section.Dump("Classes", self.Classes, true)
-    @if (self.HasStructures)
-        @Helpers.Section.Dump("Structures", self.Structures, true)
-    @if (self.HasInterfaces)
-        @Helpers.Section.Dump("Interfaces", self.Interfaces, true)
-    @if (self.HasDelegates)
-        @Helpers.Section.Dump("Delegates", self.Delegates, true)
-    @if (self.HasEnums)
-        @Helpers.Section.Dump("Enumerations", self.Enums, true)
-</div>
-
-@if (!string.IsNullOrEmpty(self.Remarks)) 
-    @Helpers.Section.Dump("Remarks",TagExpand(self.Remarks))
-
-@Helpers.WebDocSection.Dump(self)
-
-@Helpers.ExampleSection.Dump(self)
-
-@Helpers.Version.Dump(self)
-
-@Helpers.SeeAlso.Dump(self)	
-
 

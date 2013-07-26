@@ -146,6 +146,12 @@ namespace SharpDoc.Model
         public XmlNode InheritDoc { get; set; }
 
         /// <summary>
+        /// Gets or sets the &lt;example&gt; tag of the <see cref="IComment.DocNode"/>.
+        /// </summary>
+        /// <value>The example xml node.</value>
+        public string Example { get; set; }
+
+        /// <summary>
         /// Gets or sets the topic link.
         /// </summary>
         /// <value>The topic link.</value>
@@ -214,6 +220,7 @@ namespace SharpDoc.Model
                 Remarks = NDocumentApi.GetTag(DocNode, DocTag.Remarks);
                 WebDocPage = NDocumentApi.GetXmlNode(DocNode, DocTag.WebDoc);
                 InheritDoc = NDocumentApi.GetXmlNode(DocNode, DocTag.InheritDoc);
+                Example = NDocumentApi.GetTag(DocNode, DocTag.Example);
                 UnManagedApi = NDocumentApi.GetTag(DocNode, "unmanaged");
                 UnManagedShortApi = NDocumentApi.GetTag(DocNode, "unmanaged-short");
                 MsdnId = NDocumentApi.GetTag(DocNode, "msdn-id");

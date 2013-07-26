@@ -440,6 +440,27 @@
 	word-wrap:break-word;
 }
 
+.sharpdoc .content .section .sub_section.title
+{
+	color:#3f529c;
+	font-size:1.05em;
+	font-weight:bold;
+	padding-left:6px;
+	padding-top:6px;
+	word-break:break-all;
+	word-wrap:break-word;
+}
+
+.sharpdoc .content .section .code_section.title 
+{
+	color: #7C8192;
+	font-size: 0.995em;
+	font-weight: bold;
+	padding-left: 6px;
+	word-break: break-all;
+	word-wrap: break-word;
+}
+
 .sharpdoc .content .section table.members
 {
 	border-collapse:collapse;
@@ -659,4 +680,22 @@ html,body
 	font-size:0.91em;
 	height:100%;
 	margin:0;
+}
+
+
+div.panel.pdl
+{
+	border: 1px solid #ccc;
+	border-style: dashed;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	margin-top:10px;
+	margin-bottom:10px;
+}
+
+.panel .panelContent
+{
+	padding: 0 10px;
+	margin-bottom: 10px;
+	margin-top: 10px;
 }

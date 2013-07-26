@@ -27,6 +27,7 @@
 @model SharpDoc.TemplateContext
 @Import("Section")
 @Import("WebDocSection")
+@Import("ExampleSection")
 @Import("SeeAlso")
 @Import("Version")
 @Import("TypeBodyMembersHeader")
@@ -125,6 +126,8 @@
     @Helpers.Section.Dump("Remarks", TagExpand(self.Remarks))
 
 @Helpers.WebDocSection.Dump(self)
+
+@Helpers.ExampleSection.Dump(self)
 
 @if (self is NClass && HasComplexInheritance)
     @Helpers.Section.Dump("section_full_inheritance", "Inheritance Hierarchy", DumpInheritance(true).ToString())

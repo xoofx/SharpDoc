@@ -29,12 +29,14 @@
 @Import("WebDocCSS")
 @helper Dump()
     {
+
     @Helpers.WebDocCSS.Dump()
-    <link href="@(Param.LinkToCss)sharpdoc.css" rel="stylesheet" type="text/css" />
     <link href="@(Param.LinkToSyntaxHighlighterCss)shCoreDefault.css" rel="stylesheet" type="text/css" />
+    <link href="@(Param.LinkToCss)syntaxHighlighter.css" rel="stylesheet" type="text/css" />
+    <link href="@(Param.LinkToCss)sharpdoc.css" rel="stylesheet" type="text/css" />
+
     <script src="@(Param.LinkToJs)mootools.js" language="javascript"></script>
     <script src="@(Param.LinkToJs)mootools-more.js" language="javascript"></script>
-    <script src="@(Param.LinkToJs)sharpdoc.js" language="javascript"></script>            
     <script src="@(Param.LinkToSyntaxHighlighterJs)shCore.js" type="text/javascript"></script>
     <script src="@(Param.LinkToSyntaxHighlighterJs)shBrushCpp.js" type="text/javascript"></script>
     <script src="@(Param.LinkToSyntaxHighlighterJs)shBrushCSharp.js" type="text/javascript"></script>
@@ -45,6 +47,8 @@
         SyntaxHighlighter.defaults['smart-tabs'] = false;
         SyntaxHighlighter.all();
     </script>
+    <script src="@(Param.LinkToJs)sharpdoc.js" language="javascript"></script>            
+
         
     <meta name="Microsoft.Help.Id" content="@Model.Topic.Id" />
     <meta name="Microsoft.Help.SelfBranded" content="true" />

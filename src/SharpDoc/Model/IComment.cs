@@ -57,5 +57,11 @@ namespace SharpDoc.Model
         /// </summary>
         /// <value>The inheritdoc xml node.</value>
         XmlNode InheritDoc { get; set; }
+
+        /// <summary>
+        /// Gets or sets the &lt;example&gt; tag of the <see cref="IComment.DocNode"/>.
+        /// </summary>
+        /// <value>The example xml node.</value>
+        string Example { get; set; }
     }
 }

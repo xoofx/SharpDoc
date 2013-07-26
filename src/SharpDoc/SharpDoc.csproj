@@ -253,6 +253,7 @@
     <None Include="Styles\Mshc\Param.cshtml" />
     <None Include="Styles\Standard\html\ClassLibraryBuilder.cshtml" />
     <None Include="Styles\Standard\html\ContentFooter.cshtml" />
+    <None Include="Styles\Standard\html\ExampleSection.cshtml" />
     <None Include="Styles\Standard\html\WebDocSection.cshtml" />
     <None Include="Styles\Standard\html\GetWebDocContentFunction.cshtml" />
     <None Include="Styles\Standard\html\WebDocCSS.cshtml" />
