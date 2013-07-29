@@ -137,6 +137,11 @@ namespace SharpDoc
             currentDocument.LoadHtml(elementHtml);
         }
 
+        public string GetContent()
+        {
+            return currentDocument.DocumentNode.InnerHtml;
+        }
+
         public string GetContentByClass(string id, int instanceNumber = 0, string tagType = "div")
         {
             string classRegEx = string.Format("//{1}[@class='{0}']", id, tagType);
@@ -233,7 +238,7 @@ namespace SharpDoc
         public void UseAbsoluteUrls()
         {
             // select all link <a> tags
-            var nodes = currentDocument.DocumentNode.SelectNodes("//a");
+            var nodes = currentDocument.DocumentNode.SelectNodes("//a[@href]");
             if (nodes == null)
                 return;
             foreach (var node in nodes)

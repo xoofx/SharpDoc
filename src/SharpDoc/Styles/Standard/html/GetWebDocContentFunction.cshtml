@@ -44,6 +44,7 @@
             
             if(!string.IsNullOrEmpty(content))
             {
+                Model.Config.WebDocumentation.LimitDocumentToElement(content);
                 Model.Config.WebDocumentation.InternalizeImages(Model.OutputDirectory, Model.Param.LinkToImg);
                 Model.Config.WebDocumentation.UseAbsoluteUrls();
 
@@ -68,7 +69,7 @@
                                     externContent.Append("<div class='aui-page-panel'>").AppendLine();
                                         externContent.Append("<div id='content' class='page view'>").AppendLine();
 
-                                            externContent.Append(content).AppendLine();
+                                            externContent.Append(Model.Config.WebDocumentation.GetContent()).AppendLine();
 
                                         externContent.Append("</div>").AppendLine();
                                     externContent.Append("</div>").AppendLine();
