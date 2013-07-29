@@ -27,6 +27,8 @@
 @helper Dump(string bodyTemplateName)
 {
     <script type="text/javascript" language="javascript">
+            if(window == window.top)
+                location.href = "index.htm?origin=@Model.Topic.PageId";
             document.addEvent('domready', function () {
                 InstallCodeTabs();
             });
