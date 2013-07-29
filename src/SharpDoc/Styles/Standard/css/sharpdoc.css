@@ -337,6 +337,11 @@
 	padding:4px;
 }
 
+.sharpdoc .content .section .members.insert td
+{
+	padding:10px;
+}
+
 .sharpdoc .content .section .members td p
 {
 	margin-top: 0px;
@@ -482,8 +487,8 @@
 
 .sharpdoc .content .section table.members.insert
 {
-	margin: 5px;
-	width: 99%;
+	margin-top: 5px;
+	margin-bottom: 5px;
 }
 
 .sharpdoc .pane_content

@@ -67,6 +67,7 @@
 
     public string ReplaceCode(Match match)
     {
+Model.debug();
         string xmlCode = match.ToString();
         
         var document = new XmlDocument();
@@ -77,13 +78,20 @@
             var title = correspondingNode.Attributes["title"];
             var gutter = correspondingNode.Attributes["gutter"];
             var useGutter = (gutter != null && gutter.Value == "true") ? "true" : "false";
-            
+            var highlight = correspondingNode.Attributes["highlight"];
+            var highlightValue = (highlight != null) ? highlight.Value : "null";
+
+            var syntaxHighlighterBeginTag = string.Format("<pre class='brush: csharp; gutter: {0}; highlight: {1}'>", useGutter, highlightValue);
+            var syntaxHighlighterEndTag = "</pre>";
+
+            var finalTxt = correspondingNode.InnerXml.Replace("<txt>", syntaxHighlighterEndTag).Replace("</txt>", syntaxHighlighterBeginTag);
+           
             var text = new StringBuilder();
 
             text.Append("<div class='code panel pdl'>").AppendLine();
                 if(title != null)
                     text.AppendFormat("<div class='code_section title'>{0}</div>", title.Value).AppendLine();
-                text.AppendFormat("<div class='codeContent panelContent pdl'><pre class='brush: csharp; gutter: {1}'>{0}</pre></div>", correspondingNode.InnerXml, useGutter).AppendLine();
+                text.AppendFormat("<div class='codeContent panelContent pdl'>{0}{1}{2}</div>", syntaxHighlighterBeginTag, finalTxt, syntaxHighlighterEndTag).AppendLine();
             text.Append("</div>").AppendLine();
             return text.ToString();
         }
@@ -155,6 +163,12 @@
         {
             return string.Empty;
         }
+    }
+
+    public string ReplaceTxt(Match match)
+    {
+        Model.debug();
+        return string.Format("{0}</pre>{1}<pre {2}>", match.Groups["code"], match.Groups["text"], match.Groups["options"]); 
     }
 }
 
