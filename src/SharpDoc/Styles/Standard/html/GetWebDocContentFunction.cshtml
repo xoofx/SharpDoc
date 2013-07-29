@@ -45,6 +45,7 @@
             if(!string.IsNullOrEmpty(content))
             {
                 Model.Config.WebDocumentation.InternalizeImages(Model.OutputDirectory, Model.Param.LinkToImg);
+                Model.Config.WebDocumentation.UseAbsoluteUrls();
 
                 var idAttr = webDocNode.Attributes["id"];
                 var titleAttr = webDocNode.Attributes["title"];

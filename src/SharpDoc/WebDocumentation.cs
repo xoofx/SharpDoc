@@ -132,6 +132,11 @@ namespace SharpDoc
                 return string.Empty;
         }
 
+        public void LimitDocumentToElement(string elementHtml)
+        {
+            currentDocument.LoadHtml(elementHtml);
+        }
+
         public string GetContentByClass(string id, int instanceNumber = 0, string tagType = "div")
         {
             string classRegEx = string.Format("//{1}[@class='{0}']", id, tagType);
@@ -151,6 +156,9 @@ namespace SharpDoc
 
             // select all css defined by link tags with relation = 'stylesheet'
             var nodes = currentDocument.DocumentNode.SelectNodes("//link[@rel='stylesheet']");
+            if (nodes == null)
+                return webDocCss;
+
             foreach (var node in nodes)
             {
                 string cssUrl =  node.GetAttributeValue("href", string.Empty);
@@ -173,6 +181,9 @@ namespace SharpDoc
 
             // select all img tags
             var nodes = currentDocument.DocumentNode.SelectNodes("//img");
+            if (nodes == null)
+                return;
+
             foreach(var node in nodes)
             {
                 string imageUrl = node.GetAttributeValue("src", string.Empty);
@@ -217,6 +228,24 @@ namespace SharpDoc
 
             Regex selectCssRules = new Regex("(?<pattern>[^{]*)(?<rules>{[^}]*})");
             return selectCssRules.Replace(cssContent, IsolateCss);
+        }
+
+        public void UseAbsoluteUrls()
+        {
+            // select all link <a> tags
+            var nodes = currentDocument.DocumentNode.SelectNodes("//a");
+            if (nodes == null)
+                return;
+            foreach (var node in nodes)
+            {
+                string href = node.GetAttributeValue("href", string.Empty);
+                if(!Uri.IsWellFormedUriString(href, UriKind.Absolute))
+                {
+                    Uri absoluteUri = new Uri(siteHome, href);
+                    node.SetAttributeValue("href", absoluteUri.ToString());
+                }
+            }
+
         }
     }
 }
