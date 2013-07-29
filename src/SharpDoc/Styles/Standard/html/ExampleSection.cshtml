@@ -28,7 +28,7 @@
 @helper Dump(IComment member) {
 	@if (!string.IsNullOrEmpty(member.Example))
     {
-        @Helpers.Section.Dump("section_example", "Example", @TagExpand(member.Example))
+        @Helpers.Section.Dump("section_examples", "Examples", @TagExpand(member.Example))
     }
 }
 

@@ -440,7 +440,7 @@
 	word-wrap:break-word;
 }
 
-.sharpdoc .content .section .sub_section.title
+.sharpdoc .content  .sub_section.title
 {
 	color:#3f529c;
 	font-size:1.05em;
@@ -451,10 +451,20 @@
 	word-wrap:break-word;
 }
 
-.sharpdoc .content .section .code_section.title 
+.sharpdoc .content  .code_section.title 
 {
-	color: #7C8192;
+	color: #3f529c;
 	font-size: 0.995em;
+	font-weight: bold;
+	padding-left: 6px;
+	word-break: break-all;
+	word-wrap: break-word;
+}
+
+.sharpdoc .content  .insert_title 
+{
+	color: #707070;
+	font-size: 0.9em;
 	font-weight: bold;
 	padding-left: 6px;
 	word-break: break-all;
@@ -468,6 +478,12 @@
 	border-style:solid;
 	border-width:1px;
 	width:100%;
+}
+
+.sharpdoc .content .section table.members.insert
+{
+	margin: 5px;
+	width: 99%;
 }
 
 .sharpdoc .pane_content
@@ -569,7 +585,7 @@
 	background-repeat:no-repeat;
 	height:17px;
 	width:17px;
-	background-image:url("../images/error-webNotFound.png");
+	background-image:url("../images/error.gif");
 }
 
 .sharpdoc-footer

@@ -35,6 +35,8 @@
 @using System.Text;
 @using System.Text.RegularExpressions;
 @using System.Xml;
+@using System.IO;
+@using System.Globalization;
 
 @functions {
     public string ReplaceSee(Match match)
@@ -90,6 +92,70 @@
             return string.Empty;
         }
     }
+
+    public string ReplaceInsert(Match match)
+    {
+        string xmlCode = match.ToString();
+        
+        var document = new XmlDocument();
+        try
+        {
+            document.LoadXml(xmlCode);
+            var correspondingNode = document.DocumentElement;
+
+            var type = correspondingNode.Attributes["type"];
+            string typeTxt = null;
+            string imgUrl = null;
+            bool imgExist = false;
+
+            if(type != null)
+            {
+                typeTxt = type.Value;
+                imgUrl = Path.Combine(Model.Param.LinkToImg, typeTxt + ".gif");
+                imgExist = File.Exists(Path.Combine(Model.OutputDirectory, "html", imgUrl));
+            }
+            if(!imgExist)
+            {
+                typeTxt = "note";
+                imgUrl = Path.Combine(Model.Param.LinkToImg, "note.gif");
+            }
+            
+            var title = correspondingNode.Attributes["title"];
+            string titleText = null;
+
+            if(title != null)
+                titleText = title.Value;
+            else
+            {
+                var context = new CultureInfo("en-US",false).TextInfo;
+                titleText = context.ToTitleCase(typeTxt);
+            }
+
+            var text = new StringBuilder();
+
+            text.Append("<table class='members insert'>").AppendLine();
+                text.Append("<tbody>").AppendLine();
+                    text.Append("<tr>").AppendLine();
+                        text.Append("<th>").AppendLine();
+                            text.Append("<span class='insert_title'>").AppendLine();
+                                text.AppendFormat("<img alt='{0}' src='{1}' title='{0}'> {2}", typeTxt, imgUrl, titleText).AppendLine();
+                            text.Append("</span>").AppendLine();
+                        text.Append("</th>").AppendLine();
+                    text.Append("</tr>").AppendLine();
+                    text.Append("<tr>").AppendLine();
+                        text.Append("<td>").AppendLine();
+                            text.Append(correspondingNode.InnerXml).AppendLine();
+                        text.Append("</td>").AppendLine();
+                    text.Append("</tr>").AppendLine();
+                text.Append("</tbody>").AppendLine();
+            text.Append("</table>").AppendLine();
+            return text.ToString();
+        }
+        catch(XmlException)
+        {
+            return string.Empty;
+        }
+    }
 }
 
 @{    
@@ -97,4 +163,5 @@
     Model.RegisterTagResolver(@"<see\s+cref=""(.*?)""\s*>(.*?)</see>", ReplaceSee);
     Model.RegisterTagResolver(@"<webdoc(.*?)>(.*?)</webdoc>", ReplaceWebdoc);
     Model.RegisterTagResolver(@"<code(.*?)>([\w\W]*?)</code>", ReplaceCode);
+    Model.RegisterTagResolver(@"<insert(.*?)>([\w\W]*?)</insert>", ReplaceInsert);
 }
