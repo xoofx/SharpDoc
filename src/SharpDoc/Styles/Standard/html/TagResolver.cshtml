@@ -65,9 +65,9 @@
         }
     }
 
-    public string ReplaceCode(Match match)
+    public string ReplaceCodeSection(Match match)
     {
-Model.debug();
+        Model.debug();
         string xmlCode = match.ToString();
         
         var document = new XmlDocument();
@@ -75,25 +75,43 @@ Model.debug();
         {
             document.LoadXml(xmlCode);
             var correspondingNode = document.DocumentElement;
+
             var title = correspondingNode.Attributes["title"];
-            var gutter = correspondingNode.Attributes["gutter"];
-            var useGutter = (gutter != null && gutter.Value == "true") ? "true" : "false";
-            var highlight = correspondingNode.Attributes["highlight"];
-            var highlightValue = (highlight != null) ? highlight.Value : "null";
-
-            var syntaxHighlighterBeginTag = string.Format("<pre class='brush: csharp; gutter: {0}; highlight: {1}'>", useGutter, highlightValue);
-            var syntaxHighlighterEndTag = "</pre>";
-
-            var finalTxt = correspondingNode.InnerXml.Replace("<txt>", syntaxHighlighterEndTag).Replace("</txt>", syntaxHighlighterBeginTag);
-           
             var text = new StringBuilder();
 
             text.Append("<div class='code panel pdl'>").AppendLine();
                 if(title != null)
                     text.AppendFormat("<div class='code_section title'>{0}</div>", title.Value).AppendLine();
-                text.AppendFormat("<div class='codeContent panelContent pdl'>{0}{1}{2}</div>", syntaxHighlighterBeginTag, finalTxt, syntaxHighlighterEndTag).AppendLine();
+                text.Append("<div class='codeContent panelContent pdl'>").AppendLine();
+                    text.Append(correspondingNode.InnerXml).AppendLine();
+                text.Append("</div>").AppendLine();
             text.Append("</div>").AppendLine();
             return text.ToString();
+        }
+        catch(XmlException)
+        {
+            return string.Empty;
+        }
+    }
+
+    public string ReplaceCode(Match match)
+    {
+        Model.debug();
+        string xmlCode = match.ToString();
+        
+        var document = new XmlDocument();
+        try
+        {
+            document.LoadXml(xmlCode);
+            var correspondingNode = document.DocumentElement;
+
+            var gutter = correspondingNode.Attributes["gutter"];
+            var gutterValue = (gutter != null && gutter.Value == "true") ? "true" : "false";
+
+            var highlight = correspondingNode.Attributes["highlight"];
+            var highlightValue = (highlight != null) ? highlight.Value : "null";
+
+            return string.Format("<pre class='brush: csharp; gutter: {0}; highlight: {1}'>{2}</pre>", gutterValue, highlightValue, correspondingNode.InnerXml);
         }
         catch(XmlException)
         {
@@ -176,6 +194,7 @@ Model.debug();
     Model.RegisterTagResolver(@"<see\s+cref=""(.*?)""\s*/>", ReplaceSee);
     Model.RegisterTagResolver(@"<see\s+cref=""(.*?)""\s*>(.*?)</see>", ReplaceSee);
     Model.RegisterTagResolver(@"<webdoc(.*?)>(.*?)</webdoc>", ReplaceWebdoc);
+    Model.RegisterTagResolver(@"<codesection(.*?)>([\w\W]*?)</codesection>", ReplaceCodeSection);
     Model.RegisterTagResolver(@"<code(.*?)>([\w\W]*?)</code>", ReplaceCode);
     Model.RegisterTagResolver(@"<insert(.*?)>([\w\W]*?)</insert>", ReplaceInsert);
 }

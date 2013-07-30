@@ -332,3 +332,7 @@ div.panelHeader.pdl {
     margin-top: 15px !important;
     padding-bottom: 15px !important;
 }
+
+.syntaxhighlighter .gutter .line.highlighted {
+    color: #696969 !important;
+}
