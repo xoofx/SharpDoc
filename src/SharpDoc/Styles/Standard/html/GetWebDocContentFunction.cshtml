@@ -26,13 +26,21 @@
 @using SharpDoc.Model
 @using System.Text;
 @using System.Xml;
+@using System.Net;
 
 @using SharpDoc;
 
 @functions
 {
+    public string FormatCredentialForAuthentification(NetworkCredential loginData)
+    {
+        // Format the loginData to match the site log formular
+        return String.Format("os_username={0}&os_password={1}", loginData.UserName, loginData.Password);
+    }
+
     public string GetWikiContent(XmlNode webDocNode, bool useIdTitle)
-    {   
+    {
+        Model.debug();  
         string page = webDocNode.InnerText;
 
         var otherUrlAttribute = webDocNode.Attributes["url"];
@@ -40,6 +48,7 @@
     
         if(Model.Config.WebDocumentation.Load(page, otherUrl))
         {
+            var cssFiles = Model.Config.WebDocumentation.InternalizeCss(Model.OutputDirectory, Model.Param.LinkToCss, ".externDoc");
             string content = Model.Config.WebDocumentation.GetContentByClass("wiki-content");
             
             if(!string.IsNullOrEmpty(content))
@@ -52,6 +61,19 @@
                 var titleAttr = webDocNode.Attributes["title"];
             
                 StringBuilder externContent = new StringBuilder();
+
+                if(cssFiles.Count > 0)
+                {
+                    externContent.Append("<script type='text/javascript' language='javascript'>").AppendLine();
+                        externContent.Append("window.addEvent('domready', function () {").AppendLine();
+                            externContent.Append("var head = document.getElementsByTagName('head')[0];").AppendLine();
+                            foreach(var cssFile in cssFiles)
+                            {
+                                externContent.AppendFormat("head.grab(new Element('link', {{href: '{0}', rel: 'stylesheet', type: 'text/css'}}));", cssFile).AppendLine();
+                            }
+                        externContent.Append("});").AppendLine();
+                    externContent.Append("</script>").AppendLine();
+                }
 
                 if(useIdTitle)
                 {
@@ -100,4 +122,6 @@
 
 @{ 
     Model.GetWebDocContent = GetWikiContent;
+    Model.Config.WebDocumentation.FormatCredential = FormatCredentialForAuthentification;
+    Model.Config.WebDocumentation.Authentify();
 }

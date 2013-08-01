@@ -256,7 +256,6 @@
     <None Include="Styles\Standard\html\ExampleSection.cshtml" />
     <None Include="Styles\Standard\html\WebDocSection.cshtml" />
     <None Include="Styles\Standard\html\GetWebDocContentFunction.cshtml" />
-    <None Include="Styles\Standard\html\WebDocCSS.cshtml" />
     <None Include="Styles\Standard\html\PageIndexBody.cshtml" />
     <None Include="Styles\Standard\html\MainFrame.cshtml" />
     <None Include="Styles\Standard\html\Version.cshtml" />

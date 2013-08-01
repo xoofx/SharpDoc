@@ -26,11 +26,8 @@
 *@
 @model SharpDoc.TemplateContext
 @using SharpDoc.Model
-@Import("WebDocCSS")
 @helper Dump()
     {
-
-    @Helpers.WebDocCSS.Dump()
     <link href="@(Param.LinkToSyntaxHighlighterCss)shCoreDefault.css" rel="stylesheet" type="text/css" />
     <link href="@(Param.LinkToCss)syntaxHighlighter.css" rel="stylesheet" type="text/css" />
     <link href="@(Param.LinkToCss)sharpdoc.css" rel="stylesheet" type="text/css" />

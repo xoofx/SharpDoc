@@ -67,7 +67,6 @@
 
     public string ReplaceCodeSection(Match match)
     {
-        Model.debug();
         string xmlCode = match.ToString();
         
         var document = new XmlDocument();
@@ -96,7 +95,6 @@
 
     public string ReplaceCode(Match match)
     {
-        Model.debug();
         string xmlCode = match.ToString();
         
         var document = new XmlDocument();

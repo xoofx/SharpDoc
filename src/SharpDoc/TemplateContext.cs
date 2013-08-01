@@ -23,6 +23,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
+using System.Net;
 
 using RazorEngine;
 using RazorEngine.Compilation;
@@ -189,7 +190,7 @@ namespace SharpDoc
         /// Gets or sets the function that get the content of a page of the extern documentation site.
         /// </summary>
         /// <value>
-        /// the function that get the content of a page of the extern documentation site.
+        /// The function that get the content of a page of the extern documentation site.
         /// </value>
         public Func<XmlNode, bool, string> GetWebDocContent { get; set; }
 
