@@ -20,6 +20,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
+
+using HtmlAgilityPack;
 
 namespace SharpDoc.Model
 {
@@ -258,7 +261,7 @@ namespace SharpDoc.Model
         public virtual void InheritDocumentation() { }
 
         /// <summary>
-        /// The basical documentation inheritence copy &lt;summary&gt;, &lt;remarks&gt; and &lt;webdoc&gt; tags
+        /// The basical documentation inheritence copy &lt;summary&gt;, &lt;remarks&gt;, &lt;webdoc&gt; tags and all other sections
         /// </summary>
         public virtual void CopyDocumentation(INMemberReference crefMember)
         {
@@ -270,6 +273,50 @@ namespace SharpDoc.Model
 
             if (WebDocPage == null  && crefMember.WebDocPage != null)
                 WebDocPage = crefMember.WebDocPage;
+
+            // copy all sections of the reference that are not defined in this member
+            if (crefMember.DocNode != null)
+            {
+                // clone the reference node
+                XmlNode newDocNode = crefMember.DocNode.Clone();
+
+                if (DocNode == null)
+                {
+                    DocNode = newDocNode;
+                }
+                else
+                {
+                    HtmlDocument DocNodeContent = new HtmlDocument();
+                    DocNodeContent.LoadHtml(DocNode.InnerXml);
+
+                    var sections = DocNodeContent.DocumentNode.SelectNodes("section");
+                    if (sections != null)
+                    {
+                        foreach (var section in sections)
+                        {
+                            var sectionName = section.Attributes["name"];
+                            if (sectionName != null)
+                            {
+                                string xpath = string.Format("//section[@name=\"{0}\"]", sectionName.Value);
+                                var correspondingSection = newDocNode.SelectSingleNode(xpath);
+                                if (correspondingSection != null)
+                                    correspondingSection.InnerXml = section.InnerHtml;
+                                else
+                                {
+                                    var newSection = newDocNode.OwnerDocument.CreateElement("section");
+                                    newSection.SetAttribute("name", sectionName.Value);
+                                    var title = section.Attributes["title"];
+                                    if(title != null)
+                                        newSection.SetAttribute("title", title.Value);
+                                    newSection.InnerXml = section.InnerHtml;
+                                    newDocNode.AppendChild(newSection);
+                                }
+                            }
+                        }
+                    }
+                    DocNode = newDocNode;
+                }
+            }
         }
     }
 }

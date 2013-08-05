@@ -19,48 +19,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.       
 // -------------------------------------------------------------------------------
-// Override this template to modify the generated html body for a Namespace
+// Override this template to modify the global behavior for each Dump functions
 // -------------------------------------------------------------------------------
 *@
-@using SharpDoc.Model
 @model SharpDoc.TemplateContext
+@using SharpDoc.Model
+
+@using System.Xml
+
 @Import("Section")
-@Import("WebDocSection")
-@Import("OtherSection")
-@Import("SeeAlso")
-@Import("Version")
-@{
-    var self = Model.Namespace;
+@helper Dump(IComment commentedMember)
+{
+    if(commentedMember.DocNode != null)
+    {
+        XmlNodeList  otherSectionNodes = commentedMember.DocNode.SelectNodes("section");
+        if(otherSectionNodes != null)
+        {
+            foreach(XmlNode sectionNode in otherSectionNodes)
+            {
+                XmlAttribute sectionName = sectionNode.Attributes["name"];
+                if(sectionName != null)
+                {
+                    XmlAttribute sectionTitle = sectionNode.Attributes["title"];
+                    sectionTitle = (sectionTitle != null) ? sectionTitle : sectionName;
+
+                    string sectionContent = sectionNode.InnerXml;
+                    @Helpers.Section.Dump("section_" + sectionName.Value, sectionTitle.Value, TagExpand(sectionContent));
+                }
+            }
+        }
+    }
 }
-<div class="content-title">
-    <h1 id="#top" class="content-title">@self.Name Namespace</h1>
-</div>
-<div style="clear: both;"></div>
-        
-<div class="summary"><p>@TagExpand(self.Description)</p></div>
-
-<div class="members">
-    @if (self.HasClasses)
-        @Helpers.Section.Dump("Classes", self.Classes, true)
-    @if (self.HasStructures)
-        @Helpers.Section.Dump("Structures", self.Structures, true)
-    @if (self.HasInterfaces)
-        @Helpers.Section.Dump("Interfaces", self.Interfaces, true)
-    @if (self.HasDelegates)
-        @Helpers.Section.Dump("Delegates", self.Delegates, true)
-    @if (self.HasEnums)
-        @Helpers.Section.Dump("Enumerations", self.Enums, true)
-</div>
-
-@if (!string.IsNullOrEmpty(self.Remarks)) 
-    @Helpers.Section.Dump("Remarks",TagExpand(self.Remarks))
-
-@Helpers.WebDocSection.Dump(self)
-
-@Helpers.OtherSection.Dump(self)
-
-@Helpers.Version.Dump(self)
-
-@Helpers.SeeAlso.Dump(self)	
 
 
