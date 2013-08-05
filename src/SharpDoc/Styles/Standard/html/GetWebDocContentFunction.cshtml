@@ -40,7 +40,6 @@
 
     public string GetWikiContent(XmlNode webDocNode, bool useIdTitle)
     {
-        Model.debug();  
         string page = webDocNode.InnerText;
 
         var otherUrlAttribute = webDocNode.Attributes["url"];

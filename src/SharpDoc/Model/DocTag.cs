@@ -62,11 +62,6 @@ namespace SharpDoc.Model
         public const string See = "see";
 
         /// <summary>
-        /// &lt;example&gt; tag.
-        /// </summary>
-        public const string Example = "example";
-
-        /// <summary>
         /// &lt;exception&gt; tag.
         /// </summary>
         public const string Exception = "exception";
