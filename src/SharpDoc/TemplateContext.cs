@@ -187,6 +187,14 @@ namespace SharpDoc
         public Action<IModelReference, string> WriteTo { get; set; }
 
         /// <summary>
+        /// Gets or sets the index file.
+        /// </summary>
+        /// <value>
+        /// The index file.
+        /// </value>
+        public TextWriter IndexFile { get; set; }
+
+        /// <summary>
         /// Gets or sets the function that get the content of a page of the extern documentation site.
         /// </summary>
         /// <value>

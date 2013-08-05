@@ -29,7 +29,10 @@
         var model = (TemplateContext)Model;
 
 		if (member == null && content == null)
+        {
+            model.IndexFile.Close();
             return;
+        }
 
 		// When writing root, we are also copying directories and resources attached to topics
 		if (member == null)
@@ -60,6 +63,11 @@
 		string dirPath = Path.GetDirectoryName(path);
 		if (!Directory.Exists(dirPath))
 			Directory.CreateDirectory(dirPath);
+
+        if(model.IndexFile == null)
+            model.IndexFile = new StreamWriter(Path.Combine(model.OutputDirectory, "index.txt"));
+        if(member != null)
+            model.IndexFile.WriteLine(pageId + Param.FileExt);
 
 		File.WriteAllText(path, content);
     }
