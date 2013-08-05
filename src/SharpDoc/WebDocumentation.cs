@@ -172,6 +172,9 @@ namespace SharpDoc
         public List<string> InternalizeCss(string outDir, string linkToCssDir, string isolationPrefix)
         {
             string cssDir = Path.Combine(Path.Combine(outDir, "html"), linkToCssDir);
+            if (!Directory.Exists(cssDir))
+                Directory.CreateDirectory(cssDir);
+
             List<string> cssList = new List<string>();
 
             // select all css defined by link tags with relation = 'stylesheet'
@@ -196,21 +199,18 @@ namespace SharpDoc
                     {
                         string cssContent = new StreamReader(cssStream).ReadToEnd();
                         cssContent = IsolateCss(cssContent, isolationPrefix);
-
-                        if (!Directory.Exists(cssDir))
-                            Directory.CreateDirectory(cssDir);
-
                         File.WriteAllText(newCssAboslutePath, cssContent);
                     }
                 } 
             }
-
             return cssList;
         }
 
         public void InternalizeImages(string outDir, string linkToImgDir)
         {
             string imageDir = Path.Combine(Path.Combine(outDir, "html"), linkToImgDir);
+            if (!Directory.Exists(imageDir))
+                Directory.CreateDirectory(imageDir);
 
             // select all img tags
             var nodes = currentDocument.DocumentNode.SelectNodes("//img");
@@ -233,12 +233,7 @@ namespace SharpDoc
                 string newImageRelativePath = Path.Combine(linkToImgDir, newImageName);
 
                 if (!File.Exists(newImageAboslutePath))
-                {
-                    if (!Directory.Exists(imageDir))
-                        Directory.CreateDirectory(imageDir);
-
                     DownloadFile(absoluteImageUrl, newImageAboslutePath);
-                }
 
                 node.SetAttributeValue("src", newImageRelativePath);
             }
