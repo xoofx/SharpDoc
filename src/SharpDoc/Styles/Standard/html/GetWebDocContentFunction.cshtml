@@ -90,7 +90,7 @@
                                     externContent.Append("<div class='aui-page-panel'>").AppendLine();
                                         externContent.Append("<div id='content' class='page view'>").AppendLine();
 
-                                            externContent.Append(Model.Config.WebDocumentation.GetContent()).AppendLine();
+                                            externContent.Append(WebTagExpand(Model.Config.WebDocumentation.GetContent())).AppendLine();
 
                                         externContent.Append("</div>").AppendLine();
                                     externContent.Append("</div>").AppendLine();
@@ -108,13 +108,13 @@
             else
             {
                 string notFoundUri = (otherUrl != null) ? otherUrl + page : Model.Config.WebDocumentation.GetAbsoluteUri(page).ToString();
-                return string.Format("<div class='error webNotFound'><div class='icon'></div>The content of the page <a href='{0}'>{1}</a> doesn't match the content extraction scheme.</div>", notFoundUri, page);
+                return string.Format("<div class='warning webNotFound'><div class='icon'></div>The content of the page <a href='{0}'>{1}</a> doesn't match the content extraction scheme.</div>", notFoundUri, page);
             }
         }
         else
         {
             string notFoundUri = (otherUrl != null) ? otherUrl + page : Model.Config.WebDocumentation.GetAbsoluteUri(page).ToString();
-            return string.Format("<div class='error webNotFound'><div class='icon'></div>The page <a href='{0}'>{1}</a> could not be found in the extern web documentation.</div>", notFoundUri, page);
+            return string.Format("<div class='warning webNotFound'><div class='icon'></div>The page <a href='{0}'>{1}</a> could not be found in the extern web documentation.</div>", notFoundUri, page);
         }
     }
 }

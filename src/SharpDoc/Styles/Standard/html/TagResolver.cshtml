@@ -183,10 +183,47 @@
 
     public string ReplaceTxt(Match match)
     {
-        Model.debug();
         return string.Format("{0}</pre>{1}<pre {2}>", match.Groups["code"], match.Groups["text"], match.Groups["options"]); 
     }
+
+    
+
+
+
+    public string ReplaceClassLink(Match match)
+    {
+        string xmlCode = match.ToString();
+        
+        var document = new XmlDocument();
+        try
+        {
+            document.LoadXml(xmlCode);
+            var correspondingNode = document.DocumentElement;
+
+            var page = correspondingNode.Attributes["page"];
+            var name = correspondingNode.Attributes["name"];
+            if(page != null && name != null)
+            {
+                var correspondingLink = new LinkDescriptor();
+                correspondingLink.PageId = Path.GetFileNameWithoutExtension(page.Value);
+                correspondingLink.Name = name.Value;
+                correspondingLink.Attributes = null;
+                correspondingLink.Type = LinkType.Local;
+                correspondingLink.LocalReference = new NTopic();
+                correspondingLink.LocalReference.PageId = correspondingLink.PageId;
+
+                return Model.LinkResolver(correspondingLink);
+            }
+            else
+                return string.Empty;
+        }
+        catch(XmlException)
+        {
+            return string.Empty;
+        }
+    }
 }
+
 
 @{    
     Model.RegisterTagResolver(@"<see\s+cref=""(.*?)""\s*/>", ReplaceSee);
@@ -195,4 +232,6 @@
     Model.RegisterTagResolver(@"<codesection(.*?)>([\w\W]*?)</codesection>", ReplaceCodeSection);
     Model.RegisterTagResolver(@"<code(.*?)>([\w\W]*?)</code>", ReplaceCode);
     Model.RegisterTagResolver(@"<insert(.*?)>([\w\W]*?)</insert>", ReplaceInsert);
+
+    Model.RegisterWebTagResolver(@"<a class=""classLink""(.*?)>([\w\W]*?)</a>", ReplaceClassLink);
 }

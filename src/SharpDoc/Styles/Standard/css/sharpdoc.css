@@ -585,12 +585,12 @@
 	margin-left:4px;
 }
 
-.sharpdoc .error.webNotFound .icon
+.sharpdoc .warning.webNotFound .icon
 {
 	background-repeat:no-repeat;
 	height:17px;
 	width:17px;
-	background-image:url("../images/error.gif");
+	background-image:url("../images/warning.gif");
 }
 
 .sharpdoc-footer

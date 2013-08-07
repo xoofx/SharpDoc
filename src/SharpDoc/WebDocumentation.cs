@@ -88,9 +88,20 @@ namespace SharpDoc
                     request.ContentType = "application/x-www-form-urlencoded";
                     request.ContentLength = loginBytes.Length;
 
-                    Stream newStream = request.GetRequestStream();
-                    newStream.Write(loginBytes, 0, loginBytes.Length);
-                    newStream.Close();
+                    try
+                    {
+                        Stream newStream = request.GetRequestStream();
+                        newStream.Write(loginBytes, 0, loginBytes.Length);
+                        newStream.Close();
+                    }
+                    catch (WebException e)
+                    {
+                        if (e.Status == WebExceptionStatus.ProtocolError)
+                        {
+                            var statusCode = ((HttpWebResponse)e.Response).StatusCode;
+                            //if(statusCode == HttpStatusCode.)
+                        }
+                    }
                 }
 
                 try
@@ -114,7 +125,7 @@ namespace SharpDoc
                                 }
                             case HttpStatusCode.NotFound:
                                 {
-                                    Console.WriteLine("The web documentation page {1} could not be found", pageUri);
+                                    Console.WriteLine("The web documentation page {0} could not be found", pageUri);
                                     return null;
                                 }
                             default:

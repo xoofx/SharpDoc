@@ -56,7 +56,8 @@
                 );
         }
 
-        string pageId = member != null ? member.PageId : "index";
+        string pageId = (member != null) ? member.PageId : "index";
+        string pageTitle = (member != null) ? (member.PageTitle != null) ? member.PageTitle : "index" : "index";
 
         string path = Path.Combine(member == null ? model.OutputDirectory : Path.Combine(model.OutputDirectory, "html"), pageId) + Param.FileExt;
 
@@ -67,7 +68,7 @@
         if(model.IndexFile == null)
             model.IndexFile = new StreamWriter(Path.Combine(model.OutputDirectory, "index.txt"));
         if(member != null)
-            model.IndexFile.WriteLine(pageId + Param.FileExt);
+            model.IndexFile.WriteLine(string.Format("{0}{1}|{2}", pageId, Param.FileExt, pageTitle));
 
 		File.WriteAllText(path, content);
     }

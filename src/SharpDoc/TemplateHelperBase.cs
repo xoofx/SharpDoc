@@ -221,6 +221,16 @@ namespace SharpDoc
         }
 
         /// <summary>
+        /// Perform regular expression expansion.
+        /// </summary>
+        /// <param name="content">The web content to replace.</param>
+        /// <returns>The web content replaced</returns>
+        public string WebTagExpand(string webContent)
+        {
+            return Model.WebTagExpand(webContent);
+        }
+
+        /// <summary>
         /// Parses the specified template name.
         /// </summary>
         /// <param name="templateName">Name of the template.</param>
