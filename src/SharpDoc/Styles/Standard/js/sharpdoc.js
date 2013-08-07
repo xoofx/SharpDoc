@@ -178,30 +178,34 @@ function SplitPane(splitPaneId, splitPaneToggleId, splitPaneResizerId) {
 
 function openToc(nodeId)
 {
-    var node = $(nodeId + "_toc");
+    var node = $_(nodeId + "_toc");
     var nodeClass = node.get('class');
 
-    var subNodes = $(nodeId + "_SubTopics");
-    subNodes.set('class', 'visible');
+    var subNodes = $_(nodeId + "_SubTopics");
+    if (subNodes != undefined)
+        subNodes.set('class', 'visible');
+
     node.set('class', nodeClass.replace('closed', 'opened'));
 }
 
 function closeToc(nodeId) {
-    var node = $(nodeId + "_toc");
+    var node = $_(nodeId + "_toc");
     var nodeClass = node.get('class');
 
     // The highlighten topic could not be closed
     if (nodeClass.indexOf('highlight') == -1)
     {
-        var subNodes = $(nodeId + "_SubTopics");
-        subNodes.set('class', 'hidden');
+        var subNodes = $_(nodeId + "_SubTopics");
+        if (subNodes != undefined)
+            subNodes.set('class', 'hidden');
+
         node.set('class', nodeClass.replace('opened', 'closed'));
     }
 }
 
 function toggleToc(nodeId)
 {
-    var node = $(nodeId + "_toc");
+    var node = $_(nodeId + "_toc");
     var nodeClass = node.get('class');
     
     if (nodeClass.indexOf('closed') != -1)
@@ -225,14 +229,30 @@ function resizeMainFrame()
 
 function hightLightTopic(topicId)
 {
-    var oldHighlight = $$('.highlight');
+    var oldHighlight = $$_('.highlight');
     oldHighlight.each(function (old, oldId) {
         var oldClass = old.get('class');
         old.set('class', oldClass.replace(' highlight', ''));
     });
 
-    var newHightlight = $(topicId + '_toc');
+    var newHightlight = $_(topicId + '_toc');
     var newClass = newHightlight.get('class');
+
     newHightlight.set('class', newClass + ' highlight');
- 
+    openToc(topicId);
+}
+
+function $_(id)
+{
+    var element = $(id);
+    if (element == undefined)
+        element = window.parent.$(id);
+    return element;
+}
+
+function $$_(id) {
+    var elements = $$(id);
+    if (elements == undefined || elements.length == 0)
+        elements = window.parent.$$(id);
+    return elements;
 }
