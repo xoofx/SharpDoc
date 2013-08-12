@@ -232,6 +232,5 @@
     Model.RegisterTagResolver(@"<codesection(.*?)>([\w\W]*?)</codesection>", ReplaceCodeSection);
     Model.RegisterTagResolver(@"<code(.*?)>([\w\W]*?)</code>", ReplaceCode);
     Model.RegisterTagResolver(@"<insert(.*?)>([\w\W]*?)</insert>", ReplaceInsert);
-
-    Model.RegisterWebTagResolver(@"<a class=""classLink""(.*?)>([\w\W]*?)</a>", ReplaceClassLink);
+    Model.RegisterTagResolver(@"<a class=""classLink""(.*?)>([\w\W]*?)</a>", ReplaceClassLink);
 }

@@ -41,7 +41,6 @@ namespace SharpDoc
     {
         private const string StyleDirectory = "Styles";
         private List<TagExpandItem> _regexItems;
-        private List<TagExpandItem> _webRegexItems;
         private MsdnRegistry _msnRegistry;
         private bool assembliesProcessed;
         private bool topicsProcessed;
@@ -56,7 +55,6 @@ namespace SharpDoc
         {
             StyleDirectories = new List<string>();
             _regexItems = new List<TagExpandItem>();
-            _webRegexItems = new List<TagExpandItem>();
             _msnRegistry = new MsdnRegistry();
             Param = new DynamicParam();
             Style = new DynamicParam();
@@ -674,26 +672,6 @@ namespace SharpDoc
         }
 
         /// <summary>
-        /// Add regular expression for WebTagExpand function.
-        /// </summary>
-        /// <param name="regexp">The regexp.</param>
-        /// <param name="substitution">The substitution.</param>
-        public void RegisterWebTagResolver(string regexp, string substitution)
-        {
-            _webRegexItems.Add(new TagExpandItem(new Regex(regexp), substitution));
-        }
-
-        /// <summary>
-        /// Add regular expression for WebRegexExpand function.
-        /// </summary>
-        /// <param name="regexp">The regexp.</param>
-        /// <param name="evaluator">The evaluator.</param>
-        public void RegisterWebTagResolver(string regexp, MatchEvaluator evaluator)
-        {
-            _webRegexItems.Add(new TagExpandItem(new Regex(regexp), evaluator));
-        }
-
-        /// <summary>
         /// Perform regular expression expansion.
         /// </summary>
         /// <param name="content">The content to replace.</param>
@@ -705,20 +683,6 @@ namespace SharpDoc
                 content = regexItem.Replace(content);
             }
             return content;
-        }
-
-        /// <summary>
-        /// Perform regular expression expansion.
-        /// </summary>
-        /// <param name="content">The web content to replace.</param>
-        /// <returns>The web content replaced</returns>
-        public string WebTagExpand(string webContent)
-        {
-            foreach (var regexItem in _webRegexItems)
-            {
-                webContent = regexItem.Replace(webContent);
-            }
-            return webContent;
         }
 
         /// <summary>
