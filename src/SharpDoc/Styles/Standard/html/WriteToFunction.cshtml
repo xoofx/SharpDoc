@@ -68,7 +68,13 @@
         if(model.IndexFile == null)
             model.IndexFile = new StreamWriter(Path.Combine(model.OutputDirectory, "index.txt"));
         if(member != null)
-            model.IndexFile.WriteLine(string.Format("{0}{1}|{2}", pageId, Param.FileExt, pageTitle));
+        {
+            var method = member as NMethod;
+            if(method != null)
+                model.IndexFile.WriteLine(string.Format("{0}{1}|{2}|{3}", pageId, Param.FileExt, pageTitle, method.Signature));
+            else
+                model.IndexFile.WriteLine(string.Format("{0}{1}|{2}", pageId, Param.FileExt, pageTitle));
+        }
 
 		File.WriteAllText(path, content);
     }
