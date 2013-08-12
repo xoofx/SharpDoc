@@ -64,7 +64,15 @@
         <td class="icon-col">@Helpers.Icons.GetIcons(member)</td>
     }
     <td class="platicon-col">@Helpers.Icons.GetPlatformIcons(member)</td>
-    <td class="name-col">@ToUrl(member, displayName, !(Model.CurrentContext is NEnum))</td>
+
+    @if(Model.CurrentContext is NEnum)
+    {
+        <td class="name-col"><a href="#">@member.Name</a></td>
+    }
+    else
+    {
+        <td class="name-col">@ToUrl(member, displayName, true)</td>
+    }
 	@if (rowContext.DisplayUnmanagedColumn)
      {
          <td class="unman-col"><a target="_blank" href="http://msdn.microsoft.com/en-us/library/@(member.MsdnId).aspx">@member.UnManagedShortApi</a></td>
