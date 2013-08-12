@@ -380,7 +380,12 @@ namespace SharpDoc
             } else if (linkDescriptor.LocalReference != null)
             {
                 // For local references, use short name
-                linkDescriptor.Name = linkDescriptor.LocalReference.Name;
+                var method = linkDescriptor.LocalReference as NMethod;
+                if (method != null)
+                    linkDescriptor.Name = method.Signature;
+                else
+                    linkDescriptor.Name = linkDescriptor.LocalReference.Name;
+
                 linkDescriptor.PageId = linkDescriptor.LocalReference.PageId;
                 linkDescriptor.Type = LinkType.Local;
                 linkDescriptor.Index = linkDescriptor.LocalReference.Index;

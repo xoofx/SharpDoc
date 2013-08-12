@@ -36,7 +36,7 @@
             return;
         
         var topicLink = topic;
-        var url = Model.ToUrl(topicLink, topic.Name, false, isHighlight ? " class='highlight'" : "");
+        var url = Model.ToUrl(topicLink, null, false, isHighlight ? " class='highlight'" : "");
         string className = (topic.SubTopics.Count > 0) ?  "composed" : "terminal";
         string isOpen = (level > 1) ? " closed" : " opened"; 
 
