@@ -24,15 +24,28 @@
 *@
 @model SharpDoc.TemplateContext
 @using SharpDoc.Model
-<iframe id='mainFrame' name = 'mainFrame' src='@Model.RootTopic.PageId@Param.FileExt' frameborder='0' scrolling='auto' width='100%' onLoad="resizeMainFrame();"></iframe>
+<iframe id='mainFrame' name = 'mainFrame' frameborder='0' scrolling='auto' width='100%' onLoad="resizeMainFrame();"></iframe>
 
 <script type="text/javascript" language="JavaScript">
+
+    var hasOriginPage = false;
     var data = window.location.search;
+
     if(data != null && data !="")
     {
-        var origin = data.replace("?origin=", "");   
-        $("mainFrame").setAttribute("src", origin + "@Param.FileExt");
-        hightLightTopic(origin);
-        toggleToc(origin);
+        var pattern = /page=(\w+)/;
+        var page = pattern.exec(data);
+        if(page != null)
+        {
+            hasOriginPage = true;
+            $("mainFrame").setAttribute("src", page[1] + "@Param.FileExt");
+            hightLightTopic(page[1]);
+        }
+    }
+
+    if(!hasOriginPage)
+    {
+        $("mainFrame").setAttribute("src", "@Model.RootTopic.PageId@Param.FileExt");
+        hightLightTopic("api");
     }
 </script>

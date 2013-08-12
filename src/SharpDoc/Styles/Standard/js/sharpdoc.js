@@ -181,11 +181,20 @@ function openToc(nodeId)
     var node = $_(nodeId + "_toc");
     var nodeClass = node.get('class');
 
-    var subNodes = $_(nodeId + "_SubTopics");
-    if (subNodes != undefined)
-        subNodes.set('class', 'visible');
+    if (nodeClass.indexOf('opened') == -1)
+    {
+        var subNodes = $_(nodeId + "_SubTopics");
+        if (subNodes != undefined)
+            subNodes.set('class', 'visible');
 
-    node.set('class', nodeClass.replace('closed', 'opened'));
+        node.set('class', nodeClass.replace('closed', 'opened'));
+    }
+
+    var parent = node.getParent().id;
+    var pattern = /(\w+)_SubTopics/;
+    var parentId = pattern.exec(parent);
+    if (parentId != null)
+        openToc(parentId[1]);
 }
 
 function closeToc(nodeId) {
