@@ -1,0 +1,65 @@
+div.title
+{
+	color:			#152D8B;
+	font-size:		17px;
+}
+
+div.subtitle
+{
+	color:			#3E6ADB;
+	font-size:		13px;
+}
+
+div.error
+{
+	color:			#3E6ADB;
+}
+
+p.result
+{
+	color:			#505050;
+	font-size:		13px;
+}
+
+li.page
+{
+	cursor:			pointer;
+	list-style-type:circle;
+}
+
+li.page:hover
+{
+	color:			#326CA6;
+}
+
+li.page .object
+{
+	
+}
+
+li.page .object.incorrect
+{
+	text-decoration: line-through;
+}
+
+li.page .type, li.page .namespace
+{
+	font-size:		12px;
+	font-style:		italic;
+	color:			#757575;
+}
+
+
+a.classLink
+{
+	background: 	none repeat scroll 0% 0% rgb(245, 245, 245);
+	border: 		1px solid rgb(221, 221, 221);
+	padding: 		0px 2px;
+	border-radius: 	3px 3px 3px 3px;
+	text-decoration: none;
+}
+
+a.classLink:focus, a.classLink:hover, a.classLink:active
+{
+	font-weight:	bold;
+}

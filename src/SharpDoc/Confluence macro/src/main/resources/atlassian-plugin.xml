@@ -1,0 +1,75 @@
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}" />
+        <param name="plugin-icon">/download/resources/${project.groupId}.${project.artifactId}/images/pluginIcon1.png</param>
+        <param name="plugin-logo">/download/resources/${project.groupId}.${project.artifactId}/images/pluginLogo1.png</param>
+    </plugin-info>
+    
+    
+    <xhtml-macro name="add-doc-link" class="docLink.Macro1" key="my-macro" icon="/download/resources/${project.groupId}.${project.artifactId}/images/pluginLogo1.png">
+    
+        <!-- The parameters of the macro -->
+    
+    	<parameters>
+    	
+    		<parameter name="project" type="string"/>
+    		
+    		<parameter name="pageUrl" type="string"/>
+    		
+    		<parameter name="txt" type="string">
+    			<option key="showKeyInPlaceholder" value="false"/>
+    			<option key="showValueInPlaceholder" value="true"/>
+    		</parameter>
+    		
+	    	<parameter name="type" type="enum">
+	            <value name="Api"/>
+	            <value name="Constructor"/>
+	            <value name="Class"/>
+	            <value name="Delegate"/>
+	            <value name="Enumeration"/>
+	            <value name="Event"/>
+	            <value name="Field"/>
+	            <value name="Interface"/>      
+	            <value name="Method"/>
+	            <value name="Namespace"/>
+	            <value name="Property"/>
+	            <value name="Struct"/>
+	        </parameter>
+	        
+    		<parameter name="namespace" type="string"/>
+    		
+    		<parameter name="parent" type="string"/>
+    		
+    		<parameter name="name" type="string"/>
+    		
+    	</parameters>
+	</xhtml-macro>
+ 
+ 
+ 
+ 
+    <!-- The files or directories uploaded on the server for the macro -->
+    
+    <resource type="i18n" name="i18n" location="macro1"/>
+	<resource type="download" name="images/" location="/images" key="images"/>
+	<resource type="download" name="js/" location="/js" key="javascript"/>
+	<resource type="download" name="css/" location="/css" key="css"/>
+
+    
+    <!-- The web resources of the macro -->
+    <web-resource key="macro1-resources" name="macro1 Web Resources">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+        
+        <resource type="download" name="macro1.css" location="/css/macro1.css"/>
+        <resource type="download" name="macro1.js" location="/js/macro1.js"/>
+        <resource type="download" name="images/" location="/images"/>
+
+        <context>macro1</context>
+    </web-resource>
+    
+    <!-- import from the product container -->
+    <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties" />
+    
+</atlassian-plugin>
