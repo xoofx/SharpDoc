@@ -96,10 +96,15 @@ namespace SharpDoc
                     }
                     catch (WebException e)
                     {
-                        if (e.Status == WebExceptionStatus.ProtocolError)
+                        if (e.Status == WebExceptionStatus.ConnectFailure)
                         {
-                            var statusCode = ((HttpWebResponse)e.Response).StatusCode;
-                            //if(statusCode == HttpStatusCode.)
+                            Console.WriteLine("The web documentation server {0} could not be connected", pageUri.Host);
+                            return null;
+                        }
+                        else
+                        {
+                            Console.WriteLine("An error occurs with the web documentation page {0}", pageUri);
+                            return null;
                         }
                     }
                 }
