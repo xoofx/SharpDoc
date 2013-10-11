@@ -110,21 +110,24 @@ namespace SharpDoc
         /// Gets or sets the extern documentation webSite connection.
         /// </summary>
         /// <value>The the extern documentation webSite connection.</value>
-        [XmlElement("webDocumentation")]
+        //[XmlElement("webDocumentation")]
+        [XmlIgnore]
         public WebDocumentation WebDocumentation { get; set; }
 
         /// <summary>
         /// Gets or sets the extern documentation webSite url.
         /// </summary>
         /// <value>The extern documentation webSite url.</value>
-        [XmlElement("webDocumentationUrl")]
+        //[XmlElement("webDocumentationUrl")]
+        [XmlIgnore]
         public string WebDocumentationUrl { get; set; }
 
         /// <summary>
         /// Gets or sets the extern documentation webSite login.
         /// </summary>
         /// <value>The the extern documentation webSite login.</value>
-        [XmlElement("webDocumentationLogin")]
+        //[XmlElement("webDocumentationLogin")]
+        [XmlIgnore]
         public NetworkCredential WebDocumentationLogin { get; set; }
 
 
@@ -172,7 +175,8 @@ namespace SharpDoc
         /// Gets or sets the doc pak.
         /// </summary>
         /// <value>The doc pak.</value>
-        [XmlElement("docpak")]
+        //[XmlElement("docpak")]
+        [XmlIgnore]
         public ConfigDocPak DocPak { get; set; }
 
         /// <summary>
