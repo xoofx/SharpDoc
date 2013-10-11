@@ -1045,14 +1045,17 @@ namespace SharpDoc
 
         public void ProcessExtensionMethods()
         {
-            foreach (var extensionMethod in extensionMethodList)
+            foreach (var extensionMethod in extensionMethodList.Where(x => x != null))
             {
-                var extendedTypeReference = _registry.FindById(extensionMethod.ExtendedType.Id);
-                var extendedType = extendedTypeReference as NType;
-                if (extendedType != null)
+                if (extensionMethod.ExtendedType != null)
                 {
-                    extensionMethod.Method.Parent = extendedType;
-                    AddExtensionMethod(extendedType, extensionMethod.Method);
+                    var extendedTypeReference = _registry.FindById(extensionMethod.ExtendedType.Id);
+                    var extendedType = extendedTypeReference as NType;
+                    if (extendedType != null)
+                    {
+                        extensionMethod.Method.Parent = extendedType;
+                        AddExtensionMethod(extendedType, extensionMethod.Method);
+                    }
                 }
             }
         }

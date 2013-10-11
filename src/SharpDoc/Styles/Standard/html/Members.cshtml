@@ -67,7 +67,7 @@
                         postDesc.AppendFormat("Defined by {0}", ToUrl(extensionMethod.ExtensionSource, extensionMethod.ExtensionSource.Name, true));
                     }
                 }
-                else if (memberRef.DeclaringType.Id != context.Id)
+                else if (memberRef.DeclaringType != null && memberRef.DeclaringType.Id != context.Id)
                     postDesc.AppendFormat("Inherited from {0}", ToUrl(memberRef.DeclaringType, memberRef.DeclaringType.Name, true));
             }
             
