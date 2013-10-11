@@ -724,7 +724,7 @@ namespace SharpDoc
                 Logger.PushLocation(location);
                 Logger.Error("Unexpected exception", ex);
                 Logger.PopLocation();
-                throw ex;
+                throw;
             }
             return "";
         }
