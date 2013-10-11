@@ -32,6 +32,8 @@ using SharpDoc;
 using SharpDoc.Logging;
 using SharpDoc.Model;
 
+using System.Linq;
+
 namespace SharpDoc
 {
     /// <summary>
@@ -358,6 +360,16 @@ namespace SharpDoc
         /// <returns></returns>
         public string ToUrl(string id, string linkName = null, bool forceLocal = false, string attributes = null, IModelReference localReference = null, bool useSelf = true)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                return "#";
+
+            id = id.Trim();
+            if (id.StartsWith("!:"))
+                id = id.Substring(2);
+
+            if (id.Length == 0)
+                return "#";
+
             var linkDescriptor = new LinkDescriptor { Type = LinkType.None, Index = -1 };
             var typeReference = localReference as NTypeReference;
             NTypeReference genericInstance = null;

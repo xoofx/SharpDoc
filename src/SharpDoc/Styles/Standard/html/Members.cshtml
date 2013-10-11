@@ -43,6 +43,9 @@
 -->
 @helper Dump(IEnumerable<NModelBase> membersIt, bool showIcons, IModelReference context)
     {
+        if (membersIt == null)
+            throw new ArgumentNullException("membersIt");
+
         dynamic rowContext = new ExpandoObject();
         var members = membersIt.ToList();
 		@Helpers.MembersRow.Prepare(members, rowContext);
@@ -60,7 +63,8 @@
                 if(memberRef.IsExtensionMethod)
                 {
                     var extensionMethod = memberRef as NMethod;
-                    if(extensionMethod != null && extensionMethod.ExtensionSource.Id != context.Id)
+
+                    if(extensionMethod != null && extensionMethod.ExtensionSource != null && extensionMethod.ExtensionSource.Id != context.Id)
                     {
                         if(postDesc.Length > 1)
                             postDesc.Append(", ");
@@ -84,12 +88,20 @@
                 {
                     if (overridable.Overrides != null)
                     {
-                        var overriddename = string.Format("{0}.{1}()", overridable.Overrides.DeclaringType.Name, overridable.Overrides.Name);
+                        string overriddename = null;
+                        if (overridable.Overrides.DeclaringType != null)
+                            overriddename = string.Format("{0}.{1}()", overridable.Overrides.DeclaringType.Name, overridable.Overrides.Name);
+                        else
+                            overriddename = string.Format("{0}()", overridable.Overrides.Name);
                         postDesc.AppendFormat("Overrides {0}", ToUrl(overridable.Overrides, overriddename, true));
                     } 
 					else if (overridable.Implements != null)
-                    {
-                        var implementName = string.Format("{0}.{1}()", overridable.Implements.DeclaringType.Name, overridable.Implements.Name);
+                    { 
+                        string implementName = null;
+                        if (overridable.Implements.DeclaringType != null)
+                            implementName = string.Format("{0}.{1}()", overridable.Implements.DeclaringType.Name, overridable.Implements.Name);
+                        else
+                            implementName = string.Format("{0}()", overridable.Implements.Name);
                         postDesc.AppendFormat("Implements {0}", ToUrl(overridable.Implements, implementName, true));
                     }
                 }
