@@ -212,15 +212,6 @@ namespace SharpDoc
             // Setup the context based on the config and StyleManager
             context.Initialize();
 
-            // Delete output directory first
-            try
-            {
-                if (Directory.Exists(context.OutputDirectory))
-                    Directory.Delete(context.OutputDirectory, true);
-            } catch
-            {
-            }
-
             // Verify the validity of the style
             foreach (var styleName in Config.StyleNames)
             {
