@@ -121,6 +121,9 @@
 
 @{ 
     Model.GetWebDocContent = GetWikiContent;
-    Model.Config.WebDocumentation.FormatCredential = FormatCredentialForAuthentification;
-    Model.Config.WebDocumentation.Authentify();
+    if (Model.Config.WebDocumentation != null)
+    {
+        Model.Config.WebDocumentation.FormatCredential = FormatCredentialForAuthentification;
+        Model.Config.WebDocumentation.Authentify();
+    }
 }
