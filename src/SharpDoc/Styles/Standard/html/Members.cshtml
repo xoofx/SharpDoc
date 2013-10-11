@@ -57,9 +57,6 @@
 
             if (context != null && memberRef != null)
             {
-                if(memberRef.DeclaringType.Id != context.Id)
-                    postDesc.AppendFormat("Inherited from {0}", ToUrl(memberRef.DeclaringType, memberRef.DeclaringType.Name, true));
-
                 if(memberRef.IsExtensionMethod)
                 {
                     var extensionMethod = memberRef as NMethod;
@@ -70,6 +67,8 @@
                         postDesc.AppendFormat("Defined by {0}", ToUrl(extensionMethod.ExtensionSource, extensionMethod.ExtensionSource.Name, true));
                     }
                 }
+                else if (memberRef.DeclaringType.Id != context.Id)
+                    postDesc.AppendFormat("Inherited from {0}", ToUrl(memberRef.DeclaringType, memberRef.DeclaringType.Name, true));
             }
             
             var overridable = member as IOverridable;
