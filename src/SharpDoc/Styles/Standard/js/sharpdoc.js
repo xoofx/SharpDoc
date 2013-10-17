@@ -224,18 +224,6 @@ function toggleToc(nodeId)
    
 }
 
-function resizeMainFrame()
-{
-    window.addEvent('domready', function () {
-        var windowSize = window.getSize().y;
-        var headerSize = $('header').getSize().y;
-        var contentHeaderSize = $('content-header').getSize().y;
-        var footerSize = $('footer').getSize().y;
-        var h = windowSize - headerSize - contentHeaderSize - footerSize - 50;
-        $('mainFrame').setStyle("height", h);
-    });
-}
-
 function hightLightTopic(topicId)
 {
     var oldHighlight = $$_('.highlight');

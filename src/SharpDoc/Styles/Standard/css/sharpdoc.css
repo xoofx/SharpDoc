@@ -30,6 +30,12 @@
 	opacity:1px;
 }
 
+
+
+#mainFrame {
+    height: 100%;
+}
+
 #sharpdoc-search-str
 {
 	background:transparent url(../images/search-icon.png) 99% 4px no-repeat !important;
@@ -104,6 +110,11 @@
 {
 	padding-left:1em;
 	width:250px;
+}
+
+.sharpdoc .content {
+    height: 100%;
+    padding-bottom: 40px;
 }
 
 .sharpdoc .content .section .members
@@ -385,7 +396,7 @@
 
 .sharpdoc .content .section .members th.name-col
 {
-	width:15%;
+	width:30%;
 }
 
 .sharpdoc .content .section .members td.unman-col
