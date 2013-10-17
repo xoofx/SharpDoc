@@ -23,6 +23,7 @@
 // -------------------------------------------------------------------------------
 *@
 @model SharpDoc.TemplateContext
+@using System
 @using SharpDoc.Model
 @using System.Text;
 @using System.Xml;
@@ -54,7 +55,7 @@
             {
                 Model.Config.WebDocumentation.LimitDocumentToElement(content);
                 Model.Config.WebDocumentation.InternalizeImages(Model.OutputDirectory, Model.Param.LinkToImg);
-                Model.Config.WebDocumentation.UseAbsoluteUrls();
+                Model.Config.WebDocumentation.InternalizeUrls();
 
                 var idAttr = webDocNode.Attributes["id"];
                 var titleAttr = webDocNode.Attributes["title"];

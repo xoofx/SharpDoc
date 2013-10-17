@@ -11,12 +11,13 @@ using Mono.Options;
 
 namespace SharpDoc
 {
-    public class WebDocumentation : WebClient
+    public class WebDocumentation
     {
         private byte[] loginBytes;
         private Uri siteHome;
         private Uri currentUrl;
         private bool siteNeedAuthentification;
+        private NetworkCredential Credentials;
 
         public HtmlDocument currentDocument { get; set; }
 
@@ -76,70 +77,48 @@ namespace SharpDoc
             return LoadPage(new Uri( currentUrl, page), authentification);
         }
 
+        private static void PrepareRequest(HttpWebRequest request, CookieContainer cookies)
+        {
+            request.AllowWriteStreamBuffering = true;
+            request.KeepAlive = true;
+            request.UserAgent = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.69 Safari/537.36";
+            request.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
+            request.Headers.Add("Accept-Language", "en-US,en;q=0.8");
+            request.Host = request.Host;
+            request.CookieContainer = cookies;
+        }
+
+        CookieContainer cookies = new CookieContainer();
+        private bool isAlreadyAuthenticate = false;
+
         public Stream LoadPage(Uri pageUri, bool authentification = true)
         {
             if (pageUri.IsWellFormedOriginalString())
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(pageUri);
-                if (authentification && siteNeedAuthentification)
+                HttpWebRequest request;
+                if (authentification && siteNeedAuthentification && !isAlreadyAuthenticate)
                 {
+                    request = (HttpWebRequest)WebRequest.Create(pageUri);
+                    PrepareRequest(request, cookies);
+
                     request.Method = WebRequestMethods.Http.Post;
                     request.AllowWriteStreamBuffering = true;
                     request.ContentType = "application/x-www-form-urlencoded";
                     request.ContentLength = loginBytes.Length;
 
-                    try
-                    {
-                        Stream newStream = request.GetRequestStream();
-                        newStream.Write(loginBytes, 0, loginBytes.Length);
-                        newStream.Close();
-                    }
-                    catch (WebException e)
-                    {
-                        if (e.Status == WebExceptionStatus.ConnectFailure)
-                        {
-                            Console.WriteLine("The web documentation server {0} could not be connected", pageUri.Host);
-                            return null;
-                        }
-                        else
-                        {
-                            Console.WriteLine("An error occurs with the web documentation page {0}", pageUri);
-                            return null;
-                        }
-                    }
+                    Stream newStream = request.GetRequestStream();
+                    newStream.Write(loginBytes, 0, loginBytes.Length);
+                    newStream.Close();
+
+                    // Just eat the response
+                    var result = request.GetResponse().GetResponseStream();
+                    new StreamReader(result).ReadToEnd();
+                    isAlreadyAuthenticate = true;
                 }
 
-                try
-                {
-                    return request.GetResponse().GetResponseStream();
-                }
-                catch (WebException e)
-                {
-                    if (e.Status == WebExceptionStatus.ProtocolError)
-                    {
-                        var statusCode = ((HttpWebResponse)e.Response).StatusCode;
-                        switch (statusCode)
-                        {
-                            case HttpStatusCode.MethodNotAllowed:
-                                {
-                                    // if the authentification failed, try without it
-                                    if (authentification == true)
-                                        return LoadPage(pageUri, false);
-                                    else
-                                        throw e;
-                                }
-                            case HttpStatusCode.NotFound:
-                                {
-                                    Console.WriteLine("The web documentation page {0} could not be found", pageUri);
-                                    return null;
-                                }
-                            default:
-                                throw e;
-                        }
-                    }
-                    else
-                        throw e;
-                }
+                request = (HttpWebRequest)WebRequest.Create(pageUri);
+                PrepareRequest(request, cookies);
+                return request.GetResponse().GetResponseStream();
             }
             else
             {
@@ -249,7 +228,11 @@ namespace SharpDoc
                 string newImageRelativePath = Path.Combine(linkToImgDir, newImageName);
 
                 if (!File.Exists(newImageAboslutePath))
-                    DownloadFile(absoluteImageUrl, newImageAboslutePath);
+                {
+                    using (var stream = LoadPage(absoluteImageUrl))
+                    using (var outputStream = new FileStream(newImageAboslutePath, FileMode.Create, FileAccess.Write, FileShare.Write))
+                        stream.CopyTo(outputStream);
+                }
 
                 node.SetAttributeValue("src", newImageRelativePath);
             }
@@ -275,19 +258,30 @@ namespace SharpDoc
             return selectCssRules.Replace(cssContent, IsolateCss);
         }
 
-        public void UseAbsoluteUrls()
+        public void InternalizeUrls()
         {
             // select all link <a> tags
             var nodes = currentDocument.DocumentNode.SelectNodes("//a[@href]");
             if (nodes == null)
                 return;
+            var siteUrl = siteHome.ToString();
+
             foreach (var node in nodes)
             {
                 string href = node.GetAttributeValue("href", string.Empty);
                 if(!Uri.IsWellFormedUriString(href, UriKind.Absolute))
                 {
                     Uri absoluteUri = new Uri(currentUrl, href);
-                    node.SetAttributeValue("href", absoluteUri.ToString());
+                    var docUrl = absoluteUri.ToString();
+                    node.SetAttributeValue("href", docUrl);
+
+                    if (docUrl.StartsWith(siteUrl))
+                    {
+                        // Replace a href by a <see cref=""></see>
+                        node.Attributes.RemoveAll();
+                        node.Name = "see";
+                        node.SetAttributeValue("cref", docUrl.Substring(siteUrl.Length));
+                    }
                 }
             }
 

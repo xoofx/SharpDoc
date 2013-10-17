@@ -23,3 +23,5 @@
 // Override this template to modify the generated html pre-footer for all body
 // -------------------------------------------------------------------------------
 *@
+@model SharpDoc.TemplateContext
+<div id="content-header" class="content-header"><strong>Last Update: </strong>@DateTime.Now.ToString("MMM yyyy", CultureInfo.InvariantCulture)</div>
