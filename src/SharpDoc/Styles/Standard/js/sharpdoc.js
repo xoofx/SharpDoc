@@ -33,6 +33,15 @@ function supports_local_storage() {
   }
 }
 
+function autoResize(id) {
+    if (document.getElementById) {        
+        var newheight = document.getElementById(id).contentWindow.document.body.scrollHeight;
+        var newwidth = document.getElementById(id).contentWindow.document.body.scrollWidth;
+        document.getElementById(id).height = (newheight) + "px";
+        document.getElementById(id).width = (newwidth) + "px";
+    }
+}
+
 /*
   http://webfreak.no/wp/2007/09/05/get-for-mootools-a-way-to-read-get-variables-with-javascript-in-mootools/
 Function: $get
