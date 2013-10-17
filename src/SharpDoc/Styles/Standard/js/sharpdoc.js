@@ -26,19 +26,20 @@
 // splitPaneResizerId: id to the resizer grip
 
 function supports_local_storage() {
-  try {
-    return 'localStorage' in window && window['localStorage'] !== null && window.localStorage['getItem'] !== null;
-  } catch(e){
-    return false;
-  }
+    try {
+        return 'localStorage' in window && window['localStorage'] !== null && window.localStorage['getItem'] !== null;
+    } catch (e) {
+        return false;
+    }
 }
 
 function autoResize(id) {
-    if (document.getElementById) {        
-        var newheight = document.getElementById(id).contentWindow.document.body.scrollHeight;
-        var newwidth = document.getElementById(id).contentWindow.document.body.scrollWidth;
-        document.getElementById(id).height = (newheight) + "px";
-        document.getElementById(id).width = (newwidth) + "px";
+    if (document.getElementById) {
+        var newheight = "100%";
+        if (Browser.firefox || Browser.ie) {
+            newheight = (document.getElementById(id).contentWindow.document.body.scrollHeight) + "px";
+        }
+        document.getElementById(id).height = newheight;
     }
 }
 
@@ -71,31 +72,31 @@ Credits:
 		Regex from [url=http://www.netlobo.com/url_query_string_javascript.html]http://www.netlobo.com/url_query_string_javascript.html[/url]
 		Function by Jens Anders Bakke, webfreak.no
 */
-function $get(key,url){
-	if(arguments.length < 2) url =location.href;
-	if(arguments.length > 0 && key != ""){
-		if(key == "#"){
-			var regex = new RegExp("[#]([^$]*)");
-		} else if(key == "?"){
-			var regex = new RegExp("[?]([^#$]*)");
-		} else {
-			var regex = new RegExp("[?&]"+key+"=([^&#]*)");
-		}
-		var results = regex.exec(url);
-		return (results == null )? "" : results[1];
-	} else {
-		url = url.split("?");
-		var results = {};
-			if(url.length > 1){
-				url = url[1].split("#");
-				if(url.length > 1) results["hash"] = url[1];
-				url[0].split("&").each(function(item,index){
-					item = item.split("=");
-					results[item[0]] = item[1];
-				});
-			}
-		return results;
-	}
+function $get(key, url) {
+    if (arguments.length < 2) url = location.href;
+    if (arguments.length > 0 && key != "") {
+        if (key == "#") {
+            var regex = new RegExp("[#]([^$]*)");
+        } else if (key == "?") {
+            var regex = new RegExp("[?]([^#$]*)");
+        } else {
+            var regex = new RegExp("[?&]" + key + "=([^&#]*)");
+        }
+        var results = regex.exec(url);
+        return (results == null) ? "" : results[1];
+    } else {
+        url = url.split("?");
+        var results = {};
+        if (url.length > 1) {
+            url = url[1].split("#");
+            if (url.length > 1) results["hash"] = url[1];
+            url[0].split("&").each(function (item, index) {
+                item = item.split("=");
+                results[item[0]] = item[1];
+            });
+        }
+        return results;
+    }
 }
 
 
@@ -111,14 +112,14 @@ function InstallCodeTabs() {
                 tabs[index].addClass('selected');
                 content[index].addClass('selected');
             });
-        });    
-    });  
+        });
+    });
 }
 
 function SplitPane(splitPaneId, splitPaneToggleId, splitPaneResizerId) {
 
     // Define column elemnts
-    var paneLeft = $(splitPaneId); 
+    var paneLeft = $(splitPaneId);
     var splitPaneToggle = $(splitPaneToggleId);
 
     var paneLeftMinWidth = 100;
@@ -130,7 +131,7 @@ function SplitPane(splitPaneId, splitPaneToggleId, splitPaneResizerId) {
             var value = localStorage.getItem('sharpdoc-resize');
             if (value == 0) {
                 splitPaneToggle.set('class', 'expand');
-                paneLeft.setStyle('display','none');
+                paneLeft.setStyle('display', 'none');
             }
             paneLeft.setStyle('width', value);
         }
@@ -153,11 +154,11 @@ function SplitPane(splitPaneId, splitPaneToggleId, splitPaneResizerId) {
     });
 
     var topTitle = $$('h1.content-title');
-    
+
     var expandCollapseFunction = function (event) {
         if (paneLeft.getWidth() < paneLeftMinWidth) {
             splitPaneToggle.set('class', 'collapse');
-            paneLeft.setStyle('display','block');
+            paneLeft.setStyle('display', 'block');
             paneLeft.morph({
                 'width': paneLeftOriginalWidth,
                 'opacity': '1'
@@ -167,10 +168,10 @@ function SplitPane(splitPaneId, splitPaneToggleId, splitPaneResizerId) {
             }
         } else {
             splitPaneToggle.set('class', 'expand');
-            paneLeft.set('morph', {link: 'chain'}).morph({
+            paneLeft.set('morph', { link: 'chain' }).morph({
                 'width': '1',
                 'opacity': '0'
-            }).morph({'display': 'none'});
+            }).morph({ 'display': 'none' });
 
             if (supports_local_storage()) {
                 localStorage.setItem('sharpdoc-resize', 0);
@@ -185,13 +186,11 @@ function SplitPane(splitPaneId, splitPaneToggleId, splitPaneResizerId) {
     }
 }
 
-function openToc(nodeId)
-{
+function openToc(nodeId) {
     var node = $_(nodeId + "_toc");
     var nodeClass = node.get('class');
 
-    if (nodeClass.indexOf('opened') == -1)
-    {
+    if (nodeClass.indexOf('opened') == -1) {
         var subNodes = $_(nodeId + "_SubTopics");
         if (subNodes != undefined)
             subNodes.set('class', 'visible');
@@ -211,8 +210,7 @@ function closeToc(nodeId) {
     var nodeClass = node.get('class');
 
     // The highlighten topic could not be closed
-    if (nodeClass.indexOf('highlight') == -1)
-    {
+    if (nodeClass.indexOf('highlight') == -1) {
         var subNodes = $_(nodeId + "_SubTopics");
         if (subNodes != undefined)
             subNodes.set('class', 'hidden');
@@ -221,20 +219,18 @@ function closeToc(nodeId) {
     }
 }
 
-function toggleToc(nodeId)
-{
+function toggleToc(nodeId) {
     var node = $_(nodeId + "_toc");
     var nodeClass = node.get('class');
-    
+
     if (nodeClass.indexOf('closed') != -1)
         openToc(nodeId);
     else
         closeToc(nodeId);
-   
+
 }
 
-function hightLightTopic(topicId)
-{
+function hightLightTopic(topicId) {
     var oldHighlight = $$_('.highlight');
     oldHighlight.each(function (old, oldId) {
         var oldClass = old.get('class');
@@ -248,8 +244,7 @@ function hightLightTopic(topicId)
     openToc(topicId);
 }
 
-function $_(id)
-{
+function $_(id) {
     var element = $(id);
     if (element == undefined)
         element = window.parent.$(id);
