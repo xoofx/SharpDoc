@@ -188,6 +188,13 @@ namespace SharpDoc.Model
         public List<string> Resources { get; set; }
 
         /// <summary>
+        /// Gets or sets the web document.
+        /// </summary>
+        /// <value>The web document.</value>
+        [XmlAttribute("webdoc")]
+        public string WebDoc { get; set; }
+
+        /// <summary>
         /// Gets or sets the html content. This is loaded from the filename.
         /// </summary>
         /// <value>The content.</value>
@@ -391,12 +398,7 @@ namespace SharpDoc.Model
             if (Id != ClassLibraryTopicId)
             {
                 // Load content file
-                if (string.IsNullOrEmpty(FileName))
-                {
-                    // Check that filename is valid
-                    Logger.Error("Filname for topic [{0}] cannot be empty", this);
-                }
-                else
+                if (!string.IsNullOrEmpty(FileName))
                 {
                     string filePath = null;
                     try
@@ -425,6 +427,15 @@ namespace SharpDoc.Model
                     {
                         Logger.Error("Cannot load content for topic [{0}] from path [{1}]. Reason: {2}", this, filePath, ex.Message);
                     }
+                }
+                else if (!string.IsNullOrEmpty(WebDoc))
+                {
+                    Content = "<webdoc>" + WebDoc + "</webdoc>";
+                }
+                else
+                {
+                    // Check that filename is valid
+                    Logger.Error("Filname or WebDoc for topic [{0}] cannot be empty", this);
                 }
             }
         }
