@@ -102,23 +102,34 @@
 
 .sharpdoc #toc_content
 {
-    float: left;
+    position: absolute;
 	padding-left:1em;
-	width:250px;
-    overflow-x: auto; 
-    overflow-y: auto; 
+	width:330px;
     height: 100%;
+    overflow: auto;
 }
 
-.sharpdoc .inner
-{
-   display:block; 
+.sharpdoc #pane_resizer {
+    position: absolute;
+	border-left:1px dotted #666666;
+	cursor:col-resize;
+    left: 330px;
+    height: 100%;
+    width: 10px;
 }
 
-.sharpdoc .content {
+.sharpdoc .main_content {
+    position: absolute;
     height: 100%;
-    padding-bottom: 40px;
+    left: 330px;
+    right: 0;
     overflow: hidden;
+    margin-left: 20px;
+}
+
+.sharpdoc .content 
+{
+    margin-right: 10px;
 }
 
 .sharpdoc .content .section .members
@@ -341,27 +352,46 @@
 
 .sharpdoc #header {
     position: absolute;
-    margin: 0;
     top: 0;
     left: 0;
     width: 100%;
     height: 80px;
+    margin-left: 5px;
+    margin-top: 10px;
 }
 
 .sharpdoc #body {
     top: 100px;
     bottom: 50px;
     position: absolute;
+    width: 100%;
+	border-top:1px dotted #666666;
+	border-bottom:1px dotted #666666;
 }
 
 .sharpdoc #footer {
     position: absolute;
-    margin: 0;
     bottom: 0;
     left: 0;
     width: 100%;
     height: 50px;
+    margin-left: 5px;
+    margin-right: 5px;
 }
+
+
+.sharpdoc .footer_copyright {
+    float: left;
+    margin-top: 10px; 
+    margin-left: 15px;
+}
+
+.sharpdoc .footer_generated {
+    float:right; 
+    margin-top: 10px; 
+    margin-right: 15px;
+}
+
 
 .sharpdoc .content .section .members td
 {
@@ -535,16 +565,6 @@
 	padding:0 13px 13px 0;
 	vertical-align:top;
 	width:100%;
-}
-
-.sharpdoc .pane_resizer
-{
-    float: left;
-	border-left:1px dotted #666666;
-	cursor:col-resize;
-	vertical-align:top;
-	width:8px;
-    height: 100%;
 }
 
 .sharpdoc .table_content
@@ -742,7 +762,7 @@ html,body
 	font-size:0.91em;
 	height:100%;
 	margin:0;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 div.panel.pdl

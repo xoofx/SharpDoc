@@ -120,10 +120,18 @@ function SplitPane(splitPaneId, splitPaneToggleId, splitPaneResizerId) {
 
     // Define column elemnts
     var paneLeft = $(splitPaneId);
+    var paneRight = $("main_content");
+    var splitPaneResizer = $(splitPaneResizerId);
     var splitPaneToggle = $(splitPaneToggleId);
+    var iframe = $('mainFrame');
 
     var paneLeftMinWidth = 100;
     var paneLeftOriginalWidth = paneLeft.getWidth();
+    splitPaneResizer.setStyle('left', paneLeftOriginalWidth + 3);
+    paneRight.setStyle('left', paneLeftOriginalWidth);
+
+    var splitPaneOriginalLeft = splitPaneResizer.getLeft();
+    var paneRightOriginalLeft = paneRight.getLeft();
 
     // Use localstorage to store toggle state
     if (supports_local_storage()) {
@@ -142,11 +150,23 @@ function SplitPane(splitPaneId, splitPaneToggleId, splitPaneResizerId) {
 
     // Make the left cell resizable
     paneLeft.makeResizable({
-        handle: splitPaneResizerId,
+        handle: $(splitPaneResizerId),
         grid: resizerSnap,
         modifiers: { x: 'width', y: false },
         limit: { x: [paneLeftMinWidth, null] },
+        onStart: function (el) {
+            // Disable pointer events on iframe while dragging
+            // otherwise we can't drag over the iframe
+            iframe.setStyle('pointer-events', 'none');
+        },
+        onComplete: function(el) {
+            // Enable back pointer events on iframe after dragging
+            // is complete
+            iframe.setStyle('pointer-events', 'auto');
+        },
         onDrag: function (el) {
+            splitPaneResizer.setStyle('left', el.getWidth() + 3);
+            paneRight.setStyle('left', el.getWidth());
             if (supports_local_storage()) {
                 localStorage.setItem('sharpdoc-resize', el.getWidth());
             }
@@ -159,19 +179,20 @@ function SplitPane(splitPaneId, splitPaneToggleId, splitPaneResizerId) {
         if (paneLeft.getWidth() < paneLeftMinWidth) {
             splitPaneToggle.set('class', 'collapse');
             paneLeft.setStyle('display', 'block');
-            paneLeft.morph({
-                'width': paneLeftOriginalWidth,
-                'opacity': '1'
-            });
+            
+            // Morph the following values
+            paneLeft.morph({'width': paneLeftOriginalWidth,'opacity': '1'});
+            splitPaneResizer.morph({ 'left': splitPaneOriginalLeft + 12 });  // not sure why we need to add 12 to have a correct display
+            paneRight.morph({ 'left': paneRightOriginalLeft + 12});
+
             if (supports_local_storage()) {
                 localStorage.removeItem('sharpdoc-resize');
             }
         } else {
             splitPaneToggle.set('class', 'expand');
-            paneLeft.set('morph', { link: 'chain' }).morph({
-                'width': '1',
-                'opacity': '0'
-            }).morph({ 'display': 'none' });
+            paneLeft.set('morph', { link: 'chain' }).morph({ 'width': '1', 'opacity': '0' }).morph({ 'display': 'none' });
+            splitPaneResizer.morph({ 'left': '1' });
+            paneRight.morph({ 'left': '1' });
 
             if (supports_local_storage()) {
                 localStorage.setItem('sharpdoc-resize', 0);

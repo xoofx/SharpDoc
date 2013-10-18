@@ -33,7 +33,7 @@
     <head>
         @Helpers.PageHead.Dump(Model.RootTopic.PageTitle)
     </head>
-	<body onresize="setTimeout(resizeMainFrame(), 2000)">
+	<body>
         @* Initialize splitpane *@
         <script type="text/javascript" language="javascript">
              document.addEvent('domready', function () {
@@ -48,17 +48,15 @@
 	            <div id="toc_content" class="toc_content">
 	                <div class="inner">
 	                    @Helpers.TocBody.Dump()
-                    </div>
+	                </div>
 	            </div>
-	            <div id="pane_resizer" class="pane_resizer">
+                <div id="pane_resizer" class="pane_resizer">
 	                <div id="pane_toggle" class="collapse" ></div>
 	            </div>
-                <div class="content">
-	                <div class="inner">
-	                    @Include("ContentHeader")
-	                    @Include("MainFrame")
-	                    @Include("ContentFooter")
-                    </div>
+                <div id="main_content" class="main_content">
+	                @Include("ContentHeader")
+	                @Include("MainFrame")
+	                @Include("ContentFooter")
                 </div>
 	        </div>
 	        <div id="footer">
