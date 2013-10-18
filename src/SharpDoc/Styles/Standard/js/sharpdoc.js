@@ -187,6 +187,7 @@ function SplitPane(splitPaneId, splitPaneToggleId, splitPaneResizerId) {
 }
 
 function openToc(nodeId) {
+    //alert("open");
     var node = $_(nodeId + "_toc");
     var nodeClass = node.get('class');
 
@@ -206,20 +207,25 @@ function openToc(nodeId) {
 }
 
 function closeToc(nodeId) {
+    //alert("close");
     var node = $_(nodeId + "_toc");
     var nodeClass = node.get('class');
 
     // The highlighten topic could not be closed
-    if (nodeClass.indexOf('highlight') == -1) {
+    if (nodeClass.indexOf('highlighting') == -1) {
         var subNodes = $_(nodeId + "_SubTopics");
         if (subNodes != undefined)
             subNodes.set('class', 'hidden');
 
         node.set('class', nodeClass.replace('opened', 'closed'));
     }
+    else {
+        node.set('class', nodeClass.replace(' highlighting', ''));
+    }
 }
 
 function toggleToc(nodeId) {
+    //alert("toggle");
     var node = $_(nodeId + "_toc");
     var nodeClass = node.get('class');
 
@@ -231,6 +237,7 @@ function toggleToc(nodeId) {
 }
 
 function hightLightTopic(topicId) {
+    //alert("highlight");
     var oldHighlight = $$_('.highlight');
     oldHighlight.each(function (old, oldId) {
         var oldClass = old.get('class');
@@ -240,7 +247,7 @@ function hightLightTopic(topicId) {
     var newHightlight = $_(topicId + '_toc');
     var newClass = newHightlight.get('class');
 
-    newHightlight.set('class', newClass + ' highlight');
+    newHightlight.set('class', newClass + ' highlight highlighting');
     openToc(topicId);
 }
 
