@@ -102,13 +102,23 @@
 
 .sharpdoc #toc_content
 {
+    float: left;
 	padding-left:1em;
 	width:250px;
+    overflow-x: auto; 
+    overflow-y: auto; 
+    height: 100%;
+}
+
+.sharpdoc .inner
+{
+   display:block; 
 }
 
 .sharpdoc .content {
     height: 100%;
     padding-bottom: 40px;
+    overflow: hidden;
 }
 
 .sharpdoc .content .section .members
@@ -329,6 +339,30 @@
 	word-wrap: break-word;
 }
 
+.sharpdoc #header {
+    position: absolute;
+    margin: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+}
+
+.sharpdoc #body {
+    top: 100px;
+    bottom: 50px;
+    position: absolute;
+}
+
+.sharpdoc #footer {
+    position: absolute;
+    margin: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+}
+
 .sharpdoc .content .section .members td
 {
 	border-color:#bbb;
@@ -505,10 +539,12 @@
 
 .sharpdoc .pane_resizer
 {
+    float: left;
 	border-left:1px dotted #666666;
 	cursor:col-resize;
 	vertical-align:top;
 	width:8px;
+    height: 100%;
 }
 
 .sharpdoc .table_content
@@ -706,8 +742,8 @@ html,body
 	font-size:0.91em;
 	height:100%;
 	margin:0;
+    overflow: hidden;
 }
-
 
 div.panel.pdl
 {

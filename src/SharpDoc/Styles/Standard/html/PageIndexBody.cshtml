@@ -40,39 +40,31 @@
                  SplitPane('toc_content', 'pane_toggle', 'pane_resizer');
              });
         </script>   
-         <div class="sharpdoc">
-            <table class="table_content">
-                <tbody>
-                    <tr id="header" class="sharpdoc-header">
-                        <td colspan="3" class="cell">
-                            @Include("PageHeader")
-                        </td>                
-                    </tr>
-                    <tr>
-                    <td id="pane_toc">
-                        <div id="toc_content" class="toc_content">
-                        @Helpers.TocBody.Dump()
-                        </div>
-                    </td>
-                    <td id="pane_resizer" class="pane_resizer">
-                        <div id="pane_toggle" class="collapse" ></div>
-                    </td>
-                    <td id="pane_content" class="pane_content">
-                        <div class="content">
-				            @Include("ContentHeader")
-                            @Include("MainFrame")
-		                    @Include("ContentFooter")
-                        </div>
-                    </td>
-                    </tr>
-                    <tr id="footer" class="sharpdoc-footer">
-                        <td colspan="3" class="cell">
-                            @Include("PageFooter")
-                        </td>                
-                    </tr>
-                </tbody>
-            </table>
-         </div>
+	    <div class="sharpdoc">
+	        <div id="header">
+	            @Include("PageHeader")
+	        </div>
+	        <div id="body">
+	            <div id="toc_content" class="toc_content">
+	                <div class="inner">
+	                    @Helpers.TocBody.Dump()
+                    </div>
+	            </div>
+	            <div id="pane_resizer" class="pane_resizer">
+	                <div id="pane_toggle" class="collapse" ></div>
+	            </div>
+                <div class="content">
+	                <div class="inner">
+	                    @Include("ContentHeader")
+	                    @Include("MainFrame")
+	                    @Include("ContentFooter")
+                    </div>
+                </div>
+	        </div>
+	        <div id="footer">
+	            @Include("PageFooter")
+	        </div>
+	    </div>
 	</body>
 </html>  
 }
