@@ -43,6 +43,26 @@ function autoResize(id) {
     }
 }
 
+function loadContent(rootTopic, extension) {
+    var data = window.location.search;
+    var url = rootTopic + extension;
+    var topicToHighlight = rootTopic;
+
+    if(data != null && data !="")
+    {
+        var pattern = /page=(\w+)/;
+        var page = pattern.exec(data);
+        if(page != null)
+        {
+            url = page[1] + extension;
+            topicToHighlight = page[1];
+        }
+    }
+    
+    $("mainFrame").setAttribute("src", url);
+    hightLightTopic(topicToHighlight);
+}
+
 /*
   http://webfreak.no/wp/2007/09/05/get-for-mootools-a-way-to-read-get-variables-with-javascript-in-mootools/
 Function: $get

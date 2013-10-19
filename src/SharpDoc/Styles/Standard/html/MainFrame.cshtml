@@ -27,25 +27,5 @@
 <iframe id='mainFrame' name = 'mainFrame' frameborder='0' scrolling='auto' width='100%' height='100%'></iframe>
 
 <script type="text/javascript" language="JavaScript">
-
-    var hasOriginPage = false;
-    var data = window.location.search;
-
-    if(data != null && data !="")
-    {
-        var pattern = /page=(\w+)/;
-        var page = pattern.exec(data);
-        if(page != null)
-        {
-            hasOriginPage = true;
-            $("mainFrame").setAttribute("src", page[1] + "@Param.FileExt");
-            hightLightTopic(page[1]);
-        }
-    }
-
-    if(!hasOriginPage)
-    {
-        $("mainFrame").setAttribute("src", "@Model.RootTopic.PageId@Param.FileExt");
-        hightLightTopic("@Model.RootTopic.PageId");
-    }
+    loadContent("@Model.RootTopic.PageId", "@Param.FileExt");
 </script>

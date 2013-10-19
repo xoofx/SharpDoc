@@ -38,7 +38,7 @@
         var topicLink = topic;
         var url = Model.ToUrl(topicLink, null, false, isHighlight ? " class='highlight'" : "");
         string className = (topic.SubTopics.Count > 0) ?  "composed" : "terminal";
-        string isOpen = (level > 1) ? " closed" : " opened"; 
+        string isOpen = (level > 0) ? " closed" : " opened"; 
 
         toc.AppendFormat("<div id='{0}_toc' class='{1}{2}' style='padding-left: {3}em' onclick='toggleToc(\"{0}\")'><div class='icon'></div>{4}<div style='clear: both'></div></div>", topic.PageId, className, isOpen, level, url).AppendLine();
     }
@@ -49,7 +49,7 @@
 
         if( nbSubTopics > 0)
         {
-            string visibility = (level >1) ? "hidden" : "visible";
+            string visibility = (level >0) ? "hidden" : "visible";
             var subTopics = topic.SubTopics;
 
             toc.AppendFormat("<div id='{0}_SubTopics' class='{1}'>", topic.PageId, visibility).AppendLine();
