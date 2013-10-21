@@ -149,10 +149,15 @@ namespace SharpDoc
 
                 _registry.Register(@namespace);
 
-                // Apply documentation on namespace from NamespaceDoc special class
-                @namespace.DocNode = _source.Document.FindMemberDoc("T:" + name + "." + NamespaceDocClass);
 
                 assembly.Namespaces.Add(@namespace);
+            }
+
+            // If no namespace documentation found, try to recover it.
+            if (@namespace.DocNode == null)
+            {
+                // Apply documentation on namespace from NamespaceDoc special class
+                @namespace.DocNode = _source.Document.FindMemberDoc("T:" + name + "." + NamespaceDocClass);
             }
 
             return @namespace;
