@@ -577,6 +577,7 @@
 .sharpdoc .toc_content div
 {
     padding-top:1px;
+    white-space: nowrap;
 }
 
 .sharpdoc .composed .icon
