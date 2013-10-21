@@ -55,12 +55,19 @@ namespace SharpDoc.Model
         /// Finds the by id.
         /// </summary>
         /// <param name="id">The id.</param>
-        /// <param name="context">The context. If context is null, look inside all registered assemblies</param>
-        /// <returns></returns>
+        /// <returns>IModelReference.</returns>
         public IModelReference FindById(string id)
         {
             IModelReference refFound = null;
-            _mapIdToModelElement.TryGetValue(id, out refFound);
+            if (!_mapIdToModelElement.TryGetValue(id, out refFound))
+            {
+                // Special case for external references, try to resolve them to a non-prefixed version
+                if (id.StartsWith("X:"))
+
+                {
+                    _mapIdToModelElement.TryGetValue(id.Substring(2), out refFound);
+                }
+            }
             return refFound;
         }
 
