@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SharpDoc</RootNamespace>
     <AssemblyName>SharpDoc</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -39,6 +39,7 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <DocumentationFile>bin\Debug\SharpDoc.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>Bin\Release\</OutputPath>
@@ -51,6 +52,7 @@
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <DocumentationFile>
     </DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -67,20 +69,25 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\external\Lucene.Net\bin\Lucene.Net.dll</HintPath>
     </Reference>
+    <Reference Include="MarkdownSharp">
+      <HintPath>..\..\packages\MarkdownSharp.1.13.0.0\lib\35\MarkdownSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Cecil">
       <HintPath>..\..\external\Mono.Cecil\Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Options">
       <HintPath>..\..\external\Mono.Options\Mono.Options.dll</HintPath>
     </Reference>
-    <Reference Include="RazorEngine">
-      <HintPath>..\..\external\RazorEngine\RazorEngine.dll</HintPath>
+    <Reference Include="SharpRazor, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\SharpRazor.1.1\lib\net45\SharpRazor.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Razor, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\external\RazorEngine\System.Web.Razor.dll</HintPath>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.AspNet.Razor.3.0.0\lib\net45\System.Web.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
@@ -158,7 +165,7 @@
     <Compile Include="StyleDefinition.cs" />
     <Compile Include="StyleManager.cs" />
     <Compile Include="TemplateContext.cs" />
-    <Compile Include="TemplateHelperBase.cs" />
+    <Compile Include="PageTemplateDoc.cs" />
     <Compile Include="LinkDescriptor.cs" />
     <Compile Include="TextReferenceUtility.cs" />
     <Compile Include="TopicBuilder.cs" />
@@ -178,6 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Service References\MTPS\atoms.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -461,12 +469,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir  "$(SolutionDir)Build\Tools\Bin\"
-copy  "$(TargetPath)" "$(SolutionDir)Build\Tools\Bin\"
-copy  "$(TargetDir)*.dll" "$(SolutionDir)Build\Tools\Bin\"
-rmdir /S /Q  "$(SolutionDir)Build\Tools\Styles"
-mkdir "$(SolutionDir)Build\Tools\Styles"
-xcopy /Y /E "$(ProjectDir)Styles" "$(SolutionDir)Build\Tools\Styles\"
+    <PostBuildEvent>mkdir  "$(SolutionDir)Build\Bin\"
+copy  "$(TargetPath)" "$(SolutionDir)Build\Bin\"
+copy  "$(TargetDir)*.dll" "$(SolutionDir)Build\Bin\"
+copy  "$(TargetDir)*.xml" "$(SolutionDir)Build\Bin\"
+rmdir /S /Q  "$(SolutionDir)Build\Styles"
+mkdir "$(SolutionDir)Build\Styles"
+xcopy /Y /E "$(ProjectDir)Styles" "$(SolutionDir)Build\Styles\"
 REM xcopy /Y /E "$(ProjectDir)Styles\SharpDXWeb\css\sharpdoc.css" "$(SolutionDir)..\SharpDX-Web\www\templates\rt_kinetic\css\"
 REM xcopy /Y /E "$(ProjectDir)Styles\Standard\js\sharpdoc.js" "$(SolutionDir)..\SharpDX-Web\www\templates\rt_kinetic\js\"</PostBuildEvent>
   </PropertyGroup>

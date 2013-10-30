@@ -46,6 +46,7 @@ namespace SharpDoc
             Sources = new List<ConfigSource>();
             References = new List<string>();
             Parameters = new List<ConfigParam>();
+            ExcludeList = new List<string>();
             StyleParameters = new List<ConfigParam>();
             StyleDirectories = new List<string>();
             OutputType = OutputType.Default;
@@ -153,6 +154,13 @@ namespace SharpDoc
         public List<string> StyleNames { get; set; }
 
         /// <summary>
+        /// Gets or sets the exclude list (namespaces, types...etc.).
+        /// </summary>
+        /// <value>The exclude list.</value>
+        [XmlElement("exclude")]
+        public List<string> ExcludeList { get; set; }
+
+        /// <summary>
         /// Gets or sets styles override.
         /// </summary>
         /// <value>The styles override.</value>
@@ -193,7 +201,7 @@ namespace SharpDoc
         /// </summary>
         /// <param name="file">The config file.</param>
         /// <returns></returns>
-        public static Config Load(string file)
+        public static Config Load(string file, TopicContentLoaderDelegate contentLoader)
         {
             var deserializer = new XmlSerializer(typeof(Config));
             var config = (Config)deserializer.Deserialize(new StringReader(File.ReadAllText(file)));
@@ -203,7 +211,7 @@ namespace SharpDoc
             if (config.RootTopic != null)
             {
                 config.RootTopic.ForEachTopic(topic => topic.Config = config);
-                config.RootTopic.Init();
+                config.RootTopic.Init(contentLoader);
             }
 
             return config;

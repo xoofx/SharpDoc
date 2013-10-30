@@ -22,9 +22,9 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq.Expressions;
 using System.Reflection;
-using RazorEngine.Templating;
 
 using SharpDoc.Logging;
+using SharpRazor;
 
 namespace SharpDoc
 {
@@ -44,12 +44,12 @@ namespace SharpDoc
 
         private class HelperMethod
         {
-            public ITemplate Template { get; set; }
+            public PageTemplate Template { get; set; }
 
             public MethodInfo Method { get; set; }
         }
 
-        public void RegisterHelper(ITemplate template, MethodInfo methodInfo)
+        public void RegisterHelper(PageTemplate template, MethodInfo methodInfo)
         {
             string name = methodInfo.Name;
             List<HelperMethod> list;
@@ -119,7 +119,7 @@ namespace SharpDoc
                 for (int i = 0; i < args.Length; i++)
                     methodParams[i] = args[i].Expression;
 
-                var methodToString = typeof (TemplateWriter).GetMethod("ToString");
+                var methodToString = typeof (LambdaWriter).GetMethod("ToString");
 
                 var computeResult =
                     Expression.Call(Expression.Call(Expression.Constant(helperMethodInstance.Template), helperMethodInstance.Method, methodParams),

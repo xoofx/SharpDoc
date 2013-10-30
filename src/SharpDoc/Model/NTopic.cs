@@ -32,6 +32,13 @@ using SharpDoc.Logging;
 namespace SharpDoc.Model
 {
     /// <summary>
+    /// A delegate to create an HTML string from a template name used by <see cref="NTopic"/>
+    /// </summary>
+    /// <param name="filePath">Name of the template (currently supported are an html file or markdown file).</param>
+    /// <returns>A HTML content</returns>
+    public delegate string TopicContentLoaderDelegate(string filePath);
+
+    /// <summary>
     /// Documentation topic store in an external file.
     /// </summary>
     [XmlType("topic")]
@@ -339,9 +346,12 @@ namespace SharpDoc.Model
         /// <summary>
         /// Loads the content of this topic.
         /// </summary>
-        /// <param name="rootPath">The root path.</param>
-        public void Init()
+        /// <param name="contentLoader">The template factory.</param>
+        /// <exception cref="System.ArgumentNullException">contentLoader</exception>
+        public void Init(TopicContentLoaderDelegate contentLoader)
         {
+            if (contentLoader == null) throw new ArgumentNullException("contentLoader");
+
             // Check that id is valid
             if (string.IsNullOrEmpty(Id))
                 Logger.Error("Missing id for topic [{0}]", this);
@@ -371,7 +381,7 @@ namespace SharpDoc.Model
 
             // Initialize sub topics
             foreach(var topic in SubTopics)
-                topic.Init();
+                topic.Init(contentLoader);
 
             // Create non existing topic files based on template
             if (Config.TopicTemplate != null && File.Exists(Config.TopicTemplate))
@@ -405,9 +415,14 @@ namespace SharpDoc.Model
                     {
                         filePath = Path.Combine(rootPath, FileName);
 
-                        var rawContent = File.ReadAllText(filePath);
+                        var rawContent = contentLoader(filePath);
+                        if (rawContent == null)
+                        {
+                            Logger.Warning("Cannot use template documentation [{0}] not supported", FileName);
+                            return;
+                        }
+
                         var htmlDocument = new HtmlDocument();
-                        //            htmlDocument.Load("Documentation\\d3d11-ID3D11Device-CheckCounter.html");
                         htmlDocument.LoadHtml(rawContent);
 
                         // Override title

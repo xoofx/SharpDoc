@@ -40,7 +40,7 @@
             case LinkType.Local:
                 url = string.Format("{0}{1}{2}", Param.RootLink, link.LocalReference.PageId, Param.FileExt);
                 break;
-            case LinkType.Msdn:
+            case LinkType.External:
                 url = link.Location;
                 break;
         }

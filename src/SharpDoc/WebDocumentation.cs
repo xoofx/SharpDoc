@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 
 using HtmlAgilityPack;
 using Mono.Options;
+using SharpDoc.Logging;
 
 namespace SharpDoc
 {
@@ -122,7 +123,7 @@ namespace SharpDoc
             }
             else
             {
-                Console.WriteLine("The web documentation page {0} is not a valid Uri", pageUri);
+                Logger.Warning("The web documentation page {0} is not a valid Uri", pageUri);
                 return null;
             }
         }

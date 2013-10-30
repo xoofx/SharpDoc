@@ -161,7 +161,7 @@ namespace SharpDoc
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                Logger.Error("Error while saving MSDN url cache", ex);
                 // Don't log any exceptions
             }
             finally

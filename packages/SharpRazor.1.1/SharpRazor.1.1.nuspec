@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>SharpRazor</id>
+    <version>1.1</version>
+    <authors>Alexandre Mutel</authors>
+    <owners>Alexandre Mutel</owners>
+    <licenseUrl>https://github.com/xoofx/SharpRazor/License.txt</licenseUrl>
+    <projectUrl>https://github.com/xoofx/SharpRazor</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A lightweight templating system based on the powerful Razor templating stack.</description>
+    <summary>A lightweight templating system using Razor syntax.</summary>
+    <copyright>Copyright (c) 2013 - Alexandre Mutel</copyright>
+    <language>en-US</language>
+    <tags>Templating Razor</tags>
+    <dependencies>
+      <dependency id="Microsoft.AspNet.Razor" version="3.0.0" />
+    </dependencies>
+  </metadata>
+</package>

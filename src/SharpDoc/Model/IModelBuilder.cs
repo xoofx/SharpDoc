@@ -19,6 +19,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 namespace SharpDoc.Model
 {
@@ -33,7 +34,13 @@ namespace SharpDoc.Model
         /// <value>
         /// The calculate page id.
         /// </value>
-        Func<IModelReference, string> PageIdFunction { get; set; } 
+        Func<IModelReference, string> PageIdFunction { get; set; }
+
+        /// <summary>
+        /// Gets or sets the exclude list (namespaces, types...etc.) to exclude from the generated output.
+        /// </summary>
+        /// <value>The exclude list.</value>
+        HashSet<string> ExcludeList { get; }
 
         /// <summary>
         /// Loads from an assembly source definition all types to document. 

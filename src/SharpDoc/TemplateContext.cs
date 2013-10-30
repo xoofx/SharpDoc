@@ -23,23 +23,18 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
-using System.Net;
 
-using RazorEngine;
-using RazorEngine.Compilation;
-using RazorEngine.Templating;
-using SharpDoc;
 using SharpDoc.Logging;
 using SharpDoc.Model;
 
-using System.Linq;
+using SharpRazor;
 
 namespace SharpDoc
 {
     /// <summary>
     /// Template context used by all templates.
     /// </summary>
-    public class TemplateContext : ITemplateResolver
+    public class TemplateContext
     {
         private const string StyleDirectory = "Styles";
         private List<TagExpandItem> _regexItems;
@@ -47,19 +42,18 @@ namespace SharpDoc
         private bool assembliesProcessed;
         private bool topicsProcessed;
 
-        private ICompilerServiceFactory razorCompiler;
-        private TemplateService razor;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="TemplateContext"/> class.
         /// </summary>
-        public TemplateContext()
+        public TemplateContext(Razorizer razorizer)
         {
+            this.Razorizer = razorizer;
             StyleDirectories = new List<string>();
             _regexItems = new List<TagExpandItem>();
             _msnRegistry = new MsdnRegistry();
             Param = new DynamicParam();
             Style = new DynamicParam();
+            razorizer.TemplateResolver += TemplateResolver;
         }
 
         /// <summary>
@@ -73,6 +67,8 @@ namespace SharpDoc
         {
             return Registry.FindById(id);
         }
+
+        public Razorizer Razorizer { get; private set; }
 
         /// <summary>
         /// Gets the param dynamic properties.
@@ -413,18 +409,27 @@ namespace SharpDoc
 
             } else 
             {
-                linkDescriptor.Location = _msnRegistry.FindUrl(id);
-                var reference = TextReferenceUtility.CreateReference(id);                    
-                if (linkDescriptor.Location != null)
-                {                    
-                    linkDescriptor.Type = LinkType.Msdn;
-                    linkDescriptor.Name = reference.FullName;
-                    // Open MSDN documentation to a new window
-                    attributes = (attributes ?? "") + " target='_blank'";
-                } else
+                linkDescriptor.Type = LinkType.External;
+                if (id.StartsWith("http:") || id.StartsWith("https:"))
                 {
-                    linkDescriptor.Type = LinkType.None;
-                    linkDescriptor.Name = reference.Name;                    
+                    linkDescriptor.Location = id;
+                }
+                else
+                {
+                    // Try to resolve to MSDN
+                    linkDescriptor.Location = _msnRegistry.FindUrl(id);
+                    var reference = TextReferenceUtility.CreateReference(id);
+                    if (linkDescriptor.Location != null)
+                    {
+                        linkDescriptor.Name = reference.FullName;
+                        // Open MSDN documentation to a new window
+                        attributes = (attributes ?? "") + " target='_blank'";
+                    }
+                    else
+                    {
+                        linkDescriptor.Name = reference.Name;
+                    }
+                    
                 }
             }
 
@@ -467,11 +472,6 @@ namespace SharpDoc
         /// <returns></returns>
         internal void UseStyle(string styleName)
         {
-            razorCompiler = new DefaultCompilerServiceFactory();
-            razor = new TemplateService(razorCompiler.CreateCompilerService(Language.CSharp, false, null), null);
-            razor.SetTemplateBase(typeof(TemplateHelperBase));
-            razor.AddResolver(this);
-
             if (!StyleManager.StyleExist(styleName))
                 Logger.Fatal("Cannot us style [{0}]. Style doesn't exist", styleName);
 
@@ -640,17 +640,21 @@ namespace SharpDoc
 
         private class TagExpandItem
         {
-            public TagExpandItem(Regex expression, string replaceString)
+            public TagExpandItem(Regex expression, string replaceString, bool isOnlyForHtmlContent)
             {
                 Expression = expression;
                 ReplaceString = replaceString;
+                IsOnlyForHtmlContent = isOnlyForHtmlContent;
             }
 
-            public TagExpandItem(Regex expression, MatchEvaluator replaceEvaluator)
+            public TagExpandItem(Regex expression, MatchEvaluator replaceEvaluator, bool isOnlyForHtmlContent)
             {
                 Expression = expression;
                 ReplaceEvaluator = replaceEvaluator;
+                IsOnlyForHtmlContent = isOnlyForHtmlContent;
             }
+
+            public readonly bool IsOnlyForHtmlContent;
 
             Regex Expression;
             string ReplaceString;
@@ -673,9 +677,10 @@ namespace SharpDoc
         /// </summary>
         /// <param name="regexp">The regexp.</param>
         /// <param name="substitution">The substitution.</param>
-        public void RegisterTagResolver(string regexp, string substitution)
+        /// <param name="isOnlyForHtmlContent">if set to <c>true</c> [is only for HTML content].</param>
+        public void RegisterTagResolver(string regexp, string substitution, bool isOnlyForHtmlContent = false)
         {
-           _regexItems.Add( new TagExpandItem(new Regex(regexp), substitution));
+            _regexItems.Add(new TagExpandItem(new Regex(regexp), substitution, isOnlyForHtmlContent));
         }
 
         /// <summary>
@@ -683,21 +688,26 @@ namespace SharpDoc
         /// </summary>
         /// <param name="regexp">The regexp.</param>
         /// <param name="evaluator">The evaluator.</param>
-        public void RegisterTagResolver(string regexp, MatchEvaluator evaluator)
+        /// <param name="isOnlyForHtmlContent">if set to <c>true</c> [is only for HTML content].</param>
+        public void RegisterTagResolver(string regexp, MatchEvaluator evaluator, bool isOnlyForHtmlContent = false)
         {
-            _regexItems.Add(new TagExpandItem(new Regex(regexp), evaluator));
+            _regexItems.Add(new TagExpandItem(new Regex(regexp), evaluator, isOnlyForHtmlContent));
         }
 
         /// <summary>
         /// Perform regular expression expansion.
         /// </summary>
         /// <param name="content">The content to replace.</param>
+        /// <param name="isOnlyForHtmlContent">if set to <c>true</c> [is only for HTML content].</param>
         /// <returns>The content replaced</returns>
-        public string TagExpand(string content)
+        public string TagExpand(string content, bool isOnlyForHtmlContent = false)
         {
             foreach (var regexItem in _regexItems)
             {
-                content = regexItem.Replace(content);
+                if (regexItem.IsOnlyForHtmlContent == isOnlyForHtmlContent)
+                {
+                    content = regexItem.Replace(content);
+                }
             }
             return content;
         }
@@ -712,8 +722,9 @@ namespace SharpDoc
             string location = null;
             try
             {
-                string template = GetTemplate(templateName, out location);
-                return razor.Parse(template, this, templateName, location);
+                var template = Razorizer.FindTemplate(templateName);
+                template.Model = this;
+                return template.Run();
             }
             catch (TemplateCompilationException ex)
             {
@@ -739,6 +750,15 @@ namespace SharpDoc
                 throw;
             }
             return "";
+        }
+
+        private PageTemplate TemplateResolver(string templateName)
+        {
+            string location = null;
+            string templateContent = GetTemplate(templateName, out location);
+            var template = Razorizer.Compile(templateName, templateContent, location);
+            template.Model = this;
+            return template;
         }
 
         public void debug() 

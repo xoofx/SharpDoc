@@ -87,6 +87,16 @@ namespace SharpDoc
 
             var assemblySources = AssemblyManager.Load(config);
 
+            // Add exclude list to ModelBuilder
+            ModelBuilder.ExcludeList.Clear();
+            foreach (var excludeItem in config.ExcludeList)
+            {
+                if (!string.IsNullOrWhiteSpace(excludeItem))
+                {
+                    ModelBuilder.ExcludeList.Add(excludeItem);
+                }
+            }
+
             // Process all assemblies
             foreach (var assemblySource in assemblySources)
             {

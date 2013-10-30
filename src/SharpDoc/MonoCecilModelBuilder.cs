@@ -45,12 +45,20 @@ namespace SharpDoc
         private Dictionary<string, NDocumentApi> mapModuleToDoc = new Dictionary<string, NDocumentApi>();
         private Dictionary<string, IModelReference> membersCache = new Dictionary<string, IModelReference>();
         private List<NExtensionMethod> extensionMethodList = new List<NExtensionMethod>();
+        private readonly HashSet<string> excludeList = new HashSet<string>();
 
         public Func<IModelReference, string> PageIdFunction { get; set; }
+
+        public HashSet<string> ExcludeList
+        {
+            get { return excludeList; }
+        }
 
         private string CurrentMergeGroup { get; set; }
 
         private NAssembly CurrentAssembly { get; set; }
+
+
 
         /// <summary>
         /// Loads from an assembly source definition all types to document.
@@ -104,6 +112,11 @@ namespace SharpDoc
                     // Skip empty namespaces and special <Module>
                     if (string.IsNullOrEmpty(type.Namespace) || type.Namespace.StartsWith("<"))
                         continue;
+
+                    if (IsExcluded(type.Namespace) || IsExcluded(type.FullName))
+                    {
+                        continue;
+                    }
 
                     // Create namespace
                     var parentNamespace = AddNamespace(assembly, type.Namespace);
@@ -161,6 +174,11 @@ namespace SharpDoc
             }
 
             return @namespace;
+        }
+
+        private bool IsExcluded(string name)
+        {
+            return ExcludeList != null && ExcludeList.Contains(name);
         }
 
         /// <summary>

@@ -21,10 +21,10 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Reflection;
-using RazorEngine.Templating;
 using SharpDoc;
 using SharpDoc.Logging;
 using SharpDoc.Model;
+using SharpRazor;
 
 namespace SharpDoc
 {
@@ -33,14 +33,14 @@ namespace SharpDoc
     /// methods (Import) and properties (Helpers, Param, Style).
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class TemplateHelperBase : TemplateBase<TemplateContext>
+    public class PageTemplateDoc : PageTemplate<TemplateContext>
     {
         private IDictionary<string, object> _helpersDictionary;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TemplateHelperBase"/> class.
+        /// Initializes a new instance of the <see cref="PageTemplateDoc"/> class.
         /// </summary>
-        public TemplateHelperBase()
+        public PageTemplateDoc()
         {
             Helpers = new ExpandoObject();
             _helpersDictionary = (IDictionary<string, object>)Helpers;
@@ -65,22 +65,12 @@ namespace SharpDoc
         public dynamic Style { get { return Model.Style; }}
 
         /// <summary>
-        /// Includes the specified name.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <returns></returns>
-        public override string Include(string name)
-        {
-            return base.Include(name, Model);
-        }
-
-        /// <summary>
         /// Registers the helper.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="template">The template.</param>
         /// <param name="helperMethod">The helper method.</param>
-        private void RegisterHelper(string name, ITemplate template, MethodInfo helperMethod)
+        private void RegisterHelper(string name, PageTemplate template, MethodInfo helperMethod)
         {
             DynamicHelper dynamicHelper = null;
 
@@ -112,57 +102,11 @@ namespace SharpDoc
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("The name of the template to include is required.");
 
-            if (Service == null)
-                throw new InvalidOperationException("No template service has been set of this template.");
 
-
-            foreach (var methodInfo in Service.GetType().GetMethods(BindingFlags.NonPublic|BindingFlags.Instance))
-            {
-                if ( methodInfo.Name == "ResolveTemplate"  && methodInfo.GetGenericArguments().Length == 1 && methodInfo.GetParameters().Length == 2)
-                {
-                    try
-                    {
-                        methodInfo.MakeGenericMethod(typeof (TemplateContext)).Invoke(Service, new object[] {name, Model});
-                    } catch (TargetInvocationException targetEx)
-                    {
-                        if (targetEx.InnerException is TemplateCompilationException)
-                        {
-                            var ex = (TemplateCompilationException) targetEx.InnerException;
-                            string location;
-                            
-                            // Retrieves the location of the template
-                            Model.GetTemplate(name, out location);
-                            foreach (var compilerError in ex.Errors)
-                            {
-                                Logger.PushLocation(location, compilerError.Line, compilerError.Column);
-                                if (compilerError.IsWarning)
-                                {
-                                    Logger.Warning("{0}: {1}", compilerError.ErrorNumber, compilerError.ErrorText);
-                                }
-                                else
-                                {
-                                    Logger.Error("{0}: {1}", compilerError.ErrorNumber, compilerError.ErrorText);
-                                }
-                                Logger.PopLocation();
-                            }
-                            Logger.PopLocation();
-                            Logger.Fatal("Error when compiling template [{0}]", name);
-                        }
-                        throw targetEx.InnerException;
-                    }
-                    break;
-                }
-            }
-
-            var templateCacheField = Service.GetType().GetField("templateCache", BindingFlags.Instance|BindingFlags.NonPublic);
-
-            var templateMap = (IDictionary<string, ITemplate>)templateCacheField.GetValue(Service);
-
-            var template = templateMap[name];
-
+            var template = Razorizer.FindTemplate(name);
             foreach (var method in template.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public))
             {
-                if (typeof(TemplateWriter).IsAssignableFrom(method.ReturnType))
+                if (typeof(LambdaWriter).IsAssignableFrom(method.ReturnType))
                 {
                     RegisterHelper(name, template, method);
                 }
@@ -214,10 +158,11 @@ namespace SharpDoc
         /// Perform regular expression expansion.
         /// </summary>
         /// <param name="content">The content to replace.</param>
+        /// <param name="isOnlyForHtmlContent">if set to <c>true</c> [is only for HTML content].</param>
         /// <returns>The content replaced</returns>
-        public string TagExpand(string content)
+        public string TagExpand(string content, bool isOnlyForHtmlContent = false)
         {
-            return Model.TagExpand(content);
+            return Model.TagExpand(content, isOnlyForHtmlContent);
         }
 
         /// <summary>

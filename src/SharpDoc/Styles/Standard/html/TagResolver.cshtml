@@ -226,11 +226,14 @@
 
 
 @{    
+    Model.RegisterTagResolver(@"<a\s+href=""(.*?)""\s*>(.*?)</a>", ReplaceSee, true);
+    
+    
     Model.RegisterTagResolver(@"<see\s+cref=""(.*?)""\s*/>", ReplaceSee);
     Model.RegisterTagResolver(@"<see\s+cref=""(.*?)""\s*>(.*?)</see>", ReplaceSee);
     Model.RegisterTagResolver(@"<webdoc(.*?)>(.*?)</webdoc>", ReplaceWebdoc);
     Model.RegisterTagResolver(@"<codesection(.*?)>([\w\W]*?)</codesection>", ReplaceCodeSection);
-    Model.RegisterTagResolver(@"<code(.*?)>([\w\W]*?)</code>", ReplaceCode);
+    //Model.RegisterTagResolver(@"<code(.*?)>([\w\W]*?)</code>", ReplaceCode);
     Model.RegisterTagResolver(@"<insert(.*?)>([\w\W]*?)</insert>", ReplaceInsert);
     Model.RegisterTagResolver(@"<a class=""classLink""(.*?)>([\w\W]*?)</a>", ReplaceClassLink);
 }

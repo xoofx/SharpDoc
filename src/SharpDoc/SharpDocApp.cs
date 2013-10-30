@@ -25,12 +25,13 @@ using System.Net;
 using System.Reflection;
 
 using HtmlAgilityPack;
-
+using MarkdownSharp;
 using Mono.Options;
 
 using SharpDoc.Logging;
 using SharpDoc.Model;
 using SharpDocPak;
+using SharpRazor;
 
 namespace SharpDoc
 {
@@ -74,6 +75,30 @@ namespace SharpDoc
             Environment.Exit(1);
         }
 
+        private string TopicLoader(string filePath)
+        {
+            if (!File.Exists(filePath))
+            {
+                Logger.Warning("Topic file [{0}] was not found", filePath);
+                return null;
+            }
+
+            if (filePath.EndsWith(".htm") || filePath.EndsWith(".html"))
+            {
+                return File.ReadAllText(filePath);
+            }
+
+            if (filePath.EndsWith(".md"))
+            {
+
+                var markdown = new Markdown();
+                return markdown.Transform(File.ReadAllText(filePath));
+            }
+
+            Logger.Warning("Template loading failed for file [{0}]. Extension is not supported: Only .htm, .html, .md", Path.GetFileName(filePath));
+            return null;
+        }
+
         /// <summary>
         /// Parses the command line arguments.
         /// </summary>
@@ -91,7 +116,7 @@ namespace SharpDoc
                                   "Documentation generator for .Net languages",
                                   "",
                                   "options:",
-                                  {"c|config=", "Configuration file", opt => Config = Config.Load(opt)},
+                                  {"c|config=", "Configuration file", opt => Config = Config.Load(opt, TopicLoader)},
 
                                   {
                                       "D=", "Define a template parameter with an (optional) value.",
@@ -202,8 +227,10 @@ namespace SharpDoc
             
             var clock = Stopwatch.StartNew();
 
+            var razorizer = new Razorizer(typeof (PageTemplateDoc));
+
             // New instance of a template context used by the RazorEngine
-            var context = new TemplateContext
+            var context = new TemplateContext(razorizer)
             {
                 Config = Config,
                 StyleManager = StyleManager,
