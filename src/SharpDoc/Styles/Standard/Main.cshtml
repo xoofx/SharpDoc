@@ -26,46 +26,36 @@
 @using System.Text;
 @using SharpDoc.Logging;
 @model SharpDoc.TemplateContext
-@{    
-    // Generates Prolog
-    Include("MainBegin");
-    
-    // Installs the Tag Resolver
-    Include("TagResolver");
-    
-    // Installs the Link Resolver
-    Include("LinkResolver");
-    
-    // Installs the PageId function
-    Include("PageIdFunction");
-
-    // Installs the WriteTo function
-    Include("WriteToFunction");
-
-    // Installs the GetWebDocContent function
-    Include("GetWebDocContentFunction");
-
-    // Defines default parameters
-    Include("Param");
-   
-    // Generates ClassLibrary
-    Include("ClassLibraryBuilder");
-
-    // Generates topics
-    Include("TopicBuilder");
-
-    // Write root index.html (which is just a redirect)
-    Model.WriteTo(null, Parse("Root"));
-
-    // Write topics
-    Include("MainTopic");
-
-    // Writes Class library
-    Include("MainClassLibrary");
-    
-	// Generates Epilog
-    Include("MainEnd");    
-
-	// Write null, null to WriteFunction in order to cleanup things
+@*// Generates Prolog*@
+@Include("MainBegin");
+@*// Installs the Tag Resolver*@
+@Include("TagResolver");  
+@*// Installs the Link Resolver*@
+@Include("LinkResolver");
+@*// Installs the PageId function*@
+@Include("PageIdFunction");
+@*// Installs the WriteTo function*@
+@Include("WriteToFunction");
+@*// Installs the GetWebDocContent function*@
+@Include("GetWebDocContentFunction");
+@*// Defines default parameters*@
+@Include("Param");
+@*// Generates ClassLibrary*@
+@Include("ClassLibraryBuilder");
+@*// Generates topics*@
+@Include("TopicBuilder");
+@*// Write root index.html (which is just a redirect)*@
+@{
+    Model.WriteTo(null, Parse("Root"));   
+}
+@*// Write topics*@
+@Include("MainTopic");
+@*// Writes Class library*@
+@Include("MainClassLibrary");
+@*// Generates Epilog*@
+@Include("MainEnd");    
+@*// Write null, null to WriteFunction in order to cleanup things*@
+@{
     Model.WriteTo(null, null);
 }
+

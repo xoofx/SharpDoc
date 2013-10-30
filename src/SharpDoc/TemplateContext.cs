@@ -734,7 +734,8 @@ namespace SharpDoc
                     if (compilerError.IsWarning)
                     {
                         Logger.Warning("{0}: {1}", compilerError.ErrorNumber, compilerError.ErrorText);
-                    } else
+                    }
+                    else
                     {
                         Logger.Error("{0}: {1}", compilerError.ErrorNumber, compilerError.ErrorText);
                     }
@@ -742,7 +743,19 @@ namespace SharpDoc
                 }
                 Logger.PopLocation();
                 Logger.Fatal("Error when compiling template [{0}]", templateName);
-            } catch (Exception ex)
+            }
+            catch (TemplateParsingException ex)
+            {
+                foreach (var parserError in ex.Errors)
+                {
+                    Logger.PushLocation(ex.Location, parserError.Location.LineIndex, parserError.Location.CharacterIndex);
+                    Logger.Error("{0}: {1}", "R0000", parserError.Message);
+                    Logger.PopLocation();
+                }
+                Logger.PopLocation();
+                Logger.Fatal("Error when compiling template [{0}]", templateName);
+            }
+            catch (Exception ex)
             {
                 Logger.PushLocation(location);
                 Logger.Error("Unexpected exception", ex);

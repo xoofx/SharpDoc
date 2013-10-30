@@ -43,7 +43,7 @@
 
 <div class="origin">
 <strong>Namespace: </strong>@ToUrl(Model.Namespace)<br />
-<strong>Assembly: </strong>@model.Assembly.FullName (@Model.Assembly.FileName @Model.Assembly.Version)<br />
+<strong>Assembly: </strong>@Model.Assembly.FullName (@Model.Assembly.FileName @Model.Assembly.Version)<br />
       
 @Helpers.TypeBodyMembersHeader.Dump(self)
 </div>
@@ -51,8 +51,10 @@
 @* Dump Syntax section *@
 @Helpers.Section.DumpSyntax(self)
 
-@if (!string.IsNullOrEmpty(self.Remarks)) 
-    @Helpers.Section.Dump("Remarks",TagExpand(self.Remarks))
+@if (!string.IsNullOrEmpty(self.Remarks))
+{
+    @Helpers.Section.Dump("Remarks", TagExpand(self.Remarks))
+}
 
 @Helpers.WebDocSection.Dump(self)
 

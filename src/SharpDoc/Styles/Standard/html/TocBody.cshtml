@@ -29,12 +29,16 @@
     public void DisplayTopic(StringBuilder toc, NTopic topic, int level, bool isHighlight = false) {
         // Don't list the search topic unless its selected
         if (topic.IsSearchResult && Model.Topic.Id != topic.Id)
+        {
             return;
-        
+        }
+
         // Topics that are not available for a particular style are removed from TOC
         if (topic.Excludes.Contains(Model.CurrentStyleName))
+        {
             return;
-        
+        }
+
         var topicLink = topic;
         var url = Model.ToUrl(topicLink, null, false, isHighlight ? " class='highlight'" : "");
         string className = (topic.SubTopics.Count > 0) ?  "composed" : "terminal";
@@ -73,8 +77,10 @@
 }
 
 @helper Dump()
-{   
-	if (Param.UseSearchBox)
-		@Include("SearchBox")
+{
+    if (Param.UseSearchBox)
+    {
+        @Include("SearchBox")
+    }
     @DumpToc()
 }

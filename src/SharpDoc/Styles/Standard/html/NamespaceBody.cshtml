@@ -41,19 +41,31 @@
 
 <div class="members">
     @if (self.HasClasses)
+    {
         @Helpers.Section.Dump("Classes", self.Classes, true)
+    }
     @if (self.HasStructures)
+    {
         @Helpers.Section.Dump("Structures", self.Structures, true)
+    }
     @if (self.HasInterfaces)
+    {
         @Helpers.Section.Dump("Interfaces", self.Interfaces, true)
+    }
     @if (self.HasDelegates)
+    {
         @Helpers.Section.Dump("Delegates", self.Delegates, true)
+    }
     @if (self.HasEnums)
+    {
         @Helpers.Section.Dump("Enumerations", self.Enums, true)
+    }
 </div>
 
-@if (!string.IsNullOrEmpty(self.Remarks)) 
-    @Helpers.Section.Dump("Remarks",TagExpand(self.Remarks))
+@if (!string.IsNullOrEmpty(self.Remarks))
+{
+    @Helpers.Section.Dump("Remarks", TagExpand(self.Remarks))
+}
 
 @Helpers.WebDocSection.Dump(self)
 

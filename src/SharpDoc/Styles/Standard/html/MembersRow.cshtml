@@ -44,39 +44,33 @@
 
 @helper DumpHeader(bool showIcons, dynamic rowContext)
 {
-	@if (showIcons)
-	{
+	if (showIcons) {
 		<th class="icon-col">&nbsp;</th>
 	}
 	<th class="platicon-col">Platforms</th>
     <th class="name-col">Name</th>
-	@if (rowContext.DisplayUnmanagedColumn)
-     {
+	if (rowContext.DisplayUnmanagedColumn)
+    {
          <th class="name-col">Unmanaged</th>
-     }
+    }
     <th class="desc-col">Description</th>
 }
 
 @helper DumpRow(NModelBase member, bool showIcons, string displayName, string postDesc, dynamic rowContext)
 {
-    @if (showIcons)
-    {
+    if (showIcons) {
         <td class="icon-col">@Helpers.Icons.GetIcons(member)</td>
     }
     <td class="platicon-col">@Helpers.Icons.GetPlatformIcons(member)</td>
 
-    @if(Model.CurrentContext is NEnum)
-    {
+    if(Model.CurrentContext is NEnum) {
         <td class="name-col"><a href="#">@member.Name</a></td>
-    }
-    else
-    {
+    } else {
         <td class="name-col">@ToUrl(member, displayName, true)</td>
     }
-	@if (rowContext.DisplayUnmanagedColumn)
-     {
+	if (rowContext.DisplayUnmanagedColumn) {
          <td class="unman-col"><a target="_blank" href="http://msdn.microsoft.com/en-us/library/@(member.MsdnId).aspx">@member.UnManagedShortApi</a></td>
-     }
+    }
     <td class="desc-col">@TagExpand(member.Description)&nbsp;@postDesc</td>
 }
 

@@ -78,16 +78,12 @@
     <Reference Include="Mono.Options">
       <HintPath>..\..\external\Mono.Options\Mono.Options.dll</HintPath>
     </Reference>
-    <Reference Include="SharpRazor, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\SharpRazor.1.1\lib\net45\SharpRazor.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\Microsoft.AspNet.Razor.3.0.0\lib\net45\System.Web.Razor.dll</HintPath>
+      <HintPath>..\..\..\..\..\SharpRazor\packages\Microsoft.AspNet.Razor.3.0.0\lib\net45\System.Web.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
@@ -462,6 +458,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\SharpRazor\SharpRazor\SharpRazor.csproj">
+      <Project>{6fc36f8d-068e-4306-ace0-f29d1a05acda}</Project>
+      <Name>SharpRazor</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharpDocPak\SharpDocPak.csproj">
       <Project>{8247C384-795D-432B-A7A1-FB3632E2A5F3}</Project>
       <Name>SharpDocPak</Name>

@@ -26,24 +26,24 @@
 @using System.Text;
 @using SharpDoc.Logging;
 @model SharpDoc.TemplateContext
-@{    
+@{
     // Write Class Library        
-    foreach (var @namespace in Model.Namespaces)
+    foreach (var ns in Model.Namespaces)
     {
-        Model.Topic = @namespace.TopicLink;
-        Model.Namespace = @namespace;
+        Model.Topic = ns.TopicLink;
+        Model.Namespace = ns;
         Model.Type = null;
 
-        Logger.Message("Generating documentation for namespace [{0}]", @namespace.Name);
+        Logger.Message("Generating documentation for namespace [{0}]", ns.Name);
 
-        Model.WriteTo(@namespace, Parse("Namespace"));
+        Model.WriteTo(ns, Parse("Namespace"));
 
-        foreach (var type in @namespace.Types)
+        foreach (var type in ns.Types)
         {
             Model.Topic = type.TopicLink;
             Model.Type = type;
-            Model.Assembly = (SharpDoc.Model.NAssembly)type.Assembly;
-            Model.WriteTo(@type, Parse("Type"));
+            Model.Assembly = (SharpDoc.Model.NAssembly) type.Assembly;
+            Model.WriteTo(type, Parse("Type"));
 
             // Enum-item are not going to be generated
             if (!(type is NEnum))
@@ -52,13 +52,14 @@
                 {
                     Model.Topic = member.TopicLink;
                     Model.Member = member;
-                    Model.WriteTo(@member, Parse("Member"));
+                    Model.WriteTo(member, Parse("Member"));
                 }
             }
+            //Put a comment here to avoid a bug in razor?
             Model.Member = null;
             Model.Type = null;
         }
     }
     // Reset current topic to null
-    Model.Topic = null;        
+    Model.Topic = null;
 }

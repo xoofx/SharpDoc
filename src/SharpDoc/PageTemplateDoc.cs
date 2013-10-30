@@ -111,7 +111,8 @@ namespace SharpDoc
                     RegisterHelper(name, template, method);
                 }
             }
-            return "";
+            template.Model = Model;
+            return template.Run();
         }
 
         protected string ToUrl(IModelReference modelRef, string content = null, bool forceLocal = false, string attributes = null, bool useSelf = true)

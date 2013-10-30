@@ -75,7 +75,7 @@
 
 @helper DumpInheritance(bool full) 
 {
-    @WriteInheritance(full)
+    WriteInheritance(full);
 }
 @{
     var self = Model.Type;
@@ -88,7 +88,9 @@
 <div class="summary"><p>@TagExpand(self.Description)</p></div>
 
 @if (self is NClass)
-    @Helpers.Section.Dump("section_partial_inheritance", "Inheritance Hierarchy", DumpInheritance(!HasComplexInheritance).ToString())   
+{
+    @Helpers.Section.Dump("section_partial_inheritance", "Inheritance Hierarchy", DumpInheritance(!HasComplexInheritance).ToString())
+}
 <br/>
 <div class="origin">
 <strong>Assembly: </strong>@Model.Assembly.FullName (@Model.Assembly.FileName @Model.Assembly.Version)<br />
@@ -96,41 +98,61 @@
 @Helpers.TypeBodyMembersHeader.Dump(self)
 </div>
 @if (self is NType)
-    @Helpers.Section.DumpSyntax(self)           
+{
+    @Helpers.Section.DumpSyntax(self)
+}
 
 <div class="members">
 @if (!(self is NDelegate))
 {
-	@if (self.HasConstructors)
-        @Helpers.Section.Dump("Constructors", self.Constructors, true);
+    if (self.HasConstructors)
+    {
+        @Helpers.Section.Dump("Constructors", self.Constructors, true)
+    }
 
-	@if (self.HasFields)
-        @Helpers.Section.Dump("Fields", self.AllFields, true, self);
+    if (self.HasFields)
+    {
+        @Helpers.Section.Dump("Fields", self.AllFields, true, self)
+    }
 
-	@if (self.HasProperties)
-        @Helpers.Section.Dump("Properties", self.AllProperties, true, self);
+    if (self.HasProperties)
+    {
+        @Helpers.Section.Dump("Properties", self.AllProperties, true, self)
+    }
 
-	@if (self.HasMethods)
-        @Helpers.Section.Dump("Methods", self.AllMethods, true, self);
+    if (self.HasMethods)
+    {
+        @Helpers.Section.Dump("Methods", self.AllMethods, true, self)
+    }
 
-    @if (self.HasExtensionMethods)
-        @Helpers.Section.Dump("Extension Methods", self.ExtensionMethods, true, self);
-        
-	@if (self.HasEvents)
-        @Helpers.Section.Dump("Events", self.AllEvents, true, self);
+    if (self.HasExtensionMethods)
+    {
+        @Helpers.Section.Dump("Extension Methods", self.ExtensionMethods, true, self)
+    }
 
-    @if (self.HasOperators)
-        @Helpers.Section.Dump("Operators", self.Operators, true, self);
+    if (self.HasEvents)
+    {
+        @Helpers.Section.Dump("Events", self.AllEvents, true, self)
+    }
+
+    if (self.HasOperators)
+    {
+        @Helpers.Section.Dump("Operators", self.Operators, true, self)
+    }
 }
 @if (!string.IsNullOrEmpty(self.Remarks))
+{
     @Helpers.Section.Dump("Remarks", TagExpand(self.Remarks))
+}
 
 @Helpers.WebDocSection.Dump(self)
 
 @Helpers.OtherSection.Dump(self)
 
 @if (self is NClass && HasComplexInheritance)
+{
     @Helpers.Section.Dump("section_full_inheritance", "Inheritance Hierarchy", DumpInheritance(true).ToString())
+}
 	
 @Helpers.Version.Dump(self)
 

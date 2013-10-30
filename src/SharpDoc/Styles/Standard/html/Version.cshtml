@@ -59,7 +59,7 @@
 -->
 @helper Dump(NModelBase element)
 {
-   @if (element.Groups.Count > 0)
+   if (element.Groups.Count > 0)
    {
        @Helpers.Section.Dump("Version and Platform Information", GetVersionAndPlatform(element));
    }

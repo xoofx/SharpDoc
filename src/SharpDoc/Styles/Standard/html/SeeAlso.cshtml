@@ -38,7 +38,9 @@
         foreach(var seealso in element.SeeAlsos)
         {
             if (!groups.Contains(seealso.GroupName))
+            {
                 groups.Add(seealso.GroupName);
+            }
         }
 
         foreach (var groupName in groups)
@@ -48,7 +50,9 @@
             foreach(var seealso in element.SeeAlsos)
             {
                 if (seealso.GroupName != groupName)
+                {
                     continue;
+                }
 
                 text.AppendLine("<div class='seeAlsoStyle'>");
                 text.AppendFormat(ToUrl(seealso.LinkItem, seealso.LinkItem.PageTitle, false, null, false));
@@ -64,7 +68,7 @@
 -->
 @helper Dump(NModelBase element)
 {
-   @if(element.SeeAlsos.Count > 0)
+   if(element.SeeAlsos.Count > 0)
    {
        @Helpers.Section.Dump("See Also", SeeAlsoToText(element))
    }
