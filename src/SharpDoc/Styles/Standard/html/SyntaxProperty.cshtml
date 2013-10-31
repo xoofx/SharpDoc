@@ -24,23 +24,13 @@
 *@
 @model SharpDoc.TemplateContext
 @using SharpDoc.Model
-
-@functions {
-
-    public string ParamTypeUrl(NParameter param) {
-        return ToUrl(param.ParameterType, param.ParameterTypeFullName, true);
-    }
-}
-
-<!-- 
-    // Dumps members
--->
+@*// Dumps members*@
 @helper Dump(NProperty property)
 {
     <div id="sdoc-parameters">        
     <h4 class="sdoc-subheading">Property Value</h4>
-		<span>Type: @ToUrl(property.PropertyType, property.PropertyType.FullName, false, null, false)<br />
-		@TagExpand(property.ValueDescription)
+		<span>Type: @Raw(ToUrl(property.PropertyType, property.PropertyType.FullName, false, null, false))<br />
+		@Raw(TagExpand(property.ValueDescription))
 		</span>            
     </div>
 }

@@ -39,10 +39,10 @@
 </div>
 <div style="clear: both;"></div>
         
-<div class="summary"><p>@TagExpand(self.Description)</p></div>
+<div class="summary"><p>@Raw(TagExpand(self.Description))</p></div>
 
 <div class="origin">
-<strong>Namespace: </strong>@ToUrl(Model.Namespace)<br />
+<strong>Namespace: </strong>@Raw(ToUrl(Model.Namespace))<br />
 <strong>Assembly: </strong>@Model.Assembly.FullName (@Model.Assembly.FileName @Model.Assembly.Version)<br />
       
 @Helpers.TypeBodyMembersHeader.Dump(self)

@@ -38,13 +38,13 @@
             foreach(XmlNode sectionNode in otherSectionNodes)
             {
                 XmlAttribute sectionName = sectionNode.Attributes["name"];
-                if(sectionName != null)
+                if (sectionName != null)
                 {
                     XmlAttribute sectionTitle = sectionNode.Attributes["title"];
                     sectionTitle = (sectionTitle != null) ? sectionTitle : sectionName;
 
                     string sectionContent = sectionNode.InnerXml;
-                    @Helpers.Section.Dump("section_" + sectionName.Value, sectionTitle.Value, TagExpand(sectionContent));
+                    @Helpers.Section.Dump("section_" + sectionName.Value, sectionTitle.Value, TagExpand(sectionContent))
                 }
             }
         }

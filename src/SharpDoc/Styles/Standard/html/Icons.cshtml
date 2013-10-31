@@ -132,17 +132,13 @@
         return icons;
     }
 }
-
-<!-- 
-// Returns an icon div element from a member
--->
+@*// Returns an icon div element from a member*@
 @helper GetIcons(NModelBase member) {
     foreach (var iconName in GetIconList(member))
     {
         <div class="icon @iconName.Item1" title="@iconName.Item2"></div>
     }
 }
-
 @helper GetPlatformIcons(NModelBase member) {
     foreach (var iconName in GetPlatformIconList(member))
     {

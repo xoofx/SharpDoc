@@ -63,6 +63,28 @@
             </summary>
             <value><c>true</c> if literal; otherwise, <c>false</c>.</value>
         </member>
+        <member name="T:SharpRazor.HtmlRawString">
+            <summary>
+            A string outputed as a RAW html strong.
+            </summary>
+        </member>
+        <member name="T:SharpRazor.IHtmlString">
+            <summary>
+            An html stringyfier.
+            </summary>
+        </member>
+        <member name="M:SharpRazor.IHtmlString.ToHtmlString">
+            <summary>
+            Converts this instance to a raw HTML string.
+            </summary>
+            <returns>A raw HTML string.</returns>
+        </member>
+        <member name="M:SharpRazor.HtmlRawString.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SharpRazor.HtmlRawString"/> class.
+            </summary>
+            <param name="htmlText">The htmlText.</param>
+        </member>
         <member name="T:SharpRazor.TemplateParsingException">
             <summary>
             An exception occuring when parsing a razor template.
@@ -402,22 +424,7 @@
             </summary>
             <returns>A markup parser.</returns>
         </member>
-        <member name="M:SharpRazor.Razorizer.OnCompilerErrors(System.Collections.Generic.List{System.CodeDom.Compiler.CompilerError})">
-            <summary>
-            Called in case of compiler errors. By default throws a <see cref="T:System.InvalidOperationException"/>.
-            Override this method to customize handling of compiler errors.
-            </summary>
-            <param name="errors">The errors.</param>
-        </member>
-        <member name="M:SharpRazor.Razorizer.OnCodeGeneratorErrors(System.String,System.Collections.Generic.List{System.Web.Razor.Parser.SyntaxTree.RazorError})">
-            <summary>
-            Called in case of razor code generator errors. By default throws a <see cref="T:System.InvalidOperationException"/>.
-            Override this method to customize handling of razor code generator errors.
-            </summary>
-            <param name="templateFileName">Name of the template file being processed.</param>
-            <param name="errors">The errors.</param>
-        </member>
-        <member name="M:SharpRazor.Razorizer.NewPageTemplate(System.Type)">
+        <member name="M:SharpRazor.Razorizer.NewPageTemplate(System.String,System.Type)">
             <summary>
             Creates a new instance of <see cref="T:SharpRazor.PageTemplate"/> based on the type. Override this method to customize how to instantiate generated <see cref="T:SharpRazor.PageTemplate"/>.
             </summary>
@@ -436,11 +443,17 @@
             </summary>
             <value>The assemblies.</value>
         </member>
-        <member name="P:SharpRazor.Razorizer.NameSpaces">
+        <member name="P:SharpRazor.Razorizer.Namespaces">
             <summary>
             Gets the namespaces to use when compiling a <see cref="T:SharpRazor.PageTemplate"/>.
             </summary>
             <value>The name spaces.</value>
+        </member>
+        <member name="P:SharpRazor.Razorizer.EnableDebug">
+            <summary>
+            Gets or sets a value indicating whether to enable debugging of page templates from a debugger.
+            </summary>
+            <value><c>true</c> to enable debugging of templates from a debugger; otherwise, <c>false</c>.</value>
         </member>
         <member name="P:SharpRazor.Razorizer.LanguageProviders">
             <summary>
@@ -554,7 +567,22 @@
             Writes a value to the specified <see cref="T:System.IO.TextWriter"/>.
             </summary>
             <param name="writer">The writer.</param>
-            <param name="val">The value.</param>
+            <param name="value">The value.</param>
+            <exception cref="T:System.ArgumentNullException">writer</exception>
+        </member>
+        <member name="M:SharpRazor.PageTemplate.Raw(System.String)">
+            <summary>
+            Converts a raw HTML to a <see cref="T:SharpRazor.HtmlRawString"/>.
+            </summary>
+            <param name="rawHtml">The raw HTML.</param>
+            <returns>An <see cref="T:SharpRazor.HtmlRawString"/>.</returns>
+        </member>
+        <member name="M:SharpRazor.PageTemplate.WriteTo(System.IO.TextWriter,SharpRazor.LambdaWriter)">
+            <summary>
+            Writes a value to the specified <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+            <param name="writer">The writer.</param>
+            <param name="lambdaWriter">The lambda writer.</param>
             <exception cref="T:System.ArgumentNullException">writer</exception>
         </member>
         <member name="M:SharpRazor.PageTemplate.WriteLiteralTo(System.IO.TextWriter,System.Object)">
@@ -599,6 +627,18 @@
             </summary>
             <param name="writer">The writer.</param>
             <param name="value">The value.</param>
+        </member>
+        <member name="P:SharpRazor.PageTemplate.PageName">
+            <summary>
+            Gets the name of this page.
+            </summary>
+            <value>The name of the page.</value>
+        </member>
+        <member name="P:SharpRazor.PageTemplate.PageSourceCode">
+            <summary>
+            Gets the page source code. Only available when <see cref="P:SharpRazor.Razorizer.EnableDebug"/> is set to <c>true</c>.
+            </summary>
+            <value>The page source code.</value>
         </member>
         <member name="P:SharpRazor.PageTemplate.Layout">
             <summary>
@@ -664,6 +704,13 @@
             </summary>
             <param name="writer">The writer.</param>
         </member>
+        <member name="M:SharpRazor.LambdaWriter.op_Implicit(SharpRazor.LambdaWriter)~System.String">
+            <summary>
+            Performs an implicit conversion from <see cref="T:SharpRazor.LambdaWriter"/> to <see cref="T:System.String"/>.
+            </summary>
+            <param name="writer">The writer.</param>
+            <returns>The result of the conversion.</returns>
+        </member>
         <member name="T:SharpRazor.PageTemplateContext">
             <summary>
             The context used when rendering a <see cref="T:SharpRazor.PageTemplate"/>. The creation of this context
@@ -721,6 +768,12 @@
             </summary>
             <returns>LambdaWriter.</returns>
         </member>
+        <member name="P:SharpRazor.PageTemplateContext.Writer">
+            <summary>
+            Gets the current writer.
+            </summary>
+            <value>The writer.</value>
+        </member>
         <member name="P:SharpRazor.PageTemplateContext.ViewBag">
             <summary>
             Gets the view bag.
@@ -732,11 +785,18 @@
             An exception occuring when compiling a razor template into target language.
             </summary>
         </member>
-        <member name="M:SharpRazor.TemplateCompilationException.#ctor(System.Collections.Generic.List{System.CodeDom.Compiler.CompilerError})">
+        <member name="M:SharpRazor.TemplateCompilationException.#ctor(System.String,System.Collections.Generic.List{System.CodeDom.Compiler.CompilerError})">
             <summary>
             Initializes a new instance of the <see cref="T:SharpRazor.TemplateCompilationException"/> class.
             </summary>
+            <param name="sourceCode">The source code.</param>
             <param name="errors">The errors.</param>
+        </member>
+        <member name="P:SharpRazor.TemplateCompilationException.SourceCode">
+            <summary>
+            Gets the source code used for compilation.
+            </summary>
+            <value>The source code.</value>
         </member>
         <member name="P:SharpRazor.TemplateCompilationException.Errors">
             <summary>

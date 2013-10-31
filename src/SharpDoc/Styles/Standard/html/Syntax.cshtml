@@ -31,9 +31,7 @@
 @Import("SyntaxCodeVB")
 @Import("SyntaxCodeCpp")
 @Import("SyntaxCodeFSharp")
-<!-- 
-// Dumps syntax section
--->
+@*// Dumps syntax section*@
 @helper Dump(NMember member)
 {
     @Helpers.TabCode.Dump(new string[] {
@@ -42,21 +40,21 @@
         "C++", Helpers.SyntaxCodeCpp.Dump(member),
         "F#",  Helpers.SyntaxCodeFSharp.Dump(member),
     });
-    
+
     if (member is NMethod)
     {
-    @Helpers.SyntaxMethod.Dump((NMethod)member);
+        @Helpers.SyntaxMethod.Dump((NMethod) member)
     }
     else if (member is NProperty)
     {
-    @Helpers.SyntaxProperty.Dump((NProperty)member);
+        @Helpers.SyntaxProperty.Dump((NProperty) member)
     }
     else if (member is NDelegate)
     {
-    @Helpers.SyntaxMethod.Dump(((NDelegate)member).Invoke);
+        @Helpers.SyntaxMethod.Dump(((NDelegate) member).Invoke)
     }
     else if (member is NType)
     {
-    <p>The @member.Name type exposes the following members.</p>
-    }   
+        <p>The @member.Name type exposes the following members.</p>
+    }
 }

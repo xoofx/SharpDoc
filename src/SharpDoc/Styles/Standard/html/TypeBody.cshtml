@@ -72,11 +72,6 @@
         return builder;
     }
 }
-
-@helper DumpInheritance(bool full) 
-{
-    WriteInheritance(full);
-}
 @{
     var self = Model.Type;
 }
@@ -85,16 +80,16 @@
 </div>
 <div style="clear: both;"></div>
         
-<div class="summary"><p>@TagExpand(self.Description)</p></div>
+<div class="summary">@Raw(TagExpand(self.Description))</div>
 
 @if (self is NClass)
 {
-    @Helpers.Section.Dump("section_partial_inheritance", "Inheritance Hierarchy", DumpInheritance(!HasComplexInheritance).ToString())
+    @Helpers.Section.Dump("section_partial_inheritance", "Inheritance Hierarchy", WriteInheritance(!HasComplexInheritance).ToString())
 }
 <br/>
 <div class="origin">
 <strong>Assembly: </strong>@Model.Assembly.FullName (@Model.Assembly.FileName @Model.Assembly.Version)<br />
-<strong>Namespace: </strong>@ToUrl(Model.Namespace)<br />
+<strong>Namespace: </strong>@Raw(ToUrl(Model.Namespace))<br />
 @Helpers.TypeBodyMembersHeader.Dump(self)
 </div>
 @if (self is NType)
@@ -151,14 +146,14 @@
 
 @if (self is NClass && HasComplexInheritance)
 {
-    @Helpers.Section.Dump("section_full_inheritance", "Inheritance Hierarchy", DumpInheritance(true).ToString())
+    @Helpers.Section.Dump("section_full_inheritance", "Inheritance Hierarchy", WriteInheritance(true).ToString())
 }
 	
 @Helpers.Version.Dump(self)
 
 @Helpers.SeeAlso.Dump(self)
 </div>
-<!-- Temporary space -->
+@*Temporary space*@
 <br />
 <br />
 <br />

@@ -27,33 +27,33 @@
 @using SharpDoc.Logging;
 @model SharpDoc.TemplateContext
 @*// Generates Prolog*@
-@Include("MainBegin");
+@Include("MainBegin")
 @*// Installs the Tag Resolver*@
-@Include("TagResolver");  
+@Include("TagResolver")
 @*// Installs the Link Resolver*@
-@Include("LinkResolver");
+@Include("LinkResolver")
 @*// Installs the PageId function*@
-@Include("PageIdFunction");
+@Include("PageIdFunction")
 @*// Installs the WriteTo function*@
-@Include("WriteToFunction");
+@Include("WriteToFunction")
 @*// Installs the GetWebDocContent function*@
-@Include("GetWebDocContentFunction");
+@Include("GetWebDocContentFunction")
 @*// Defines default parameters*@
-@Include("Param");
+@Include("Param")
 @*// Generates ClassLibrary*@
-@Include("ClassLibraryBuilder");
+@Include("ClassLibraryBuilder")
 @*// Generates topics*@
-@Include("TopicBuilder");
+@Include("TopicBuilder")
 @*// Write root index.html (which is just a redirect)*@
 @{
-    Model.WriteTo(null, Parse("Root"));   
+    Model.WriteTo(null, Parse("Root"));
 }
 @*// Write topics*@
-@Include("MainTopic");
+@Include("MainTopic")
 @*// Writes Class library*@
-@Include("MainClassLibrary");
+@Include("MainClassLibrary")
 @*// Generates Epilog*@
-@Include("MainEnd");    
+@Include("MainEnd")
 @*// Write null, null to WriteFunction in order to cleanup things*@
 @{
     Model.WriteTo(null, null);

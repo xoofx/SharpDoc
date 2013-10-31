@@ -54,13 +54,11 @@
     }
 }
 
-<!-- 
-// Dumps members
--->
+@*// Dumps members*@
 @helper Dump(NModelBase element)
 {
    if (element.Groups.Count > 0)
    {
-       @Helpers.Section.Dump("Version and Platform Information", GetVersionAndPlatform(element));
+       @Helpers.Section.Dump("Version and Platform Information", GetVersionAndPlatform(element))
    }
 }

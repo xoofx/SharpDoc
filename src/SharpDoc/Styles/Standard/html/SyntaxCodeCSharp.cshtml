@@ -270,21 +270,21 @@
 {
     if (member is NType)
     {
-        @DumpType((NType)member);
+        @Raw(DumpType((NType)member))
     } else if (member is NMethod)
     {
-        @DumpMethod((NMethod)member);
+        @Raw(DumpMethod((NMethod)member))
     }
     else if (member is NEvent)
     {
-        @DumpEvent((NEvent)member);
+        @Raw(DumpEvent((NEvent)member))
     }
 	else if (member is NProperty)
-    {
-        @DumpProperty((NProperty)member);
-    }
+	{
+	    @Raw(DumpProperty((NProperty) member))
+	}
 	else if (member is NField)
-    {
-        @DumpField((NField)member);
-    }
+	{
+	    @Raw(DumpField((NField) member))
+	}
 }

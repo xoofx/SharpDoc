@@ -50,7 +50,7 @@
     <div id="@sectionId" class="section">
         <div class="title"><a id="@(sectionId)_toggle" href="#" class="title"><div id="@(sectionId)_icon" class="toggle_icon out"></div><span class="title">@Escape(name)</span></a><div class="hr"><hr/></div></div>
         <div id="@(sectionId)_content" class="block">
-        @content
+        @Raw(content)
         </div>
     </div>    
 }

@@ -24,17 +24,7 @@
 *@
 @model SharpDoc.TemplateContext
 @using SharpDoc.Model
-
-@functions {
-
-    public string ParamTypeUrl(NParameter param) {
-        return ToUrl(param.ParameterType, param.ParameterTypeFullName, true);
-    }
-}
-
-<!-- 
-    // Dumps members
--->
+@*// Dumps members*@
 @helper Dump(NMethod method)
 {
     <div id="sdoc-parameters">        
@@ -48,8 +38,8 @@
 					<span class="sdoc-parameter">@param.Name</span>
 				</dt>
 				<dd>
-					<span>Type: @ParamTypeUrl(param)<br />
-						@TagExpand(param.Description)
+					<span>Type: @Raw(ToUrl(param.ParameterType, param.ParameterTypeFullName, true))<br />
+						@Raw(TagExpand(param.Description))
 					</span>            
 				</dd>
 			</dl>
@@ -57,8 +47,8 @@
     }
     @if (method.ReturnType.Name != "void") {
         <h4 class="sdoc-subheading">Return Value</h4>
-        <span>Type: @ToUrl(method.ReturnType, method.ReturnType.FullName, false, null, false)<br />
-        @TagExpand(method.ReturnDescription)
+        <span>Type: @Raw(ToUrl(method.ReturnType, method.ReturnType.FullName, false, null, false))<br />
+        @Raw(TagExpand(method.ReturnDescription))
         </span>            
     }
     </div>

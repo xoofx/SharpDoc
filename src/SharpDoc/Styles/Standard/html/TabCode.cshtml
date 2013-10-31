@@ -24,9 +24,7 @@
 *@
 @model SharpDoc.TemplateContext
 @using SharpDoc.Model
-<!-- 
-// Dumps syntax section
--->
+@*// Dumps syntax section*@
 @helper Dump(string[] tabNamesAndValues)
     {
     <div class="grouptab">
@@ -50,13 +48,13 @@
             if (i == 1)
             {
         <div class="tabcontent selected">     
-        @tabValue
+        @Raw(tabValue)
         </div>
             }
             else
             {
         <div class="tabcontent">     
-        @tabValue
+        @Raw(tabValue)
         </div>
             }
         }

@@ -30,4 +30,4 @@
 	<h1 class="content-title">@Model.Topic.FullName</h1>   
 </div>
 <div style="clear: both;"></div> 
-@TagExpand(Model.Topic.Content)
+@Raw(TagExpand(Model.Topic.Content))

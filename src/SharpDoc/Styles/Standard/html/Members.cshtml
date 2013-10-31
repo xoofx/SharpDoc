@@ -30,17 +30,13 @@
 @using SharpDoc.Model
 @Import("MembersRow")
 
-!-- 
-// Dumps members
--->
+@*// Dumps members*@
 @helper Dump(IEnumerable<NModelBase> members, bool showIcons)
 {
-    @Dump(members, showIcons, null);
+    @Dump(members, showIcons, null)
 }
 
-<!-- 
-// Dumps members
--->
+@*// Dumps members*@
 @helper Dump(IEnumerable<NModelBase> membersIt, bool showIcons, IModelReference context)
     {
     if (membersIt == null)
@@ -50,7 +46,7 @@
 
     dynamic rowContext = new ExpandoObject();
     var members = membersIt.ToList();
-    @Helpers.MembersRow.Prepare(members, rowContext);
+    @Helpers.MembersRow.Prepare(members, rowContext)
     <div class="members">
         <table class="members">
             <tr>@Helpers.MembersRow.DumpHeader(showIcons, rowContext)</tr>

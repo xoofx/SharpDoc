@@ -26,9 +26,7 @@
 @using SharpDoc.Model
 @Import("Icons")
 
-<!-- 
-    // Dumps members
-    -->
+@*// Dumps members*@
 @helper Prepare(IEnumerable<NModelBase> members, dynamic rowContext)
 {
 	rowContext.DisplayUnmanagedColumn = false;
@@ -66,12 +64,12 @@
     if(Model.CurrentContext is NEnum) {
         <td class="name-col"><a href="#">@member.Name</a></td>
     } else {
-        <td class="name-col">@ToUrl(member, displayName, true)</td>
+        <td class="name-col">@Raw(ToUrl(member, displayName, true))</td>
     }
 	if (rowContext.DisplayUnmanagedColumn) {
          <td class="unman-col"><a target="_blank" href="http://msdn.microsoft.com/en-us/library/@(member.MsdnId).aspx">@member.UnManagedShortApi</a></td>
     }
-    <td class="desc-col">@TagExpand(member.Description)&nbsp;@postDesc</td>
+    <td class="desc-col">@Raw(TagExpand(member.Description))&nbsp;@Raw(postDesc)</td>
 }
 
 

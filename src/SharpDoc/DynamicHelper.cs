@@ -119,11 +119,7 @@ namespace SharpDoc
                 for (int i = 0; i < args.Length; i++)
                     methodParams[i] = args[i].Expression;
 
-                var methodToString = typeof (LambdaWriter).GetMethod("ToString");
-
-                var computeResult =
-                    Expression.Call(Expression.Call(Expression.Constant(helperMethodInstance.Template), helperMethodInstance.Method, methodParams),
-                                    methodToString);
+                var computeResult = Expression.Call(Expression.Constant(helperMethodInstance.Template), helperMethodInstance.Method, methodParams);
 
                 return new DynamicMetaObject(computeResult, BindingRestrictions.GetTypeRestriction(Expression, LimitType));
             }
