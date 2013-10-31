@@ -201,6 +201,12 @@ namespace SharpDoc
         public Func<XmlNode, bool, string> GetWebDocContent { get; set; }
 
         /// <summary>
+        /// Gets or sets the web documentation.
+        /// </summary>
+        /// <value>The web documentation.</value>
+        public WebDocumentation WebDocumentation { get; set; }
+
+        /// <summary>
         /// Gets or sets the name of the current style.
         /// </summary>
         /// <value>

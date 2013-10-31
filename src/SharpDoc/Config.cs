@@ -53,7 +53,6 @@ namespace SharpDoc
 
             WebDocumentationUrl = null;
             WebDocumentationLogin = null;
-            WebDocumentation = null;
         }
 
         /// <summary>
@@ -108,19 +107,11 @@ namespace SharpDoc
         public List<string> References { get; set; }
 
         /// <summary>
-        /// Gets or sets the extern documentation webSite connection.
-        /// </summary>
-        /// <value>The the extern documentation webSite connection.</value>
-        //[XmlElement("webDocumentation")]
-        [XmlIgnore]
-        public WebDocumentation WebDocumentation { get; set; }
-
-        /// <summary>
         /// Gets or sets the extern documentation webSite url.
         /// </summary>
         /// <value>The extern documentation webSite url.</value>
         //[XmlElement("webDocumentationUrl")]
-        [XmlIgnore]
+        [XmlElement("webdoc-url")]
         public string WebDocumentationUrl { get; set; }
 
         /// <summary>
@@ -128,9 +119,8 @@ namespace SharpDoc
         /// </summary>
         /// <value>The the extern documentation webSite login.</value>
         //[XmlElement("webDocumentationLogin")]
-        [XmlIgnore]
+        [XmlElement("webdoc-login")]
         public NetworkCredential WebDocumentationLogin { get; set; }
-
 
         /// <summary>
         /// Gets or sets parameters.
@@ -241,32 +231,6 @@ namespace SharpDoc
             var deserializer = new XmlSerializer(typeof(Config));
             var output = new FileStream(file, FileMode.Create);
             deserializer.Serialize(output, this, ns);
-        }
-
-        public void InitializeWebDocumentation()
-        {
-            if (WebDocumentationUrl != null)
-            {
-                WebDocumentation = new WebDocumentation(WebDocumentationUrl, WebDocumentationLogin);
-            }
-        }
-
-        public void AddWebDocumentationUrl(string protocol, string domain)
-        {
-            StringBuilder urlBuilder = new StringBuilder(protocol);
-            urlBuilder.Append(":");
-            urlBuilder.Append(domain);
-            string url = urlBuilder.ToString();
-
-            if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
-                WebDocumentationUrl = url;
-            else
-                throw new Mono.Options.OptionException("Given url is invalid option -w.", "-w");
-        }
-
-        public void AddWebDocumentationLogin(string userName, string passWord)
-        {
-            WebDocumentationLogin = new NetworkCredential(userName, passWord); 
         }
     }
 }

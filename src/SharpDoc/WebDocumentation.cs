@@ -32,6 +32,7 @@ namespace SharpDoc
 
         public WebDocumentation(string home, NetworkCredential loginData = null)
         {
+            if (home == null) throw new ArgumentNullException("home");
             siteHome = new Uri(home);
             currentUrl = siteHome;
 
@@ -139,7 +140,7 @@ namespace SharpDoc
             if (node != null)
                 return node.InnerHtml;
             else
-                return string.Empty;
+                return String.Empty;
         }
 
         public void LimitDocumentToElement(string elementHtml)
@@ -147,21 +148,24 @@ namespace SharpDoc
             currentDocument.LoadHtml(elementHtml);
         }
 
-        public string GetContent()
+        public string Content
         {
-            return currentDocument.DocumentNode.InnerHtml;
+            get
+            {
+                return currentDocument.DocumentNode.InnerHtml;
+            }
         }
 
         public string GetContentByClass(string id, int instanceNumber = 0, string tagType = "div")
         {
-            string classRegEx = string.Format("//{1}[@class='{0}']", id, tagType);
+            string classRegEx = String.Format("//{1}[@class='{0}']", id, tagType);
             var nodes = currentDocument.DocumentNode.SelectNodes(classRegEx);
             var node = (nodes != null && nodes.Count > instanceNumber) ? nodes[instanceNumber] : null;
 
             if (node != null)
                 return node.InnerHtml;
             else
-                return string.Empty;
+                return String.Empty;
         }
 
 
@@ -180,9 +184,9 @@ namespace SharpDoc
 
             foreach (var node in nodes)
             {
-                string cssUrl =  node.GetAttributeValue("href", string.Empty);
+                string cssUrl =  node.GetAttributeValue("href", String.Empty);
 
-                string newCssName = string.Format("webDocCss_{0}.css", cssUrl.GetHashCode());
+                string newCssName = String.Format("webDocCss_{0}.css", cssUrl.GetHashCode());
                 string newCssAboslutePath = Path.Combine(cssDir, newCssName);
                 string newCssRelativePath = Path.Combine(linkToCssDir, newCssName);
 
@@ -215,7 +219,7 @@ namespace SharpDoc
 
             foreach(var node in nodes)
             {
-                string imageUrl = node.GetAttributeValue("src", string.Empty);
+                string imageUrl = node.GetAttributeValue("src", String.Empty);
 
                 int indexParam = imageUrl.IndexOf('?');
                 if (indexParam != -1)
@@ -224,7 +228,7 @@ namespace SharpDoc
                 Uri absoluteImageUrl = new Uri(currentUrl, imageUrl);
                 string extension = (Path.HasExtension(imageUrl)) ? Path.GetExtension(imageUrl) : ".png";
 
-                string newImageName = string.Format("webDocImage_{0}{1}", imageUrl.GetHashCode(), extension);
+                string newImageName = String.Format("webDocImage_{0}{1}", imageUrl.GetHashCode(), extension);
                 string newImageAboslutePath = Path.Combine(imageDir, newImageName);
                 string newImageRelativePath = Path.Combine(linkToImgDir, newImageName);
 
@@ -269,7 +273,7 @@ namespace SharpDoc
 
             foreach (var node in nodes)
             {
-                string href = node.GetAttributeValue("href", string.Empty);
+                string href = node.GetAttributeValue("href", String.Empty);
                 if(!Uri.IsWellFormedUriString(href, UriKind.Absolute))
                 {
                     Uri absoluteUri = new Uri(currentUrl, href);
@@ -286,6 +290,19 @@ namespace SharpDoc
                 }
             }
 
+        }
+
+        public static string BuildWebDocumentationUrl(string protocol, string domain)
+        {
+            var urlBuilder = new StringBuilder(protocol);
+            urlBuilder.Append(":");
+            urlBuilder.Append(domain);
+            string url = urlBuilder.ToString();
+
+            if (Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                return url;
+
+            throw new Mono.Options.OptionException("Given url is invalid option -w.", "-w");
         }
     }
 }

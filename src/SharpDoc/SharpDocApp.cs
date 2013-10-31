@@ -109,6 +109,11 @@ namespace SharpDoc
 
             var files = new List<string>();
 
+            var configParams = new List<ConfigParam>();
+            var styleParams = new List<ConfigParam>();
+            string webDocumentationUrl = null;
+            NetworkCredential webDocumentationLogin = null;
+
             var options = new OptionSet()
                               {
                                   "Copyright (c) 2010-2013 SharpDoc - Alexandre Mutel",
@@ -124,7 +129,7 @@ namespace SharpDoc
                                           {
                                               if (param == null)
                                                   throw new OptionException("Missing parameter name for option -D.", "-D");
-                                              Config.Parameters.Add(new ConfigParam(param, value));
+                                              configParams.Add(new ConfigParam(param, value));
                                           }
                                       },
                                   {
@@ -133,7 +138,7 @@ namespace SharpDoc
                                           {
                                               if (style == null)
                                                   throw new OptionException("Missing parameter name/value for option -S.", "-S");
-                                              Config.StyleParameters.Add(new ConfigParam(style, value));
+                                              styleParams.Add(new ConfigParam(style, value));
                                           }
                                       },
                                   {"d|style-dir=", "Add a style directory", opt => Config.StyleDirectories.Add(opt) },
@@ -145,7 +150,7 @@ namespace SharpDoc
                                         {
                                             if (protocol == null || domain == null)
                                                 throw new OptionException("Missing parameter web site home page url for option -w.", "-w");
-                                            Config.AddWebDocumentationUrl(protocol, domain);
+                                            webDocumentationUrl = WebDocumentation.BuildWebDocumentationUrl(protocol, domain);
                                         }
                                       },
                                   {"wL|webdocLogin=", "(optional) Authentification data for the extern documentation site [userName:password]", 
@@ -153,7 +158,7 @@ namespace SharpDoc
                                         {
                                             if (userName == null || passWord == null)
                                                 throw new OptionException("Missing parameter web site login for option -wL.", "-wL");
-                                            Config.AddWebDocumentationLogin(userName, passWord);
+                                            webDocumentationLogin = new NetworkCredential(userName, passWord); 
                                         }
                                       },
                                   "",
@@ -166,7 +171,6 @@ namespace SharpDoc
             try
             {
                 options.Parse(args);
-                Config.InitializeWebDocumentation();
 
                 StyleManager.Init(Config);
             }
@@ -180,6 +184,20 @@ namespace SharpDoc
                 options.WriteOptionDescriptions(Console.Out);
                 StyleManager.WriteAvailaibleStyles(Console.Out);
                 Environment.Exit(0);
+            }
+
+            // Copy config params from command line to current config
+            Config.Parameters.AddRange(configParams);
+            Config.StyleParameters.AddRange(styleParams);
+
+            // Override webdoc url from commmand line parameters
+            if (webDocumentationUrl != null)
+            {
+                Config.WebDocumentationUrl = webDocumentationUrl;
+            }
+            if (webDocumentationLogin != null)
+            {
+                Config.WebDocumentationLogin = webDocumentationLogin;
             }
 
             // Add files from command line
@@ -222,9 +240,6 @@ namespace SharpDoc
         /// </summary>
         public void Run()
         {
-            // Force loading of dynamics for RazorEngine
-            bool loaded = typeof(Microsoft.CSharp.RuntimeBinder.Binder).Assembly != null;
-            
             var clock = Stopwatch.StartNew();
 
             var razorizer = new Razorizer(typeof (PageTemplateDoc));
@@ -235,6 +250,12 @@ namespace SharpDoc
                 Config = Config,
                 StyleManager = StyleManager,
             };
+
+            // Create web documentation
+            if (Config.WebDocumentationUrl != null)
+            {
+                context.WebDocumentation = new WebDocumentation(Config.WebDocumentationUrl, Config.WebDocumentationLogin);
+            }
 
             // Setup the context based on the config and StyleManager
             context.Initialize();

@@ -46,7 +46,7 @@ You can pass several assemblies and xml files at once. The condition is that an 
 
 TODO Document how to use the config files
 
-[Test link to root documentation](SharpDoc)
+[Test link to root documentation](main.md)
 
 This is a test link to the namespace [SharpDoc](N:SharpDoc)
 

@@ -45,17 +45,18 @@
 
         var otherUrlAttribute = webDocNode.Attributes["url"];
         string otherUrl = (otherUrlAttribute != null) ? otherUrlAttribute.Value : null;
-    
-        if(Model.Config.WebDocumentation.Load(page, otherUrl))
+
+        var webDoc = Model.WebDocumentation;
+        if(webDoc.Load(page, otherUrl))
         {
-            var cssFiles = Model.Config.WebDocumentation.InternalizeCss(Model.OutputDirectory, Model.Param.LinkToCss, ".externDoc");
-            string content = Model.Config.WebDocumentation.GetContentByClass("wiki-content");
+            var cssFiles = webDoc.InternalizeCss(Model.OutputDirectory, Model.Param.LinkToCss, ".externDoc");
+            string content = webDoc.GetContentByClass("wiki-content");
             
             if(!string.IsNullOrEmpty(content))
             {
-                Model.Config.WebDocumentation.LimitDocumentToElement(content);
-                Model.Config.WebDocumentation.InternalizeImages(Model.OutputDirectory, Model.Param.LinkToImg);
-                Model.Config.WebDocumentation.InternalizeUrls();
+                webDoc.LimitDocumentToElement(content);
+                webDoc.InternalizeImages(Model.OutputDirectory, Model.Param.LinkToImg);
+                webDoc.InternalizeUrls();
 
                 var idAttr = webDocNode.Attributes["id"];
                 var titleAttr = webDocNode.Attributes["title"];
@@ -91,7 +92,7 @@
                                     externContent.Append("<div class='aui-page-panel'>").AppendLine();
                                         externContent.Append("<div id='content' class='page view'>").AppendLine();
 
-                                            externContent.Append(TagExpand(Model.Config.WebDocumentation.GetContent())).AppendLine();
+                                            externContent.Append(TagExpand(webDoc.Content, true)).AppendLine();
 
                                         externContent.Append("</div>").AppendLine();
                                     externContent.Append("</div>").AppendLine();
@@ -108,13 +109,13 @@
             }
             else
             {
-                string notFoundUri = (otherUrl != null) ? otherUrl + page : Model.Config.WebDocumentation.GetAbsoluteUri(page).ToString();
+                string notFoundUri = (otherUrl != null) ? otherUrl + page : webDoc.GetAbsoluteUri(page).ToString();
                 return string.Format("<div class='warning webNotFound'><div class='icon'></div>The content of the page <a href='{0}'>{1}</a> doesn't match the content extraction scheme.</div>", notFoundUri, page);
             }
         }
         else
         {
-            string notFoundUri = (otherUrl != null) ? otherUrl + page : Model.Config.WebDocumentation.GetAbsoluteUri(page).ToString();
+            string notFoundUri = (otherUrl != null) ? otherUrl + page : webDoc.GetAbsoluteUri(page).ToString();
             return string.Format("<div class='warning webNotFound'><div class='icon'></div>The page <a href='{0}'>{1}</a> could not be found in the extern web documentation.</div>", notFoundUri, page);
         }
     }
@@ -122,9 +123,9 @@
 
 @{ 
     Model.GetWebDocContent = GetWikiContent;
-    if (Model.Config.WebDocumentation != null)
+    if (Model.WebDocumentation != null)
     {
-        Model.Config.WebDocumentation.FormatCredential = FormatCredentialForAuthentification;
-        Model.Config.WebDocumentation.Authentify();
+        Model.WebDocumentation.FormatCredential = FormatCredentialForAuthentification;
+        Model.WebDocumentation.Authentify();
     }
 }

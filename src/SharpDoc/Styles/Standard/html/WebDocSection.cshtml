@@ -26,7 +26,7 @@
 @Import("Section")
 
 @helper Dump(IComment member) {
-	if (Model.Config.WebDocumentation != null && member.WebDocPage != null)
+	if (Model.WebDocumentation != null && member.WebDocPage != null)
     {
         var idAttr = member.WebDocPage.Attributes["id"];
         var titleAttr = member.WebDocPage.Attributes["title"];
