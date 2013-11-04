@@ -62,6 +62,11 @@ namespace SharpDoc
         
         private static string GetFullName(string id)
         {
+            if (id.StartsWith("`"))
+            {
+                return "T";
+            }
+
             id = id.Substring("X:".Length, id.Length - "X:".Length);
             id = ReplaceTemplate.Replace(id, "<$1>");
             id = ReplaceGenerics.Replace(id, ReplaceGenericsEvaluator);
@@ -84,7 +89,7 @@ namespace SharpDoc
                 length = fullname.Length - index - 1;
             }
 
-            return index >= 0 ? fullname.Substring(index, length) : fullname;                
+            return index >= 0  && length > 0? fullname.Substring(index, length) : fullname;                
         }
     }
 }
