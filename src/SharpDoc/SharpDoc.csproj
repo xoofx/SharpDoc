@@ -69,9 +69,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\external\Lucene.Net\bin\Lucene.Net.dll</HintPath>
     </Reference>
-    <Reference Include="MarkdownSharp">
-      <HintPath>..\..\packages\MarkdownSharp.1.13.0.0\lib\35\MarkdownSharp.dll</HintPath>
-    </Reference>
     <Reference Include="Mono.Cecil">
       <HintPath>..\..\external\Mono.Cecil\Mono.Cecil.dll</HintPath>
     </Reference>
@@ -109,6 +106,7 @@
     <Compile Include="Logging\LoggerBase.cs" />
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="Logging\LogLocation.cs" />
+    <Compile Include="MarkdownSharp.cs" />
     <Compile Include="Model\IOverridable.cs" />
     <Compile Include="Model\NPropertyReference.cs" />
     <Compile Include="Model\NExtensionMethod.cs" />
@@ -252,6 +250,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Styles\Github\html\PageHeader.cshtml" />
     <None Include="Styles\Mshc\html\LinkResolver.cshtml" />
     <None Include="Styles\Mshc\MainEnd.cshtml" />
     <None Include="Styles\Mshc\html\PageBody.cshtml" />
@@ -365,6 +364,10 @@
   <ItemGroup>
     <Content Include="SharpDoc.ico" />
     <None Include="Styles\Mshc\css\sharpdoc.css" />
+    <Content Include="Styles\Github\css\sharpdoc.css" />
+    <Content Include="Styles\Github\style.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Styles\Mshc\js\sharpdoc.js" />
     <Content Include="Styles\Mshc\style.xml">
       <SubType>Designer</SubType>

@@ -235,7 +235,7 @@ namespace SharpDoc
             OutputDirectory = Config.AbsoluteOutputDirectory;
 
             // Set title
-            Param.DocumentationTitle = Config.Title;
+            Param.Title = Config.Title;
 
             // Add parameters
             if (Config.Parameters.Count > 0)

@@ -27,7 +27,7 @@
 @Import("PageIndexBody")
 <html>
     <head>
-        <title>@Param.DocumentationTitle</title>
+        <title>@Param.Title</title>
         @if (Model.RootTopic != null)
         {
             NTopic indexTopic = new NTopic {PageId = "index"};
