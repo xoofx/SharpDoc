@@ -38,9 +38,9 @@
   <exclude>SharpDoc.MTPS</exclude>
 
   <!-- Topics -->
-  <topic id="SharpDoc" page-id="main" name="SharpDoc Documentation" filename="main.md">
+  <topic id="main.md" page-id="main" name="SharpDoc Documentation" filename="main.md">
 
-    <topic id="Usage" name="Usage" filename="usage.md"/>
+    <topic id="usage.md" name="Usage" filename="usage.md"/>
 
     <!-- Special topic X:ClassLibrary to include generated class library references. No filename to setup as it is generated -->
     <topic id="X:ClassLibraryReference" page-id="api" name="Class Library Reference" index="100" on-url="true"/>
