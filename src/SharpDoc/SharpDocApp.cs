@@ -153,12 +153,17 @@ namespace SharpDoc
                                             webDocumentationUrl = WebDocumentation.BuildWebDocumentationUrl(protocol, domain);
                                         }
                                       },
-                                  {"wL|webdocLogin=", "(optional) Authentification data for the extern documentation site [userName:password]", 
-                                      (userName, passWord) =>
+                                  {"wL|webdocLogin=", "(optional) Authentification file for the extern documentation site (first line: username, second line: password)", 
+                                      opt =>
                                         {
-                                            if (userName == null || passWord == null)
-                                                throw new OptionException("Missing parameter web site login for option -wL.", "-wL");
-                                            webDocumentationLogin = new NetworkCredential(userName, passWord); 
+                                            if (opt == null)
+                                                throw new OptionException("Missing parameter web site auth file for option -wL.", "-wL");
+                                            if (!File.Exists(opt))
+                                                throw new OptionException("Auth config file doesn't exist.", "-wL");
+                                            var lines = File.ReadAllLines(opt);
+                                            if (lines.Length < 2)
+                                                throw new OptionException("Invalid auth config file, should be one line for username, one line for password", "-wL");
+                                            webDocumentationLogin = new NetworkCredential(lines[0], lines[1]);
                                         }
                                       },
                                   "",
