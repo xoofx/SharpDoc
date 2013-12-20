@@ -369,8 +369,8 @@ namespace SharpDoc
             if (id.StartsWith("!:"))
                 id = id.Substring(2);
 
-            if (id.Length == 0)
-                return "#";
+            if (id.Length == 0 || id == "#")
+                return linkName ?? id;
 
             var linkDescriptor = new LinkDescriptor { Type = LinkType.None, Index = -1 };
             var typeReference = localReference as NTypeReference;
