@@ -247,7 +247,7 @@ namespace SharpDoc
         {
             var clock = Stopwatch.StartNew();
 
-            var razorizer = new Razorizer(typeof (PageTemplateDoc));
+            var razorizer = new Razorizer(typeof (PageTemplateDoc)) { EnableDebug = true };
 
             // New instance of a template context used by the RazorEngine
             var context = new TemplateContext(razorizer)
