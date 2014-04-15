@@ -38,7 +38,7 @@ namespace SharpDoc.Model
         /// Gets or sets the type of the property.
         /// </summary>
         /// <value>The type of the return.</value>
-        public NTypeReference PropertyType { get; set; }
+        public INTypeReference PropertyType { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this instance has get method.

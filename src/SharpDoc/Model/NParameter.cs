@@ -58,7 +58,7 @@ namespace SharpDoc.Model
         /// Gets or sets the type of the parameter.
         /// </summary>
         /// <value>The type of the parameter.</value>
-        public NTypeReference ParameterType { get; set; }
+        public INTypeReference ParameterType { get; set; }
 
         /// <summary>
         /// Gets or sets the parent method.

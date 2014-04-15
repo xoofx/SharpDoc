@@ -39,7 +39,7 @@ namespace SharpDoc.Model
         /// <value>
         /// The type of the event.
         /// </value>
-        public NTypeReference EventType { get; set; }
+        public INTypeReference EventType { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this instance is virtual.

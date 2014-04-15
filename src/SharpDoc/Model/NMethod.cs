@@ -39,7 +39,7 @@ namespace SharpDoc.Model
         /// Gets or sets the type of the return.
         /// </summary>
         /// <value>The type of the return.</value>
-        public NTypeReference ReturnType { get; set; }
+        public INTypeReference ReturnType { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance has overrides.
@@ -112,7 +112,7 @@ namespace SharpDoc.Model
         /// Gets or sets the member in which the extension method has been defined.
         /// </summary>
         /// <value>The member in which the extension method has been defined</value>
-        public NTypeReference ExtensionSource { get; set; }
+        public INTypeReference ExtensionSource { get; set; }
 
         protected internal override void OnDocNodeUpdate()
         {

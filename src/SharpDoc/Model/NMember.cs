@@ -39,7 +39,7 @@ namespace SharpDoc.Model
             Members = new List<NMember>();
             Attributes = new List<string>();
             GenericParameters = new List<NGenericParameter>();
-            GenericArguments = new List<NTypeReference>();
+            GenericArguments = new List<INTypeReference>();
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace SharpDoc.Model
         /// Gets or sets the type of the element.
         /// </summary>
         /// <value>The type of the element.</value>
-        public NTypeReference ElementType { get; set; }
+        public INTypeReference ElementType { get; set; }
 
         /// <summary>
         /// Gets or sets the generic parameters.
@@ -114,13 +114,13 @@ namespace SharpDoc.Model
         /// Gets or sets the generic arguments.
         /// </summary>
         /// <value>The generic arguments.</value>
-        public List<NTypeReference> GenericArguments {get;set;}
+        public List<INTypeReference> GenericArguments {get;set;}
 
         /// <summary>
         /// Gets or sets the type that is declaring this member.
         /// </summary>
         /// <value>The type of the declaring.</value>
-        public NTypeReference DeclaringType { get; set; }
+        public INTypeReference DeclaringType { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is static.

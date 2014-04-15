@@ -32,7 +32,7 @@ namespace SharpDoc.Model
         /// </summary>
         public NGenericParameter()
         {
-            Constraints = new List<NTypeReference>();
+            Constraints = new List<INMemberReference>();
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace SharpDoc.Model
         /// Gets or sets the constraints.
         /// </summary>
         /// <value>The constraints.</value>
-        public List<NTypeReference> Constraints { get; set; }
+        public List<INMemberReference> Constraints { get; set; }
 
         /// <summary>
         /// Gets or sets the position.

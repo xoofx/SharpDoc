@@ -49,7 +49,7 @@ namespace SharpDoc.Logging
                 return;
 
             Logger.Error("Process stopped. " + reason);
-            Environment.Exit(exitCode);
+            throw new FatalException(reason);
         }
 
         /// <summary>

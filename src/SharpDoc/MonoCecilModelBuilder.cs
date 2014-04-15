@@ -46,6 +46,7 @@ namespace SharpDoc
         private Dictionary<string, IModelReference> membersCache = new Dictionary<string, IModelReference>();
         private List<NExtensionMethod> extensionMethodList = new List<NExtensionMethod>();
         private readonly HashSet<string> excludeList = new HashSet<string>();
+        private readonly Dictionary<MemberReference, INMemberReference>  references = new Dictionary<MemberReference, INMemberReference>();
 
         public Func<IModelReference, string> PageIdFunction { get; set; }
 
@@ -661,10 +662,16 @@ namespace SharpDoc
             }
         }
 
-        private NTypeReference GetTypeReference(TypeReference typeDef)
+        private INTypeReference GetTypeReference(TypeReference typeDef)
         {
             if (typeDef == null)
                 return null;
+
+            INMemberReference memberRef;
+            if (references.TryGetValue(typeDef, out memberRef))
+            {
+                return (INTypeReference) memberRef;
+            }
 
             var typeReference = new NTypeReference();
             this.FillMemberReference(typeReference, typeDef);
@@ -925,6 +932,8 @@ namespace SharpDoc
         {
             var id = DocIdHelper.GetXmlId(memberRef);
             var member = new T {Name = memberRef.Name, FullName = memberRef.FullName, Id = id};
+            references[memberRef] = member;
+
             member.PageId = PageIdFunction(member);
             member.DocNode = _source.Document.FindMemberDoc(member.Id);
             member.DeclaringType = GetTypeReference(memberRef.DeclaringType);
@@ -946,7 +955,7 @@ namespace SharpDoc
         /// <param name="name">The original name that contains a ` indicating the usage of generics.</param>
         /// <param name="genericParameters">The generic parameters/arguments.</param>
         /// <returns></returns>
-        private static string BuildGenericName(string name, IEnumerable<NTypeReference> genericParameters)
+        private static string BuildGenericName(string name, IEnumerable<INTypeReference> genericParameters)
         {
             int genericIndexTag = name.IndexOf('`');
             if (genericIndexTag < 0)

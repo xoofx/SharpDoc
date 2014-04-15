@@ -31,7 +31,7 @@ namespace SharpDoc.Model
         /// <summary>
         /// Initializes a new instance of the <see cref="NExtensionMethod"/> class.
         /// </summary>
-        public NExtensionMethod(NTypeReference extendedType, NMethod extensionMethod)
+        public NExtensionMethod(INTypeReference extendedType, NMethod extensionMethod)
         {
             ExtendedType = extendedType;
 
@@ -92,7 +92,7 @@ namespace SharpDoc.Model
         /// <summary>
         /// Gets or sets the type concerned by the extension.
         /// </summary>
-        public NTypeReference ExtendedType { get; set; }
+        public INTypeReference ExtendedType { get; set; }
 
         /// <summary>
         /// Gets or sets the extension method.

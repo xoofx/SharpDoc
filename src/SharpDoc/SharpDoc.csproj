@@ -98,6 +98,7 @@
     </Compile>
     <Compile Include="AssemblyDoc.cs" />
     <Compile Include="ConfigDocPak.cs" />
+    <Compile Include="FatalException.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\IProgressReport.cs" />
@@ -133,7 +134,7 @@
     <Compile Include="Model\IModelReference.cs" />
     <Compile Include="Model\MemberRegistry.cs" />
     <Compile Include="Model\NInterface.cs" />
-    <Compile Include="Model\NTypeReference.cs" />
+    <Compile Include="Model\INTypeReference.cs" />
     <Compile Include="Model\NVisibility.cs" />
     <Compile Include="MonoCecilModelBuilder.cs" />
     <Compile Include="Model\NAssembly.cs" />

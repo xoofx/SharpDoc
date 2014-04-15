@@ -373,8 +373,8 @@ namespace SharpDoc
                 return linkName ?? id;
 
             var linkDescriptor = new LinkDescriptor { Type = LinkType.None, Index = -1 };
-            var typeReference = localReference as NTypeReference;
-            NTypeReference genericInstance = null;
+            var typeReference = localReference as INTypeReference;
+            INTypeReference genericInstance = null;
             bool isGenericInstance = typeReference != null && typeReference.IsGenericInstance;
             bool isGenericParameter = typeReference != null && typeReference.IsGenericParameter;
 

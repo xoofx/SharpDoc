@@ -26,7 +26,7 @@ namespace SharpDoc.Model
     /// <summary>
     /// The base class for class or structure.
     /// </summary>
-    public abstract class NType : NMember
+    public abstract class NType : NMember, INTypeReference
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NType"/> class.
@@ -36,7 +36,7 @@ namespace SharpDoc.Model
             Bases = new List<INMemberReference>();
             Descendants = new List<INMemberReference>();
             FlattenedHierarchy = new List<Tuple<int, INMemberReference>>();
-            Interfaces = new List<NMemberReference>();
+            Interfaces = new List<INMemberReference>();
             AllMembers = new List<INMemberReference>();
             ExtensionMethods = new List<NMethod>();
         }
@@ -74,7 +74,7 @@ namespace SharpDoc.Model
         /// Gets or sets the inherited interfaces.
         /// </summary>
         /// <value>The interfaces.</value>
-        public List<NMemberReference> Interfaces { get; private set; }
+        public List<INMemberReference> Interfaces { get; private set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance has constructors.

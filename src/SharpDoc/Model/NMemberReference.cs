@@ -32,14 +32,14 @@ namespace SharpDoc.Model
         public NMemberReference()
         {
             GenericParameters = new List<NGenericParameter>();
-            GenericArguments = new List<NTypeReference>();
+            GenericArguments = new List<INTypeReference>();
         }
 
         /// <summary>
         /// Gets or sets the type that is declaring this member.
         /// </summary>
         /// <value>The type of the declaring.</value>
-        public NTypeReference DeclaringType { get; set; }
+        public INTypeReference DeclaringType { get; set; }
 
         /// <summary>
         /// Gets or sets the namespace.
@@ -109,7 +109,7 @@ namespace SharpDoc.Model
         /// Gets or sets the type of the element.
         /// </summary>
         /// <value>The type of the element.</value>
-        public NTypeReference ElementType { get; set; }
+        public INTypeReference ElementType { get; set; }
 
         /// <summary>
         /// Gets or sets the generic parameters.
@@ -121,7 +121,7 @@ namespace SharpDoc.Model
         /// Gets or sets the generic arguments.
         /// </summary>
         /// <value>The generic arguments.</value>
-        public List<NTypeReference> GenericArguments {get;set;}
+        public List<INTypeReference> GenericArguments {get;set;}
 
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.

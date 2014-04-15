@@ -31,7 +31,7 @@ namespace SharpDoc.Model
         /// Gets or sets the type that is declaring this member.
         /// </summary>
         /// <value>The type of the declaring.</value>
-        NTypeReference DeclaringType { get; set; }
+        INTypeReference DeclaringType { get; set; }
 
         /// <summary>
         /// Gets or sets the namespace.
@@ -99,7 +99,7 @@ namespace SharpDoc.Model
         /// Gets or sets the type of the element.
         /// </summary>
         /// <value>The type of the element.</value>
-        NTypeReference ElementType { get; set; }
+        INTypeReference ElementType { get; set; }
 
         /// <summary>
         /// Gets or sets the generic parameters.
@@ -111,7 +111,7 @@ namespace SharpDoc.Model
         /// Gets or sets the generic arguments.
         /// </summary>
         /// <value>The generic arguments.</value>
-        List<NTypeReference> GenericArguments { get; set; }
+        List<INTypeReference> GenericArguments { get; set; }
 
         /// <summary>
         /// Use class inheritance and/or interfaces to find corresponding documentation.

@@ -40,17 +40,25 @@ namespace SharpDoc
     /// </summary>
     public class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
+            int resultCode = 0;
             try
             {
                 var app = new SharpDocApp();
                 app.ParseArguments(args);
                 app.Run();
-            } catch (Exception ex)
-            {
-                Logger.Fatal("Unexpected exception", ex);
             }
+            catch (FatalException)
+            {
+                resultCode = 1;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Unexpected exception", ex);
+                resultCode = 1;
+            }
+            return resultCode;
         }
     }
 }

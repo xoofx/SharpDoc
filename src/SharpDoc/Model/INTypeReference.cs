@@ -23,8 +23,21 @@ namespace SharpDoc.Model
     /// <summary>
     /// A type reference.
     /// </summary>
-    public class NTypeReference : NMemberReference
+    public interface INTypeReference : INMemberReference
     {
+    }
+
+
+
+    /// <summary>
+    /// A type reference.
+    /// </summary>
+    public class NTypeReference : NMemberReference, INTypeReference
+    {
+        public NTypeReference()
+        {
+        }
+
         /// <summary>
         /// Returns a <see cref="System.String"/> that represents this instance.
         /// </summary>

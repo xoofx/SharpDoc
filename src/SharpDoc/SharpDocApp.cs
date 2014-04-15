@@ -72,7 +72,7 @@ namespace SharpDoc
             Console.Write("{0}: ", exeName);
             Console.WriteLine(error, parameters);
             Console.WriteLine("Use {0} --help' for more information.", exeName);
-            Environment.Exit(1);
+            throw new FatalException();
         }
 
         private string TopicLoader(string filePath)
@@ -188,7 +188,7 @@ namespace SharpDoc
             {
                 options.WriteOptionDescriptions(Console.Out);
                 StyleManager.WriteAvailaibleStyles(Console.Out);
-                Environment.Exit(0);
+                throw new FatalException();
             }
 
             // Copy config params from command line to current config
