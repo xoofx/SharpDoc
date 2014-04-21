@@ -710,7 +710,7 @@ namespace SharpDoc
         {
             foreach (var regexItem in _regexItems)
             {
-                //if (regexItem.IsOnlyForHtmlContent == isOnlyForHtmlContent)
+                if (regexItem.IsOnlyForHtmlContent == isOnlyForHtmlContent)
                 {
                     content = regexItem.Replace(content);
                 }
