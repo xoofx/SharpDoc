@@ -485,8 +485,6 @@ namespace SharpDoc
 
             var method = CreateMethodFromDefinition(parent.Namespace, methodDef);
 
-            method.SetApiGroup(CurrentMergeGroup, true);
-
             // If not a get/set then handle it
             if (!isSpecialMethod)
             {
@@ -530,6 +528,8 @@ namespace SharpDoc
                     UpdatePageTitle(method);
                 }
             }
+
+            method.SetApiGroup(CurrentMergeGroup, true);
 
             return method;
         }
