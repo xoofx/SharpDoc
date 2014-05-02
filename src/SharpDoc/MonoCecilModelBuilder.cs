@@ -486,13 +486,15 @@ namespace SharpDoc
 
             var method = CreateMethodFromDefinition(parent.Namespace, methodDef);
 
-            method.SetApiGroup(CurrentMergeGroup, true);
-
-            // If not a get/set then handle it
-            if (!isSpecialMethod)
+            if (isSpecialMethod)
+                method.SetApiGroup(CurrentMergeGroup, true);
+            else
             {
+                // If not a get/set then handle it
+
                 var oldMethod = (NMethod)_registry.FindById(method.Id);
                 method = oldMethod ?? method;
+                method.SetApiGroup(CurrentMergeGroup, true);
 
                 if (oldMethod == null)
                 {
@@ -515,13 +517,6 @@ namespace SharpDoc
                         {
                             parentType.HasMethods = true;
                         }
-
-                        if (method.IsExtensionDefinition)
-                        {
-                            // get the first parameter (the special this parameter)
-                            var extendedType = GetTypeReference(methodDef.Parameters[0].ParameterType);
-                            extensionMethodList.Add(new NExtensionMethod(extendedType, method));
-                        }
                     }
 
                     // Add SeeAlso
@@ -529,6 +524,19 @@ namespace SharpDoc
                     method.SeeAlsos.Add(new NSeeAlso(parent.Namespace));
 
                     UpdatePageTitle(method);
+                }
+
+                if (method.IsExtensionDefinition)
+                {
+                    // get the first parameter (the special this parameter)
+                    var extendedType = GetTypeReference(methodDef.Parameters[0].ParameterType);
+
+                    // Do we have an existing method?
+                    var extensionMethod = extensionMethodList.FirstOrDefault(m => m.ExtendedType.Id == extendedType.Id && m.Method.Id == method.Id);
+                    if (extensionMethod != null)
+                        extensionMethod.Method.SetApiGroup(CurrentMergeGroup, true);
+                    else
+                        extensionMethodList.Add(new NExtensionMethod(extendedType, method));
                 }
             }
 
