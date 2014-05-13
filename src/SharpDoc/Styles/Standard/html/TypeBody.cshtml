@@ -90,6 +90,7 @@
 <div class="origin">
 <strong>Assembly: </strong>@Model.Assembly.FullName (@Model.Assembly.FileName @Model.Assembly.Version)<br />
 <strong>Namespace: </strong>@Raw(ToUrl(Model.Namespace))<br />
+      
 @Helpers.TypeBodyMembersHeader.Dump(self)
 </div>
 @if (self is NType)
