@@ -22,7 +22,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml;
 using Mono.Cecil;
 using SharpDoc.Logging;
 using SharpDoc.Model;
@@ -32,7 +31,7 @@ namespace SharpDoc
     /// <summary>
     /// Mono Cecil implementation of <see cref="IAssemblyManager"/>.
     /// </summary>
-    internal class MonoCecilAssemblyManager : BaseAssemblyResolver, IAssemblyManager
+    internal class MonoCecilAssemblyManager : IAssemblyManager
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MonoCecilAssemblyManager"/> class.
@@ -52,34 +51,23 @@ namespace SharpDoc
         /// </summary>
         public List<NAssemblySource> Load(Config config)
         {
-            // Preload references
-            foreach (var assemblyRef in config.References)
-            {
-                if (!File.Exists(assemblyRef))
-                {
-                    Logger.Error("Assembly reference file [{0}] not found", assemblyRef);
-                }
-                else
-                {
-                    AssemblyReferences.Add(AssemblyDefinition.ReadAssembly(assemblyRef, new ReaderParameters(ReadingMode.Deferred)));
-                }
-            }
-
-
             var configPath = Path.GetDirectoryName(Path.GetFullPath(config.FilePath));
             configPath = configPath ?? Environment.CurrentDirectory;
             // Load all sources
-            foreach (var source in config.Sources)
+            foreach (var group in config.Groups)
             {
-                // Setup full path
-                if (!string.IsNullOrEmpty(source.AssemblyPath))
-                    source.AssemblyPath = Path.Combine(configPath, source.AssemblyPath);
+                group.MergeGroup = group.MergeGroup ?? "default";
+                foreach (var source in group.Sources)
+                {
+                    // Setup full path
+                    if (!string.IsNullOrEmpty(source.AssemblyPath))
+                        source.AssemblyPath = Path.Combine(configPath, source.AssemblyPath);
 
-                if (!string.IsNullOrEmpty(source.DocumentationPath))
-                    source.DocumentationPath = Path.Combine(configPath, source.DocumentationPath);
+                    if (!string.IsNullOrEmpty(source.DocumentationPath))
+                        source.DocumentationPath = Path.Combine(configPath, source.DocumentationPath);
 
-                source.MergeGroup = source.MergeGroup ?? "default";
-                Load(source);
+                    Load(group, source);
+                }
             }
 
             var finalSources = new List<NAssemblySource>();
@@ -120,70 +108,115 @@ namespace SharpDoc
 
         private HashSet<string> searchPaths = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
 
-        private void Load(ConfigSource configSource)
+        private void Load(ConfigSourceGroup group, ConfigSource configSource)
         {
             NAssemblySource assemblySource = null;
 
-            if (configSource.AssemblyPath != null)
+            if (configSource.AssemblyPath == null)
             {
-                // Check Parameters
-                if (!File.Exists(configSource.AssemblyPath))
-                {
-                    Logger.Error("Assembly file [{0}] not found", configSource.AssemblyPath);
-                    return;
-                }
-
-                var extension = Path.GetExtension(configSource.AssemblyPath);
-                if (extension != null && (extension.ToLower() == ".dll" || extension.ToLower() == ".exe"))
-                {
-                    assemblySource = LoadAssembly(configSource.AssemblyPath);
-                    assemblySource.MergeGroup = configSource.MergeGroup;
-                    AssemblySources.Add(assemblySource);
-                }
-                else
-                {
-                    Logger.Fatal("Invalid Assembly source [{0}]. Must be either an Assembly", configSource.AssemblyPath);
-                }
+                Logger.Error("Assembly path not specified for <source>. Cannot be null");
+                return;
             }
 
-            if (configSource.DocumentationPath != null)
+            // Check Parameters
+            if (!File.Exists(configSource.AssemblyPath))
             {
-                if (!File.Exists(configSource.DocumentationPath))
+                Logger.Error("Assembly file [{0}] not found", configSource.AssemblyPath);
+                return;
+            }
+
+            var extension = Path.GetExtension(configSource.AssemblyPath);
+            if (extension != null && (extension.ToLower() == ".dll" || extension.ToLower() == ".exe"))
+            {
+                assemblySource = LoadAssembly(group, configSource.AssemblyPath);
+                AssemblySources.Add(assemblySource);
+            }
+            else
+            {
+                Logger.Fatal("Invalid Assembly source [{0}]. Must be either an Assembly", configSource.AssemblyPath);
+            }
+
+            // If documentation path is null, use by default the assembly path
+            if (configSource.DocumentationPath == null)
+            {
+                configSource.DocumentationPath = Path.ChangeExtension(configSource.AssemblyPath, ".xml");
+            }
+
+            if (!File.Exists(configSource.DocumentationPath))
+            {
+                Logger.Error("Documentation file [{0}] not found", configSource.DocumentationPath);
+                return;
+            }
+
+            extension = Path.GetExtension(configSource.DocumentationPath);
+            if (extension != null && extension.ToLower() == ".xml")
+            {
+                if (assemblySource == null)
                 {
-                    Logger.Error("Documentation file [{0}] not found", configSource.DocumentationPath);
-                    return;
+                    assemblySource = new NAssemblySource();
+                    AssemblySources.Add(assemblySource);
                 }
 
-                var extension = Path.GetExtension(configSource.DocumentationPath);
-                if (extension != null && extension.ToLower() == ".xml")
-                {
-                    if (assemblySource == null)
-                    {
-                        assemblySource = new NAssemblySource();
-                        AssemblySources.Add(assemblySource);
-                    }
-
-                    assemblySource.Document = LoadAssemblyDocumentation(configSource.DocumentationPath);
-                }
-                else
-                {
-                    Logger.Fatal("Invalid Assembly source [{0}]. Must be either a Xml comment file", configSource.DocumentationPath);
-                }
+                assemblySource.Document = LoadAssemblyDocumentation(configSource.DocumentationPath);
+            }
+            else
+            {
+                Logger.Fatal("Invalid Assembly source [{0}]. Must be either a Xml comment file", configSource.DocumentationPath);
             }
         }
 
-        private NAssemblySource LoadAssembly(string source)
+        private NAssemblySource LoadAssembly(ConfigSourceGroup group, string source)
         {
             var dirPath = Path.GetDirectoryName(source);
-            if (!searchPaths.Contains(dirPath))
+            var assemblyResolver = new DefaultAssemblyResolver();
+            // Remove any default search path
+            assemblyResolver.RemoveSearchDirectory(".");
+            assemblyResolver.RemoveSearchDirectory("bin");
+
+            // Search from assembly directory
+            assemblyResolver.AddSearchDirectory(dirPath);
+
+            // Add additional search directory
+            foreach (var searchDirectory in group.SearchDirectories)
             {
-                searchPaths.Add(dirPath);
-                AddSearchDirectory(dirPath);
+                assemblyResolver.AddSearchDirectory(searchDirectory);
             }
 
-            var parameters = new ReaderParameters(ReadingMode.Immediate) { AssemblyResolver = this };
+            var parameters = new ReaderParameters(ReadingMode.Immediate) { AssemblyResolver = assemblyResolver };
+
+            assemblyResolver.ResolveFailure += (sender, reference) =>
+            {
+                var searchDirectories = assemblyResolver.GetSearchDirectories();
+                foreach (var directory in searchDirectories)
+                {
+                    var tryPath = Path.Combine(directory, reference.Name + ".winmd");
+                    if (!File.Exists(tryPath))
+                        continue;
+
+                    try
+                    {
+                        var winmdAssembly = AssemblyDefinition.ReadAssembly(tryPath, parameters);
+                        if (winmdAssembly != null)
+                            return winmdAssembly;
+                    }
+                    catch
+                    {
+                        // Failed... fall thru and try the next one.
+                    }
+                }
+
+                // Log an error if we can't find the assembly. Mono.Cecil will throw an exception just after returning from 
+                // this callback
+                Logger.Error("Failed to resolve {0}", reference.FullName);
+                return null;
+            };
+
             var assemblyDefinition = AssemblyDefinition.ReadAssembly(source, parameters);
-            var assemblySource = new NAssemblySource(assemblyDefinition) {Filename = source};
+            var assemblySource = new NAssemblySource(assemblyDefinition)
+            {
+                Filename = source,
+                MergeGroup = group.MergeGroup
+            };
             return assemblySource;
         }
 
@@ -196,17 +229,6 @@ namespace SharpDoc
                 Logger.Fatal("Not valid xml documentation for source [{0}]", source);
 
             return xmlDoc;
-        }
-
-        public override AssemblyDefinition Resolve(AssemblyNameReference name, ReaderParameters parameters)
-        {
-            foreach (var assemblyRef in AssemblyReferences)
-            {
-                if (assemblyRef.FullName == name.Name)
-                    return assemblyRef;
-            }
-            
-            return base.Resolve(name, parameters);
         }
     }
 }

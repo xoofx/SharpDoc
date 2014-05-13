@@ -1,4 +1,4 @@
-// Copyright (c) 2010-2013 SharpDoc - Alexandre Mutel
+﻿// Copyright (c) 2010-2013 SharpDoc - Alexandre Mutel
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -17,38 +17,47 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace SharpDoc
 {
     /// <summary>
-    /// Documentation topic store in an external file.
+    /// A list of assembly to load into the same group API.
     /// </summary>
-    public class ConfigSource
+    public class ConfigSourceGroup
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConfigSource"/> class.
+        /// Initializes a new instance of the <see cref="ConfigSourceGroup"/> class.
         /// </summary>
-        public ConfigSource()
+        public ConfigSourceGroup()
         {
+            Sources = new List<ConfigSource>();
+            SearchDirectories = new List<string>();
         }
 
         /// <summary>
-        /// Gets or sets the location.
+        /// Gets or sets the merge group.
         /// </summary>
         /// <value>
-        /// The location.
+        /// The merge group.
         /// </value>
-        [XmlText()]
-        public string AssemblyPath { get; set; }
+        [XmlAttribute("api")]
+        public string MergeGroup { get; set; }
 
         /// <summary>
-        /// Gets or sets the location. Can be null, by default replacing changing the extension of AssemblyPath with .xml
+        /// Gets or sets the additional search directories for reference assemblies.
         /// </summary>
-        /// <value>
-        /// The location.
-        /// </value>
-        [XmlAttribute("xml")]
-        public string DocumentationPath { get; set; }
+        /// <value>The search directories.</value>
+        [XmlElement("searchdir")]
+        public List<string> SearchDirectories { get; set; }
+
+        /// <summary>
+        /// Gets or sets a list of source file (assembly or xml comment file).
+        /// </summary>
+        /// <value>The sources file.</value>
+        [XmlElement("source")]
+        public List<ConfigSource> Sources { get; set; }
     }
 }

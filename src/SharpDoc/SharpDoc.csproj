@@ -99,6 +99,7 @@
     <Compile Include="AssemblyDoc.cs" />
     <Compile Include="ConfigDocPak.cs" />
     <Compile Include="FatalException.cs" />
+    <Compile Include="ConfigSourceGroup.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\IProgressReport.cs" />
@@ -472,15 +473,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir  "$(SolutionDir)Build\Bin\"
-copy  "$(TargetPath)" "$(SolutionDir)Build\Bin\"
-copy  "$(TargetDir)*.dll" "$(SolutionDir)Build\Bin\"
-copy  "$(TargetDir)*.xml" "$(SolutionDir)Build\Bin\"
-rmdir /S /Q  "$(SolutionDir)Build\Styles"
-mkdir "$(SolutionDir)Build\Styles"
-xcopy /Y /E "$(ProjectDir)Styles" "$(SolutionDir)Build\Styles\"
-REM xcopy /Y /E "$(ProjectDir)Styles\SharpDXWeb\css\sharpdoc.css" "$(SolutionDir)..\SharpDX-Web\www\templates\rt_kinetic\css\"
-REM xcopy /Y /E "$(ProjectDir)Styles\Standard\js\sharpdoc.js" "$(SolutionDir)..\SharpDX-Web\www\templates\rt_kinetic\js\"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

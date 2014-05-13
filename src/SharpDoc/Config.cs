@@ -43,8 +43,7 @@ namespace SharpDoc
         {
             StyleNames = new List<string>();
             OutputDirectory = "Output";
-            Sources = new List<ConfigSource>();
-            References = new List<string>();
+            Groups = new List<ConfigSourceGroup>();
             Parameters = new List<ConfigParam>();
             ExcludeList = new List<string>();
             StyleParameters = new List<ConfigParam>();
@@ -96,15 +95,8 @@ namespace SharpDoc
         /// Gets or sets a list of source file (assembly or xml comment file).
         /// </summary>
         /// <value>The sources file.</value>
-        [XmlElement("source")]
-        public List<ConfigSource> Sources { get; set; }
-
-        /// <summary>
-        /// Gets or sets a list assembly references.
-        /// </summary>
-        /// <value>The references.</value>
-        [XmlElement("reference")]
-        public List<string> References { get; set; }
+        [XmlElement("group")]
+        public List<ConfigSourceGroup> Groups { get; set; }
 
         /// <summary>
         /// Gets or sets the extern documentation webSite url.

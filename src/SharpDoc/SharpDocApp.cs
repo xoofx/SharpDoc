@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 
@@ -114,6 +115,8 @@ namespace SharpDoc
             string webDocumentationUrl = null;
             NetworkCredential webDocumentationLogin = null;
 
+            var additionalSearchDirectories = new List<string>();
+
             var options = new OptionSet()
                               {
                                   "Copyright (c) 2010-2013 SharpDoc - Alexandre Mutel",
@@ -144,7 +147,7 @@ namespace SharpDoc
                                   {"d|style-dir=", "Add a style directory", opt => Config.StyleDirectories.Add(opt) },
                                   {"s|style=", "Specify the style to use [default: Standard]", opt => Config.StyleNames.Add(opt)},
                                   {"o|output=", "Specify the output directory [default: Output]", opt => Config.OutputDirectory = opt},
-                                  {"r|references=", "Add reference assemblies in order to load source assemblies", opt => Config.References.Add(opt)},
+                                  {"r|searchdir=", "Add search directory in order to load source assemblies", additionalSearchDirectories.Add},
                                   {"w|webdoc=", "Url of the extern documentation site [with the protocol to use, ex: http(s)://...]", 
                                       (protocol, domain) =>
                                         {
@@ -208,8 +211,16 @@ namespace SharpDoc
             // Add files from command line
             if (files.Count > 0)
             {
+                ConfigSourceGroup group = null;
+
                 foreach (var file in files)
                 {
+                    if (group == null)
+                    {
+                        group = new ConfigSourceGroup {MergeGroup = "default"};
+                        Config.Groups.Add(group);
+                    }
+
                     var configSource = new ConfigSource();
                     var ext = Path.GetExtension(file);
                     if (ext != null && ext.ToLower() == ".xml")
@@ -221,12 +232,18 @@ namespace SharpDoc
                         configSource.AssemblyPath = file;
                     }
 
-                    Config.Sources.Add(configSource);
+                    group.Sources.Add(configSource);
                 }
             }
 
-            if (Config.Sources.Count == 0)
+            if (Config.Groups.Count == 0)
                 UsageError("At least one option is missing. Either a valid config file (-config) or a direct list of assembly/xml files must be specified");
+
+            // Add global search directories
+            foreach (var group in Config.Groups)
+            {
+                group.SearchDirectories.AddRange(additionalSearchDirectories);
+            }
 
             // Add default style Standard if none is defined
             if (Config.StyleNames.Count == 0)

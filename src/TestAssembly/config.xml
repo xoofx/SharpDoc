@@ -1,0 +1,39 @@
+﻿<?xml version="1.0"?>
+<!--
+This is an example of a config file
+-->
+<config xmlns="SharpDoc">
+  <!-- Title of the generated documentation -->
+  <title>TestAssembly</title>
+
+  <!-- Defines the styles used. Apply first GitHub and after Standard style -->
+  <style>Github</style>
+
+  <!-- Generate default  -->
+  <output-dir>site</output-dir>
+
+  <param name="SubTitle">A lightweight TestAssembly system using SharpDoc</param>
+  <param name="Copyright">Copyright 2013 TestAssembly - Alexandre Mutel</param>
+  <param name="GitHubUrl">https://github.com/xoofx/SharpDoc</param>
+  
+  <!-- Topics: main is the main root topic  -->
+  <topic id="main.md" page-id="main" name="SharpDoc" filename="main.md">
+
+    <!-- Test to an underlying topic -->
+    <topic id="test.md" page-id="test" name="TestSharpDoc" filename="test.md"/>
+
+    <!-- Special topic X:ClassLibrary to include generated class library references. No filename to setup as it is generated -->
+    <topic id="X:ClassLibraryReference" page-id="api" name="Class Library Reference" index="100" on-url="true"/>
+  </topic>  
+
+  <!-- Standard Binaries -->
+  <group api="default|Windows Desktop - .NET 4.5">
+
+    <!-- Use searchdir to lookup for additional directories for .NET framework/WindowsAppStore winmd files -->
+    <!--<searchdir></searchdir>-->
+    
+    <!-- Automatically resolve TestAssembly.dll and implicitly TestAssembly.xml -->
+    <source>TestAssembly.dll</source>
+  </group>
+
+</config>
