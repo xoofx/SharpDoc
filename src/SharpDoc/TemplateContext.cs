@@ -65,7 +65,10 @@ namespace SharpDoc
         /// </returns>
         private IModelReference FindLocalReference(string id)
         {
-            return Registry.FindById(id);
+            var reference = Registry.FindById(id);
+            if (reference == null)
+                reference = Registry.FindByFileName(id);
+            return reference;
         }
 
         public Razorizer Razorizer { get; private set; }
