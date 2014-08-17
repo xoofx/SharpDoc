@@ -290,6 +290,9 @@ namespace SharpDoc
                 if (thisTypeRef.Name.Contains("`") && thisGenericTypeDef != null)
                     strTempShortTypeName = thisTypeRef.Name.Remove(thisTypeRef.Name.IndexOf("`"));
 
+                // remove any trailing reference syntax.
+                strTempShortTypeName = strTempShortTypeName.TrimEnd('&', '%');
+
                 // class, interface, structure or delegate
                 if (currentPathStack.Count == 0)
                     strTempTypeName = "T:" + strNamespace + strTempShortTypeName;
