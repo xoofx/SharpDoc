@@ -379,6 +379,7 @@ namespace MarkdownSharp
             text = DoHorizontalRules(text);
             text = DoLists(text);
             text = DoCodeBlocks(text);
+            text = DoFencedCodeBlocks(text);
             text = DoBlockQuotes(text);
 
             // We already ran HashHTMLBlocks() before, in Markdown(), but that
@@ -1300,6 +1301,36 @@ namespace MarkdownSharp
             codeBlock = _newlinesLeadingTrailing.Replace(codeBlock, "");
 
             return string.Concat("\n\n<pre><code>", codeBlock, "\n</code></pre>\n\n");
+        }
+
+        private readonly static Regex _fencedCodeBlock = new Regex(@"
+                    ^\s*\r?\n
+                    ```(\w*)\s*       # $1 = language name
+                    (.+?)             # $2 = The code block
+                    (?<!`)```(?!`)
+                    ", RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled);
+
+        /// <summary>
+        /// Turn Markdown github fenced code blocks ``` into HTML pre code blocks with 
+        /// syntax highlighter syntax handling
+        /// </summary>
+        private string DoFencedCodeBlocks(string text)
+        {
+            text = _fencedCodeBlock.Replace(text, FencedCodeBlockEvaluator);
+            return text;
+        }
+
+        private string FencedCodeBlockEvaluator(Match match)
+        {
+            string codeBlock = match.Groups[2].Value;
+
+            codeBlock = EncodeCode(Outdent(codeBlock));
+            codeBlock = _newlinesLeadingTrailing.Replace(codeBlock, "");
+
+            string languageName = match.Groups[1].Value.ToLower().Trim();
+            return (languageName != string.Empty)
+                ? string.Format("<pre class='brush: {0}; gutter: true;'>{1}</pre>", languageName, codeBlock)
+                : string.Concat("\n\n<pre><code>", codeBlock, "\n</code></pre>\n\n");
         }
 
         private static Regex _codeSpan = new Regex(@"
