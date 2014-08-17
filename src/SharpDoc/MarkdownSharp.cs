@@ -1304,7 +1304,7 @@ namespace MarkdownSharp
         }
 
         private readonly static Regex _fencedCodeBlock = new Regex(@"
-                    ^\s*\r?\n
+                    ^\s*
                     ```(\w*)\s*       # $1 = language name
                     (.+?)             # $2 = The code block
                     (?<!`)```(?!`)
