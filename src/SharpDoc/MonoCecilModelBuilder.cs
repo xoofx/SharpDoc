@@ -1113,6 +1113,10 @@ namespace SharpDoc
 
         public void ProcessInheritedDoc()
         {
+            // This can happen if no class reference was generated.
+            if (_registry == null)
+                return;
+
             foreach (var member in _registry.InheritedDocMembers)
                 InheritDocumentation(member);
         }

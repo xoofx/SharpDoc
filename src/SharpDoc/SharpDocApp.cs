@@ -236,7 +236,7 @@ namespace SharpDoc
                 }
             }
 
-            if (Config.Groups.Count == 0)
+            if (Config.Groups.Count == 0 && Config.RootTopic == null)
                 UsageError("At least one option is missing. Either a valid config file (-config) or a direct list of assembly/xml files must be specified");
 
             // Add global search directories

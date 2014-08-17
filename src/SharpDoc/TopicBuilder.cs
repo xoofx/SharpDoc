@@ -85,7 +85,7 @@ namespace SharpDoc
             NTopic topicLibrary = null;
 
             // If there are any assemblies, we have to generate class library topics
-            if (Namespaces.Count >= 0)
+            if (Namespaces.Count > 0)
             {
                 // Find if a ClassLibrary topic is referenced in the config topic
                 topicLibrary = (RootTopic != null) ? RootTopic.FindTopicById(NTopic.ClassLibraryTopicId) : null;
