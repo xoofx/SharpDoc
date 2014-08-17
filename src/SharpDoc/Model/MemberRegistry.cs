@@ -72,6 +72,25 @@ namespace SharpDoc.Model
         }
 
         /// <summary>
+        /// Finds the model rerference by the filename.
+        /// </summary>
+        /// <param name="id">The file name to sea.</param>
+        /// <returns>IModelReference.</returns>
+        public IModelReference FindByFileName(string fileName)
+        {
+            var elements = _mapIdToModelElement.Values;
+            foreach (var reference in elements)
+            {
+                var ntopic = reference as NTopic;
+                if (ntopic != null && ntopic.FileName == fileName)
+                    return reference;
+            }
+
+            return null;
+        }
+
+
+        /// <summary>
         /// Registers the specified topic and all subtopics.
         /// </summary>
         public void Register(NTopic topic)
