@@ -375,11 +375,15 @@ namespace MarkdownSharp
         /// </summary>
         private string RunBlockGamut(string text, bool unhash = true)
         {
+            // Process the fenced codeblock first so that the
+            // other transforms below don't have a chance to
+            // mess up its content.
+            text = DoFencedCodeBlocks(text);
+
             text = DoHeaders(text);
             text = DoHorizontalRules(text);
             text = DoLists(text);
             text = DoCodeBlocks(text);
-            text = DoFencedCodeBlocks(text);
             text = DoBlockQuotes(text);
 
             // We already ran HashHTMLBlocks() before, in Markdown(), but that
@@ -1328,9 +1332,17 @@ namespace MarkdownSharp
             codeBlock = _newlinesLeadingTrailing.Replace(codeBlock, "");
 
             string languageName = match.Groups[1].Value.ToLower().Trim();
-            return (languageName != string.Empty)
+            var text = (languageName != string.Empty)
                 ? string.Format("<pre class='brush: {0}; gutter: true;'>{1}</pre>", languageName, codeBlock)
                 : string.Concat("\n\n<pre><code>", codeBlock, "\n</code></pre>\n\n");
+
+            // We hash and store the codeblock like we do
+            // for html blocks to avoid them being modified
+            // by the other transforms.
+            string key = GetHashKey(text, isHtmlBlock: true);
+            _htmlBlocks[key] = text;
+
+            return string.Concat("\n\n", key, "\n\n");
         }
 
         private static Regex _codeSpan = new Regex(@"
