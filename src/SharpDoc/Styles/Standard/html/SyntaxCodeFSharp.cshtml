@@ -25,7 +25,335 @@
 @model SharpDoc.TemplateContext
 @using System.Text;
 @using SharpDoc.Model
+
+@functions {
+
+    /// <summary>
+    /// Dump the F# syntax of a type (class, interface, struct, enum)
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    protected string DumpType(NType type)
+    {
+        var text = new StringBuilder();
+
+        // Append attributes
+        foreach (var attribute in type.Attributes)
+            text.Append("[<").Append(attribute).Append(">]").AppendLine();
+
+        if (type.IsStatic || (type.IsAbstract && !(type is NInterface))) text.AppendLine("[<AbstractClass>]");
+        if (type.IsStatic || type.IsFinal) text.AppendLine("[<Sealed>]");
+
+        text.Append("type ");
+
+        // Append visibility
+        text.Append(type.VisibilityName).Append(" ");
+
+        // Append the name
+        text.Append(BuildGenericTypeName(type));
+
+        if (type is NClass || type is NStruct || type is NInterface)
+        {
+            bool hasBase = type is NClass && type.Bases.Count > 1;
+            if (hasBase || type.Interfaces.Count > 0)
+            {
+                text.AppendLine(" =");
+                text.Append("\t").AppendLine(type.TypeName);
+                if (hasBase)
+                    text.Append("\t\tinherit ").AppendLine(EscapeForSyntaxBox(type.Bases[0].Name));
+                foreach (var @interface in type.Interfaces)
+                    text.Append("\t\tinterface ").AppendLine(EscapeForSyntaxBox(@interface.Name));
+                text.AppendLine("\tend");
+            }
+            else
+            {
+                text.AppendFormat(" = {0} end", type.TypeName);
+            }
+        }
+        else if (type is NDelegate)
+        {
+            var deleg = (NDelegate) type;
+            text.AppendLine(" =");
+            text.AppendLine("\tdelegate of");
+            DumpParameters(text, deleg.Invoke.Parameters, false);
+            text.Append(" -> ").Append(EscapeForSyntaxBox(deleg.Invoke.ReturnType.Name));
+        }
+
+        return text.ToString();
+    }
+
+    private string BuildGenericTypeName(INMemberReference member)
+    {
+        var text = new StringBuilder(member.RawName);
+
+        if (member.GenericParameters.Count > 0 || member.GenericArguments.Count > 0)
+        {
+            text.Append("<");
+
+            for (int i = 0; i < member.GenericArguments.Count; i++)
+            {
+                var param = member.GenericArguments[i];
+                text.Append("'").Append(EscapeForSyntaxBox(param.Name));
+                if (i < member.GenericArguments.Count - 1)
+                    text.Append(", ");
+            }
+            
+            for (int i = 0; i < member.GenericParameters.Count; i++)
+            {
+                var param = member.GenericParameters[i];
+                text.Append("'").Append(EscapeForSyntaxBox(param.Name));
+                if (i < member.GenericParameters.Count - 1)
+                    text.Append(", ");
+            }
+
+            var parametersWithConstraints = member.GenericParameters
+                .Where(x => x.HasConstraints || x.HasDefaultConstructorConstraint)
+                .ToList();
+            if (parametersWithConstraints.Any())
+            {
+                text.Append(" when ");
+                var constraintCount = 0;
+                for (int i = 0; i < parametersWithConstraints.Count; i++)
+                {
+                    var param = parametersWithConstraints[i];
+
+                    for (int j = 0; j < param.Constraints.Count; j++)
+                    {
+                        if (constraintCount > 0)
+                            text.Append(" and ");
+                        
+                        text.Append("'").Append(EscapeForSyntaxBox(param.Name));
+                        text.Append(" : ");
+                        text.Append(EscapeForSyntaxBox(param.Constraints[j].Name));
+
+                        constraintCount++;
+                    }
+                    
+                    if (param.HasDefaultConstructorConstraint)
+                    {
+                        if (constraintCount > 0)
+                            text.Append(" and ");
+                        text.AppendFormat("(new : unit -> '{0})", EscapeForSyntaxBox(param.Name));
+                    }
+
+                }
+            }
+            
+            text.Append(">");
+        }
+
+        return text.ToString();
+    }
+
+    /// <summary>
+    /// Dump the F# syntax of a type property
+    /// </summary>
+    /// <param name="prop"></param>
+    /// <returns></returns>
+    protected string DumpProperty(NProperty prop)
+    {
+        var text = new StringBuilder();
+        
+        // Append attributes
+        foreach (var attribute in prop.Attributes)
+            text.Append("[<").Append(attribute).Append(">]").AppendLine();
+
+        if (prop.IsAbstract || prop.IsVirtual)
+        {
+            text.Append("abstract ");
+            text.AppendLine(BuildPropertySyntax(prop));
+
+            if (prop.IsVirtual)
+            {
+                text.Append("default ");
+                text.AppendLine(BuildPropertySyntax(prop));
+            }
+        }
+        else
+        {
+            text.Append("member ");
+            text.AppendLine(BuildPropertySyntax(prop));
+        }
+
+        return text.ToString();
+    }
+
+    private string BuildPropertySyntax(NProperty prop)
+    {
+        var text = new StringBuilder();
+
+        if (prop.IsStatic)
+            text.Append("static ");
+        
+        // Append Name
+        text.Append(prop.Name).Append(" : ");
+
+        // Append Type
+        text.Append(prop.PropertyType.Name).Append(" with ");
+
+        // Append Accessors
+        var accessors = new List<string>();
+        if (prop.HasGetMethod)
+        {
+            var accessor = string.Empty;
+            if (prop.Visibility != prop.GetMethod.Visibility)
+                accessor += prop.GetMethod.VisibilityName + " ";
+            accessors.Add(accessor + "get");
+        }
+        if (prop.HasSetMethod)
+        {
+            var accessor = string.Empty;
+            if (prop.Visibility != prop.SetMethod.Visibility)
+                accessor += prop.SetMethod.VisibilityName + " ";
+            accessors.Add(accessor + "set");
+        }
+        text.Append(string.Join(", ", accessors));
+
+        return text.ToString();
+    }
+
+    /// <summary>
+    /// Dump the F# syntax of an event
+    /// </summary>
+    /// <param name="nEvent"></param>
+    /// <returns></returns>
+    protected string DumpEvent(NEvent nEvent)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <summary>
+    /// Dump the F# syntax of a type property
+    /// </summary>
+    /// <param name="field"></param>
+    /// <returns></returns>
+    protected string DumpField(NField field)
+    {
+        var text = new StringBuilder();
+
+        // Append attributes
+        foreach (var attribute in field.Attributes)
+            text.Append("[<").Append(attribute).Append(">]").AppendLine();
+
+        if (field.IsStatic)
+            text.Append("static ");
+
+        text.Append("val ");
+
+        // Append the name
+        text.Append(EscapeForSyntaxBox(field.Name));
+
+        text.Append(" : ");
+
+        // Append the return type
+        text.Append(EscapeForSyntaxBox(field.FieldType.Name));
+
+        return text.ToString();
+    }
+
+    /// <summary>
+    /// Dump the F# syntax of a type method
+    /// </summary>
+    /// <param name="method"></param>
+    /// <returns></returns>
+    protected string DumpMethod(NMethod method)
+    {
+        var text = new StringBuilder();
+        
+        // static member Create : 
+        //     comparison:Comparison<'T> -> Comparer<'T> 
+
+        // Append attributes
+        foreach (var attribute in method.Attributes)
+            text.Append("[<").Append(attribute).Append(">]").AppendLine();
+
+        if (method.IsStatic)
+            text.Append("static ");
+
+        if (method is NConstructor)
+        {
+            text.Append("new");
+        }
+        else
+        {
+            text.Append("member ");
+
+            // Append the name
+            text.Append(BuildGenericTypeName(method));
+        }
+
+        text.Append(" : ");
+        
+        DumpParameters(text, method.Parameters, method.IsExtensionDefinition);
+
+        // Append the return type
+        text.Append(" -> ");
+        if (!(method is NConstructor))
+            text.Append(FormatReturnType(BuildGenericTypeName(method.ReturnType)));
+        else
+            text.Append(EscapeForSyntaxBox(method.DeclaringType.Name));
+
+        return text.ToString();
+    }
+
+    private string FormatReturnType(string typeName)
+    {
+        if (typeName == "void")
+            return "unit";
+        return typeName;
+    }
+
+    /// <summary>
+    /// Dump the F# syntax of a type method
+    /// </summary>
+    /// <param name="method"></param>
+    /// <returns></returns>
+    protected void DumpParameters(StringBuilder text, List<NParameter> parameters, bool IsExtensionDefinition)
+    {
+        if (parameters.Count > 0)
+        {
+            for (int i = 0; i < parameters.Count; i++)
+            {
+                text.AppendLine();
+                text.Append("\t");
+
+                var parameter = parameters[i];
+
+                text.Append(EscapeForSyntaxBox(parameter.Name)).Append(" : ");
+                text.Append(EscapeForSyntaxBox(parameter.ParameterTypeName));
+
+                if (i < parameters.Count - 1)
+                    text.Append(" * ");
+            }
+        }
+        else
+        {
+            text.AppendLine();
+            text.Append("\tunit");
+        }
+    }
+}
+
 @helper Dump(NMember member)
 {
-    <p>Syntax for F# is not yet implemented.</p>
+    if (member is NType)
+    {
+        @Raw(DumpType((NType) member))
+    }
+    else if (member is NMethod)
+    {
+        @Raw(DumpMethod((NMethod) member))
+    }
+    else if (member is NEvent)
+    {
+        <p>Event syntax for F# is not yet implemented</p>
+    }
+    else if (member is NProperty)
+    {
+        @Raw(DumpProperty((NProperty) member))
+    }
+    else if (member is NField)
+    {
+        @Raw(DumpField((NField) member))
+    }
 }
