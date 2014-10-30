@@ -93,8 +93,17 @@
     {
         var text = new StringBuilder();
 
+        // Append attributes
+        foreach (var attribute in prop.Attributes)
+            text.Append("[<").Append(attribute).Append(">]").AppendLine();
+
         // Append visibility
         text.Append(prop.VisibilityFullName).Append(" ");
+
+        if (prop.IsVirtual)
+            text.Append("virtual ");
+        if (prop.IsAbstract)
+            text.Append("abstract ");
 		
 		// Append Type
         text.Append(prop.PropertyType.Name).Append(" ");
@@ -133,8 +142,14 @@
     {
         var text = new StringBuilder();
 
+        // Append attributes        
+        foreach (var attribute in nEvent.Attributes)
+            text.Append("[").Append(attribute).Append("]").AppendLine();
+
         // Append visibility
         text.Append(nEvent.VisibilityFullName).Append(" ");
+
+        text.Append("event ");
 
         // Append Type
         text.Append(EscapeForSyntaxBox(nEvent.EventType.Name)).Append(" ");
