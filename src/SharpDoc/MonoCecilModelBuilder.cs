@@ -605,6 +605,7 @@ namespace SharpDoc
             memberRef.Id = DocIdHelper.GetXmlId(cecilMemberRef);
             memberRef.PageId = PageIdFunction(memberRef);
             memberRef.Name = ReplacePrimitive(cecilMemberRef.Name, cecilMemberRef.FullName);
+            memberRef.RawName = memberRef.Name;
             memberRef.FullName = cecilMemberRef.FullName;
 
             // Load system documentation if needed
