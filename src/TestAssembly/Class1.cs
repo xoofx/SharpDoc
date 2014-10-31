@@ -1,10 +1,22 @@
-﻿namespace TestAssembly
+﻿using System.ComponentModel;
+
+namespace TestAssembly
 {
     /// <summary>
     /// This class is the first class of this assembly
     /// </summary>
     public class Class1
     {
+        /// <summary>
+        /// An integer field.
+        /// </summary>
+        public int IntField1;
+
+        /// <summary>
+        /// A readonly integer field.
+        /// </summary>
+        public readonly int ReadonlyField1;
+
         /// <summary>
         /// The string constant
         /// </summary>
@@ -35,7 +47,13 @@
         /// Gets or sets the int property.
         /// </summary>
         /// <value>The int property.</value>
-        public int IntProperty { get; set; }
+        public int IntProperty { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets the virtual property.
+        /// </summary>
+        /// <value>The virtual property.</value>
+        public virtual string VirtualProperty { get; set; }
 
         /// <summary>
         /// Gets or sets the static int property.
@@ -58,5 +76,11 @@
         public virtual void Method1(string stringArg, int intArg)
         {
         }
+
+        /// <summary>
+        /// This is an event.
+        /// </summary>
+        [Description("This is an attribute on an event")]
+        public event Delegate1 Event1;
     }
 }

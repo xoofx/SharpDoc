@@ -605,6 +605,7 @@ namespace SharpDoc
             memberRef.Id = DocIdHelper.GetXmlId(cecilMemberRef);
             memberRef.PageId = PageIdFunction(memberRef);
             memberRef.Name = ReplacePrimitive(cecilMemberRef.Name, cecilMemberRef.FullName);
+            memberRef.RawName = memberRef.Name;
             memberRef.FullName = cecilMemberRef.FullName;
 
             // Load system documentation if needed
@@ -638,6 +639,7 @@ namespace SharpDoc
 
                         // Remove `number from Name
                         memberRef.Name = BuildGenericName(typeDef.Name, memberRef.GenericArguments);
+                        memberRef.RawName = BuildRawName(typeDef.Name);
                         memberRef.FullName = BuildGenericName(typeDef.FullName, memberRef.GenericArguments);
                     }
                 }
@@ -645,6 +647,7 @@ namespace SharpDoc
                 {
                     // If generic parameters, than rewrite the name/fullname
                     memberRef.Name = BuildGenericName(typeDef.Name, memberRef.GenericParameters);
+                    memberRef.RawName = BuildRawName(typeDef.Name);
                     memberRef.FullName = BuildGenericName(typeDef.FullName, memberRef.GenericParameters);
                 }
             }
@@ -654,6 +657,7 @@ namespace SharpDoc
                 if (genericParameterProvider != null)
                 {
                     this.FillGenericParameters(memberRef, genericParameterProvider);
+                    memberRef.RawName = BuildRawName(memberRef.Name);
                     memberRef.Name = BuildGenericName(memberRef.Name, memberRef.GenericParameters);
                     memberRef.FullName = BuildGenericName(memberRef.FullName, memberRef.GenericParameters);
                 }
@@ -955,6 +959,20 @@ namespace SharpDoc
         private void UpdatePageTitle(NMember member)
         {
             member.PageTitle = (member.DeclaringType != null ? member.DeclaringType.Name + "." : string.Empty) + member.Name + " " + member.Category + " (" + member.Namespace.FullName + ")";           
+        }
+
+        /// <summary>
+        /// Gets the "raw" name of a generic type, without type parameters. Instead of List`1 returns List.
+        /// </summary>
+        /// <param name="name">The original name that contains a ` indicating the usage of generics.</param>
+        /// <returns></returns>
+        private static string BuildRawName(string name)
+        {
+            int genericIndexTag = name.IndexOf('`');
+            if (genericIndexTag < 0)
+                genericIndexTag = name.Length;
+
+            return name.Substring(0, genericIndexTag);
         }
 
         /// <summary>

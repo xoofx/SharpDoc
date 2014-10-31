@@ -38,7 +38,7 @@
         "C#",  "<pre class='brush: csharp;'>" + Escape(Helpers.SyntaxCodeCSharp.Dump(member)) + "</pre>",
         "VB",  Helpers.SyntaxCodeVB.Dump(member),
         "C++", Helpers.SyntaxCodeCpp.Dump(member),
-        "F#",  Helpers.SyntaxCodeFSharp.Dump(member),
+        "F#",  "<pre class='brush: fsharp;'>" + Escape(Helpers.SyntaxCodeFSharp.Dump(member)) + "</pre>",
     });
 
     if (member is NMethod)

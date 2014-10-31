@@ -3,7 +3,7 @@
     /// <summary>
     /// This is the documentation for a struct
     /// </summary>
-    public class Struct1
+    public struct Struct1
     {
         /// <summary>
         /// Gets or sets the x.

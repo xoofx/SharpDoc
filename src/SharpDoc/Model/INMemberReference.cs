@@ -42,6 +42,11 @@ namespace SharpDoc.Model
         NNamespace Namespace { get; set; }
 
         /// <summary>
+        /// Gets or sets the name without any generic parameters.
+        /// </summary>
+        string RawName { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether this instance is an array.
         /// </summary>
         /// <value><c>true</c> if this instance is an array; otherwise, <c>false</c>.</value>

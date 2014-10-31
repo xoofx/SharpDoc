@@ -41,9 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractClass1.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="Class1Extensions.cs" />
+    <Compile Include="Delegate1.cs" />
     <Compile Include="Enum1.cs" />
+    <Compile Include="GenericClass1.cs" />
+    <Compile Include="IInterface1.cs" />
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Struct1.cs" />
